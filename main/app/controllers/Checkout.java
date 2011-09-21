@@ -53,7 +53,7 @@ public class Checkout extends Controller {
 	}
 	Product product = Product.findById(productId);
 	if (product == null) {
-	    error("Product " + productId + " not foudn");
+	    error("Product " + productId + " not found");
 	}
 	Cart cart = getCart();
 	cart.add(productId, quantity, product.price);
@@ -61,6 +61,23 @@ public class Checkout extends Controller {
 	
 	//renderTemplate("/app/views/Checkout/addToCart.json", cart, product); 
 	render(cart, product);
+    }
+    
+    public static void removeFromCart(@Required Long productId) {
+    	if (validation.hasErrors()) {
+    	    error("productId is required");
+    	}
+    	Product product = Product.findById(productId);
+    	if (product == null) {
+    	    error("Product " + productId + " not found");
+    	}
+    	Cart cart = getCart();
+    	cart.remove(productId);
+    	setCookie("cart", cart.toJson());
+    	
+    	String productJson = product.toJson();
+    	//renderTemplate("/app/views/Checkout/removeFromCart.json", cart, product, productJson);
+    	render(cart, product, productJson);
     }
     
     static String getCookie(String name) {
@@ -268,7 +285,7 @@ public class Checkout extends Controller {
 	    }
 	    render(selected, available);
 	} else {
-	    cart();
+	    product();
 	}
 	
     }

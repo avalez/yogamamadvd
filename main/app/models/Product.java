@@ -4,6 +4,9 @@ import play.*;
 import play.db.jpa.*;
 
 import javax.persistence.*;
+
+import com.google.gson.Gson;
+
 import java.util.*;
 
 @Entity
@@ -26,5 +29,9 @@ public class Product extends Model {
 
     public Product(String name) {
 	this.name = name;
+    }
+
+    public String toJson() {
+    	return new Gson().toJson(this);
     }
 }

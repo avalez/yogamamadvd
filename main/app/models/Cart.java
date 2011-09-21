@@ -26,6 +26,11 @@ public class Cart {
 	Item item = items.get(productId);
 	if (item != null) {
 	    item.quantity += quantity;
+	    // price may have been changed
+	    // FIXME: when adding discounts for multi-order
+	    // TODO: use list instead of map or for value
+	    //    or just item.total = item.price * item.quantity
+	    //    depending on sales logic
 	    item.price = price;
 	    item.total += price * quantity;
 	} else {
@@ -35,6 +40,14 @@ public class Cart {
 	this.quantity += quantity;
 	this.total += price * quantity;
 	
+    }
+    
+    public void remove(Long productId) {
+    	Item item = items.remove(productId);
+    	if (item != null) {
+    		this.quantity -= item.quantity;
+    		this.total -= item.total;
+    	}
     }
     
     public static class Item {

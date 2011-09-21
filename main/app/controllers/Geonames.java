@@ -49,7 +49,7 @@ public class Geonames extends Controller {
     }
 
     static JsonObject getCountries() {
-	return getGeonames("countryInfoJSON?maxRows=300");
+	return new JsonObject(); //getGeonames("countryInfoJSON?maxRows=300");
     }
 
     public static void reset() {
