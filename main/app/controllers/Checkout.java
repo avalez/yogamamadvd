@@ -75,9 +75,8 @@ public class Checkout extends Controller {
     	cart.remove(productId);
     	setCookie("cart", cart.toJson());
     	
-    	String productJson = product.toJson();
-    	//renderTemplate("/app/views/Checkout/removeFromCart.json", cart, product, productJson);
-    	render(cart, product, productJson);
+    	//renderTemplate("/app/views/Checkout/removeFromCart.json", cart, product);
+    	render(cart, product);
     }
     
     static String getCookie(String name) {

@@ -19,32 +19,6 @@
     <div class="left">
       <h2 style="background: left top url(@{'/public/images/basket.png'}) no-repeat; padding-left: 28px;">&{'heading_cart'}</h2>
       <div class="product-grid content">
-        #{list items:selected, as:'product'}
-          <div id="product-grid-div-${product.id}">
-            #{if product.thumb}
-            <div class="image"><a href="@{Catalog.show(product.id)}"><img src="@{'/public/images'}/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
-            #{/if}
-            <div class="name"><a href="@{Catalog.show(product.id)}">${product.name}</a></div>
-            <div class="price">
-            <label>Цена:</label>
-            #{if product.price}
-              #{if !product.special}
-              &{'format_price', product.price.format('0')} 
-              #{/if}
-              #{else}
-              <span class="price-old">&{'format_price', product.price.format('0')}</span> <span class="price-new">&{'format_price', product.special.format('0')}</span>
-              #{/else}
-            #{/if}
-            </div>
-            <div class="quantity">
-              <label for="count_disc11">Количество:</label>
-              <select name="qties.${product.id}" class="select_qty">
-              <option value="1" selected="selected">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>                                            
-              </select> шт.
-            </div>
-            <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" href="#" onclick="return removeFromCart('@{removeFromCart()}', ${product.id}, '@{'/public/images'}')">Убрать из коризны</a></div>
-          </div>
-        #{/list}
       </div>
     </div>
 
@@ -70,110 +44,75 @@
 
   <h2>Курс</h2>
   <div class="product-list">
-    #{list items:available, as:'product'}
-    <div>
-      <div class="right">
-        <div class="cart"><a href="@{checkout}" class="button"><span>&{'button_cart'}</span></a></div>
-      </div>
-      <div class="left">
-        #{if product.thumb}
-        <div class="image"><a href="@{Catalog.show(product.id)}"><img src="@{'/public/images'}/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
-        #{/if}
-        <div class="price">
-        <label>Цена:</label>
-        #{if product.price}
-          #{if !product.special}
-          &{'format_price', product.price.format('0')} 
-          #{/if}
-          #{else}
-          <span class="price-old">&{'format_price', product.price.format('0')}</span> <span class="price-new">&{'format_price', product.special.format('0')}</span>
-          #{/else}
-        #{/if}
-        </div>
-        <div class="name"><a href="@{Catalog.show(product.id)}">${product.name}</a></div>
-        <div class="description">${product.description.substring(0, 100)}...</div>
-      </div>
-    </div>
-    #{/list}
   </div>
   
   </form>
   
 #{set 'moreScripts'}
 #{get 'moreScripts'/}
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" charset="${_response_encoding}"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js" charset="${_response_encoding}"></script>
+<script id="selectedTemplate" type="text/x-jquery-tmpl">
+  <div id="product-grid-div-{{= id }}">
+    {{if typeof thumb != 'undefined'}}
+    <div class="image"><a href="{{= url }}"><img src="{{= thumbUrl }}" title="{{= name }}" alt="{{= name }}" id="image{{= id }}" /></a></div>
+    {{/if}}
+    <div class="name"><a href="{{= url }}">{{= name }}</a></div>
+    <div class="price">
+    <label>Цена:</label>
+    {{if price}}
+      {{if typeof special == 'undefined'}}
+      {{= price }} 
+      {{else}}
+      <span class="price-old">{{= price }}</span> <span class="price-new">{{= special }}</span>
+      {{/if}}
+    {{/if}}
+    </div>
+    <div class="quantity">
+      <label for="count_disc11">Количество:</label>
+      <select name="qties.{{= id }}" class="select_qty">
+      <option value="1" selected="selected">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>                                            
+      </select> шт.
+    </div>
+    <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" href="#" onclick="return removeFromCart('@{removeFromCart()}', {{= id }}, '@{'/public/images'}')">Убрать из коризны</a></div>
+  </div>
+</script>
 <script id="productTemplate" type="text/x-jquery-tmpl">
     <div>
       <div class="right">
         <div class="cart"><a href="@{checkout}" class="button"><span>&{'button_cart'}</span></a></div>
       </div>
       <div class="left">
-        {{if product.thumb}}
-        <!-- FIX ME: productId -->
-        <div class="image"><a href="@{Catalog.show(1)}"><img src="@{'/public/images'}/{{= product.thumb }}" title="{{= product.name }}" alt="{{= product.name }}" id="image{{= product.id }}" /></a></div>
+          {{if typeof thumb != 'undefined'}}
+        <div class="image"><a href="{{= url }}"><img src="{{= thumbUrl }}" title="{{= name }}" alt="{{= name }}" id="image{{= id }}" /></a></div>
         {{/if}}
         <div class="price">
         <label>Цена:</label>
-        {{if product.price}}
-          {{if !product.special}}
-          <!-- TODO: format price -->
-          {{= product.price }} 
+        {{if price}}
+          {{if typeof special == 'undefined'}}
+          {{= price }} 
           {{else}}
-          <!-- TODO: format price -->
-          <span class="price-old">{{= product.price }}</span> <span class="price-new">{{= product.special }}</span>
+          <span class="price-old">{{= price }}</span> <span class="price-new">{{= special }}</span>
           {{/if}}
         {{/if}}
         </div>
-        <!-- FIX ME: productId -->
-        <div class="name"><a href="@{Catalog.show()}">{{= product.name }}</a></div>
-        <!-- TODO: substring -->
-        <div class="description">{{= product.description }}</div>
+        <div class="name"><a href="{{= url }}">{{= name }}</a></div>
+        <div class="description">{{= description }}</div>
       </div>
     </div>
 </script>
 
 <script type="text/javascript"><!--
+var selectedProducts = [
+  #{productsJS selected /}
+];
+var availableProducts = [
+  #{productsJS available /}
+];
 
-function removeFromCart(url, productId, imagesUrl) {
-	$.ajax({
-		url: url,
-		type: 'post',
-		data:  'productId=' + productId,
-		dataType: 'json',
-		success: function(json) {
-			$('.success, .warning, .attention, .information, .error').remove();
-			
-			if (json['redirect']) {
-				location = json['redirect'];
-			}
-			
-			if (json['error']) {
-				if (json['error']['warning']) {
-					$('#notification').html('<div class="warning" style="display: none;">' + json['error']['warning'] + '<img src="' + imagesUrl + '/close.png" alt="" class="close" /></div>');
-				}
-			}	 
-						
-			if (json['success']) {
-				$('#notification').html('<div class="attention" style="display: none;">' + json['success'] + '<img src="' + imagesUrl + '/close.png" alt="" class="close" /></div>');
-				
-				$('.attention').fadeIn('slow');
-				
-				$('#cart_total').html(json['total']);
-				
-				$('html, body').animate({ scrollTop: 0 }, 'slow');
-				
-				var productDiv = $('#product-grid-div-' + productId);
-				productDiv.fadeOut();
-				
-				var productList = $('div.product-list');
-				$('#productTemplate').tmpl(json).appendTo(productList);
-			}
-		},
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(errorThrown)
-        }
-	});
-}
+$(function() {
+    $('#selectedTemplate').tmpl(selectedProducts).appendTo($('div.product-grid'));
+    $('#productTemplate').tmpl(availableProducts).appendTo($('div.product-list'));
+});
 --></script>
 #{/set}
 

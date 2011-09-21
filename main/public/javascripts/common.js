@@ -149,6 +149,56 @@ function addToCart(url, product_id, image_el, quantity, imagesUrl) {
 	});
 }
 
+function removeFromCart(url, productId, imagesUrl) {
+    $.ajax({
+        url: url,
+        type: 'post',
+        data:  'productId=' + productId,
+        dataType: 'json',
+        success: function(json) {
+            $('.success, .warning, .attention, .information, .error').remove();
+            
+            if (json['redirect']) {
+                location = json['redirect'];
+            }
+            
+            if (json['error']) {
+                if (json['error']['warning']) {
+                    $('#notification').html('<div class="warning" style="display: none;">' + json['error']['warning'] + '<img src="' + imagesUrl + '/close.png" alt="" class="close" /></div>');
+                }
+            }    
+                        
+            if (json['success']) {
+                $('#notification').html('<div class="attention" style="display: none;">' + json['success'] + '<img src="' + imagesUrl + '/close.png" alt="" class="close" /></div>');
+                
+                $('.attention').fadeIn('slow');
+                
+                $('#cart_total').html(json['total']);
+                
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+                
+                selectedProducts = $.grep(selectedProducts, function(product) {
+                  if (product.id == productId) {
+                     availableProducts.splice(0, 0, product);
+                     return true;
+                  } else {
+                     return false;
+                  }
+                });
+                
+                var productDiv = $('#product-grid-div-' + productId);
+                productDiv.fadeOut();
+                
+                var productList = $('div.product-list');
+                productList.html($('#productTemplate').tmpl(availableProducts));
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert(errorThrown)
+        }
+    });
+}
+
 function removeCart(key) {
 	$.ajax({
 		url: 'index.php?route=checkout/cart/update',

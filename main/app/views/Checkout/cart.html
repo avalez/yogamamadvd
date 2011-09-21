@@ -1,8 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'Йога для будущих мам - Корзина' /}
 
-#{nav cart:'active', checkout:'disabled'/}
-
+<div id="content">
 #{if cart.quantity > 0}
     <h1>&{'heading_cart'}
       #{if weight}
@@ -76,6 +75,6 @@ $('.cart-module .cart-heading').bind('click', function() {
 //--></script> 
 #{/if}
 #{else}
- &{'text_cart_empty'}
+ <h3>&{'text_cart_empty'}</h3>
 #{/else}
 </div>

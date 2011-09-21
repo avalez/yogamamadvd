@@ -30,8 +30,4 @@ public class Product extends Model {
     public Product(String name) {
 	this.name = name;
     }
-
-    public String toJson() {
-    	return new Gson().toJson(this);
-    }
 }
