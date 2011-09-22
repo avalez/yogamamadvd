@@ -18,8 +18,7 @@
   <div class="checkout-cart-content">
     <div class="left">
       <h2 style="background: left top url(@{'/public/images/basket.png'}) no-repeat; padding-left: 28px;">&{'heading_cart'}</h2>
-      <div class="product-grid content">
-      </div>
+      <div id="selected" class="product-grid content"></div>
     </div>
 
     <div class="right">
@@ -43,8 +42,7 @@
   </div>
 
   <h2>Курс</h2>
-  <div class="product-list">
-  </div>
+  <div id="available" class="product-list"></div>
   
   </form>
   
@@ -52,7 +50,7 @@
 #{get 'moreScripts'/}
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js" charset="${_response_encoding}"></script>
 <script id="selectedTemplate" type="text/x-jquery-tmpl">
-  <div id="product-grid-div-{{= id }}">
+  <div id="selected-{{= id }}" {{if !selected}} style="display:none" {{/if}}>
     {{if typeof thumb != 'undefined'}}
     <div class="image"><a href="{{= url }}"><img src="{{= thumbUrl }}" title="{{= name }}" alt="{{= name }}" id="image{{= id }}" /></a></div>
     {{/if}}
@@ -76,10 +74,10 @@
     <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" href="#" onclick="return removeFromCart('@{removeFromCart()}', {{= id }}, '@{'/public/images'}')">Убрать из коризны</a></div>
   </div>
 </script>
-<script id="productTemplate" type="text/x-jquery-tmpl">
-    <div>
+<script id="availableTemplate" type="text/x-jquery-tmpl">
+    <div id="available-{{= id }}" {{if selected}} style="display:none" {{/if}}>
       <div class="right">
-        <div class="cart"><a href="@{checkout}" class="button"><span>&{'button_cart'}</span></a></div>
+        <div class="cart"><a onclick="addToCart('@{Checkout.addToCart}', {{= id }}, $('#image{{= id }}'), 1, '@{'/public/images'}');" class="button"><span>&{'button_cart'}</span></a></div>
       </div>
       <div class="left">
           {{if typeof thumb != 'undefined'}}
@@ -102,16 +100,37 @@
 </script>
 
 <script type="text/javascript"><!--
-var selectedProducts = [
-  #{productsJS selected /}
-];
-var availableProducts = [
-  #{productsJS available /}
-];
+var products = {
+  #{list items:products, as:'product'}
+  ${product.id} : {
+      id: ${product.id},
+      name: '${product.name}',
+    #{if product.thumb}
+      thumb: '${product.thumb}',
+      thumbUrl: '@{'/public/images'}/${product.thumb}',
+    #{/if}
+      description: '${product.description.substring(0, 100)}...',
+    #{if product.special} <!-- TODO: discount on quantity
+      special: '&{'format_price', product.special.format('0')}',
+    #{/if}
+      url: '@{Catalog.show(product.id)}',
+    #{if cart.items.containsKey(product.id)}
+      selected: true,
+      quantity: ${cart.items[product.id].quantity},
+      price: '&{'format_price', cart.items[product.id].price.format('0')}',
+    #{/if}
+    #{else}
+      selected: false,
+      price: '&{'format_price', product.price.format('0')}',
+    #{/else}
+    },
+  #{/list}
+};
 
 $(function() {
-    $('#selectedTemplate').tmpl(selectedProducts).appendTo($('div.product-grid'));
-    $('#productTemplate').tmpl(availableProducts).appendTo($('div.product-list'));
+    var $products = $.map(products, function(p) { return p }); // convert to array
+    $('#selected').html($('#selectedTemplate').tmpl($products));
+    $('#available').html($('#availableTemplate').tmpl($products))
 });
 --></script>
 #{/set}

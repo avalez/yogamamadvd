@@ -272,17 +272,17 @@ public class Checkout extends Controller {
     public static void checkout() {
 	Cart cart = getCart();
 	if (cart.items.size() > 0) {
-	    List<Product> all = Product.findAll();
+	    List<Product> products = Product.findAll();
 	    List<Product> available = new LinkedList<Product>();
 	    List<Product> selected = new LinkedList<Product>();
-	    for (Product product: all) {
+	    for (Product product: products) {
 		if (cart.items.containsKey(product.id)) {
 		    selected.add(product);
 		} else {
 		    available.add(product);
 		}
 	    }
-	    render(selected, available);
+	    render(selected, available, products);
 	} else {
 	    product();
 	}

@@ -94,66 +94,11 @@ $('.success img, .warning img, .attention img, .information img').live('click', 
 	});
 });
 
-function addToCart(url, product_id, image_el, quantity, imagesUrl) {
-	$.ajax({
-		url: url,
-		type: 'post',
-		data:  'productId=' + product_id + '&quantity=' + quantity,
-		dataType: 'json',
-		success: function(json) {
-			$('.success, .warning, .attention, .information, .error').remove();
-			
-			if (json['redirect']) {
-				location = json['redirect'];
-			}
-			
-			if (json['error']) {
-				if (json['error']['warning']) {
-					$('#notification').html('<div class="warning" style="display: none;">' + json['error']['warning'] + '<img src="' + imagesUrl + '/close.png" alt="" class="close" /></div>');
-				}
-			}	 
-						
-			if (json['success']) {
-				$('#notification').html('<div class="attention" style="display: none;">' + json['success'] + '<img src="' + imagesUrl + '/close.png" alt="" class="close" /></div>');
-				
-				$('.attention').fadeIn('slow');
-				
-				$('#cart_total').html(json['total']);
-				
-				$('html, body').animate({ scrollTop: 0 }, 'slow');
-				
-				if (image_el != undefined) {
-
-					var image = image_el.offset();
-					var cart = $('#cart_total').offset();
-					image_el.before('<img src="' + image_el.attr('src') + '" id="temp" style="position: absolute; top: ' + image.top 
-					     + 'px; left: ' + image.left + 'px;" />');
-					params = {
-						top : cart.top + 'px',
-						left : cart.left + 'px',
-						opacity : 0.0,
-						width : $('#cart_total').width(),
-						height : $('#cart_total').height()
-					};
-					$('#temp').animate(params, 'slow', function () {
-						$('#temp').remove();
-					});
-				}
-			}
-		}
-		/*,
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(errorThrown)
-        }
-        */  
-	});
-}
-
-function removeFromCart(url, productId, imagesUrl) {
+function updateCart(url, data, imagesUrl, callback) {
     $.ajax({
         url: url,
         type: 'post',
-        data:  'productId=' + productId,
+        data:  data,
         dataType: 'json',
         success: function(json) {
             $('.success, .warning, .attention, .information, .error').remove();
@@ -177,25 +122,48 @@ function removeFromCart(url, productId, imagesUrl) {
                 
                 $('html, body').animate({ scrollTop: 0 }, 'slow');
                 
-                selectedProducts = $.grep(selectedProducts, function(product) {
-                  if (product.id == productId) {
-                     availableProducts.splice(0, 0, product);
-                     return true;
-                  } else {
-                     return false;
-                  }
-                });
+                callback();
                 
-                var productDiv = $('#product-grid-div-' + productId);
-                productDiv.fadeOut();
-                
-                var productList = $('div.product-list');
-                productList.html($('#productTemplate').tmpl(availableProducts));
             }
-        },
+        }
+        /*,
         error: function(jqXHR, textStatus, errorThrown) {
             alert(errorThrown)
         }
+        */  
+    });
+}
+
+function addToCart(url, productId, image_el, quantity, imagesUrl) {
+    updateCart(url, 'productId=' + productId + '&quantity=' + quantity, imagesUrl, function() {
+				
+        $('#available-' + productId).fadeOut();
+        $('#selected-' + productId).fadeIn();
+
+		if (image_el != undefined) {
+
+			var image = image_el.offset();
+			var cart = $('#cart_total').offset();
+			image_el.before('<img src="' + image_el.attr('src') + '" id="temp" style="position: absolute; top: ' + image.top 
+			     + 'px; left: ' + image.left + 'px;" />');
+			params = {
+				top : cart.top + 'px',
+				left : cart.left + 'px',
+				opacity : 0.0,
+				width : $('#cart_total').width(),
+				height : $('#cart_total').height()
+			};
+			$('#temp').animate(params, 'slow', function () {
+				$('#temp').remove();
+			});
+		}
+	});
+}
+
+function removeFromCart(url, productId, imagesUrl) {
+    updateCart(url, 'productId=' + productId, imagesUrl, function() {
+        $('#selected-' + productId).fadeOut();
+        $('#available-' + productId).fadeIn();
     });
 }
 
