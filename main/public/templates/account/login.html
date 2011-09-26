@@ -1,0 +1,47 @@
+{{if true}}
+<div id="content">
+  <h1>${i18n.heading_login}</h1>
+  {{if flash.error}}
+  <div class="warning">${flash.error}</div>
+  {{/if}}
+  <div class="login-content">
+    <div class="left">
+      <h2>${i18n.text_new_customer}</h2>
+      <div class="content">
+        <p><b>${i18n.text_register}</b></p>
+        <p>${i18n.text_register_account}</p>
+        <a href="#/account/register" class="button"><span>${i18n.button_continue}</span></a></div>
+    </div>
+    <div class="right">
+{{/if}}
+
+<h2>${i18n.text_returning_customer}</h2>
+<form action="#/account/authenticate" method="post" enctype="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${type}">
+  <div class="content" style="padding-top: 15px">
+    {{if type != 'shipment'}}<p><b>${i18n.text_i_am_returning_customer}</b></p>{{/if}}
+    <span style="float: left; width: 100px"><label for="username">${i18n.entry_email}</label></span>
+    <input type="text" name="username" value="${params.username}" />
+    <input type="checkbox" name="remember" id="remember" value="true" ${flash.remember ? 'checked="true"' : ''} />
+    <label for="remember">${i18n.secure_remember}</label>
+    <br /> <br />
+    <span style="float: left; width: 100px"><label for="password">${i18n.entry_password}</label></span>
+    <input type="password" name="password" value="" />
+    &nbsp;<a href="#">${i18n.text_forgotten}</a>
+    <br />
+    <br />
+    <a onclick="$('#login${type}').submit();" class="button"><span>${i18n.button_login}</span></a>
+  </div>
+</form>
+
+{{if true}}
+  </div>
+</div>
+{{/if}}
+
+<script type="text/javascript">
+  $('#login${type} input').keydown(function(e) {
+	if (e.keyCode == 13) {
+		$('#login').submit(); // TODO: this or e.ui
+	}
+  });
+</script>

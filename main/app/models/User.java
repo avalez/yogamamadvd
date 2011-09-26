@@ -3,6 +3,8 @@ package models;
 import java.util.*;
 import javax.persistence.*;
 
+import com.google.gson.Gson;
+
 import controllers.Account;
 
 import play.data.validation.*;
@@ -59,4 +61,8 @@ public class User extends Model {
     public String zone;
 
     public boolean isAdmin;
+    
+    public String toJson() {
+	return new Gson().toJson(this);
+    }
 }

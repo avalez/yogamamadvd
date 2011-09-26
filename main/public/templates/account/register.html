@@ -1,0 +1,139 @@
+  <form action="${_action}" method="post" enctype="multipart/form-data" id="register${_shipment}">
+    <input type="hidden" name="url" value="${_url}"/>
+    #{if !_shipment}
+    <h2>&{'text_your_details'}</h2>
+    #{/if}
+    #{else}
+    <h2>&{'text_new_customer'}</h2>
+    #{/else}
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td><span class="required">*</span> &{'entry_firstname'}</td>
+          <td><input type="text" name="user.firstname" value="${flash['user.firstname']}" />
+            #{ifError 'user.firstname'}
+            <span class="error">#{error 'user.firstname'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_lastname'}</td>
+          <td><input type="text" name="user.lastname" value="${flash['user.lastname']}" />
+            #{ifError 'user.lastname'}
+            <span class="error">#{error 'user.lastname'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_email'}</td>
+          <td><input type="text" name="user.email" value="${flash['user.email']}" />
+            #{ifError 'user.email'}
+            <span class="error">#{error 'user.email'/}</span>
+            #{/ifError}</td>
+        </tr>
+        #{if _shipment != 'download'}
+        <tr>
+          <td><span class="required">*</span> &{'entry_telephone'}</td>
+          <td><input type="text" name="user.telephone" value="${flash['user.telephone']}" />
+            #{ifError 'user.telephone'}
+            <span class="error">#{error 'user.telephone'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td>&{'entry_fax'}</td>
+          <td><input type="text" name="user.fax" value="${flash['user.fax']}" /></td>
+        </tr>
+        #{/if}
+      </table>
+    </div>
+    #{if _shipment != 'download'}
+    <h2>&{'text_your_address'} </h2>
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td>&{'entry_company'}</td>
+          <td><input type="text" name="user.company" value="${flash['user.company']}" /></td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_address_1'}</td>
+          <td><input type="text" name="user.address_1" value="${flash['user.address_1']}" />
+            #{ifError 'user.address_1'}
+            <span class="error">#{error 'user.address_1'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td>&{'entry_address_2'}</td>
+          <td><input type="text" name="user.address_2" value="${flash['user.address_2']}" /></td>
+        </tr>
+        #{geonames-autocomplete /}
+      </table>
+    </div>
+    #{/if}
+    #{if !_shipment}
+    <h2>&{'text_your_password'}</h2>
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td><span class="required">*</span> &{'entry_password'}</td>
+          <td><input type="password" name="user.password" value="${flash['user.password']}" />
+            #{ifError 'user.password'}
+            <span class="error">#{error 'user.password'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_confirm'}</td>
+          <td><input type="password" name="user.confirm" value="${flash['user.confirm']}" />
+            #{ifError 'user.confirm'}
+            <span class="error">#{error 'user.confirm'/}</span>
+            #{/ifError}</td>
+        </tr>
+      </table>
+    </div>
+    <h2>&{'text_newsletter'}</h2>
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td>&{'entry_newsletter'}</td>
+          <td>#{if flash['user.newsletter'] == 1}
+            <input type="radio" name="user.newsletter" value="1" checked="checked" />
+            &{'text_yes'}
+            <input type="radio" name="user.newsletter" value="0" />
+            &{'text_no'}
+            #{/if}
+            #{else}
+            <input type="radio" name="user.newsletter" value="1" />
+            &{'text_yes'}
+            <input type="radio" name="user.newsletter" value="0" checked="checked" />
+            &{'text_no'}
+            #{/else}</td>
+        </tr>
+      </table>
+    </div>
+    #{/if}
+    #{if text_agree}
+    <div class="buttons">
+      <div class="right">&{'text_agree'}
+        #{if flash['user.agree']}
+        <input type="checkbox" name="user.agree" value="1" checked="checked" />
+        #{/if}
+        #{else}
+        <input type="checkbox" name="user.agree" value="1" />
+        #{/else}
+        <a onclick="$('#register${_shipment}').submit();" class="button"><span>&{'button_continue'}</span></a></div>
+    </div>
+    #{/if}
+    #{else}
+    <div class="buttons">
+      <a onclick="$('#register${_shipment}').submit();" class="button"><span>&{'button_continue'}</span></a>
+    </div>
+    #{/else}
+  </form>
+  
+#{set 'moreScripts'}
+#{get 'moreScripts' /}
+<script type="text/javascript"><!--
+$('.fancybox').fancybox({
+    width: 560,
+    height: 560,
+    autoDimensions: false
+});
+//--></script>  
+#{/set}

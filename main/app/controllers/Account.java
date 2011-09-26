@@ -2,7 +2,9 @@ package controllers;
 
 import play.*;
 import play.data.validation.Check;
+import play.data.validation.Required;
 import play.data.validation.Valid;
+import play.libs.Crypto;
 import play.mvc.*;
 
 import java.util.*;
@@ -78,5 +80,20 @@ public class Account extends Controller {
 	    setMessage("text_account_already", url);
 	    return User.find("byEmail", value).first() == null;
         }
+    }
+    
+    public static void authenticate(String username, String password, boolean remember) {
+	User user = User.find("byEmailAndPassword", username, password).first();
+	if (user != null) {
+	    // Mark user as connected
+	    session.put("username", username);
+	    // Remember if needed
+	    if (remember) {
+		response.setCookie("rememberme", Crypto.sign(username) + "-" + username, "30d");
+	    }
+	    renderJSON(user.toJson());
+	} else {
+	    forbidden();
+	}
     }
 }
