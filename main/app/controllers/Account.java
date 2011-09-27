@@ -14,7 +14,7 @@ import models.*;
 @With(Security.class)
 public class Account extends Controller {
 
-  @Before(unless = { "login", "register", "create" })
+  @Before(unless = { "login", "register", "create", "authenticate" })
   static void checkAccess() throws Throwable {
     Secure.checkAccess();
 
@@ -91,6 +91,7 @@ public class Account extends Controller {
       if (remember) {
         response.setCookie("rememberme", Crypto.sign(username) + "-" + username, "30d");
       }
+      user.password = "***";
       renderJSON(user.toJson());
     } else {
       forbidden();

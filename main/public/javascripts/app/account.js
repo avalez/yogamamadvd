@@ -25,8 +25,7 @@
     $.post('/account/authenticate', params, function(user) {
         context.store.set('user', user);
         context.redirect('#/account/account');
-        //$('#welcome').html(i18n('text_logged', '#/', user.firstname, '#/account/logout'))
-      }, 'json');
+      });
     });
 
     app.get('#/account/logout', function(context) {
@@ -35,7 +34,6 @@
       });
       context.store.set('user', null);
       context.redirect('#/');
-      $('#welcome').html(i18n('text_welcome', '#/account/account', '#/account/register'))
     });
 
   }
