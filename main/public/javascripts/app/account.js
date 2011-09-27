@@ -5,28 +5,37 @@
   Sammy.AppAccount = function(app, method_alias) {
 
     app.get('#/account/account', function(context) {
-	  if (!context.store.get('user')) {
-		this.redirect('#/account/login');
-	  } else {
-        this.partial('templates/account/account.html', {i18n : context.i18n.account});
+      if (!context.store.get('user')) {
+        this.redirect('#/account/login');
+      } else {
+        this.partial('templates/account/account.html');
       }
     });
 
     app.get('#/account/login', function(context) {
-      context.partial('templates/account/login.html', {i18n : context.i18n.account, flash: {}, type: 'account'});
+      context.partial('templates/account/login.html', {flash: {}, type: 'account'});
     });
 
     app.post('#/account/authenticate', function(context) {
-	  var params = {
-		username: this.params.username,
-		password: this.params.password,
-		remember: this.params.remember
-	  };
-	  $.getJSON('/account/authenticate', params, function(user) {
-		context.store.set('user', user);
-		context.redirect("#/account/account");
-		//alert(context.store.get('user').firstname);
-	  });
+      var params = {
+        username: this.params.username,
+        password: this.params.password,
+        remember: this.params.remember
+    };
+    $.post('/account/authenticate', params, function(user) {
+        context.store.set('user', user);
+        context.redirect('#/account/account');
+        //$('#welcome').html(i18n('text_logged', '#/', user.firstname, '#/account/logout'))
+      }, 'json');
+    });
+
+    app.get('#/account/logout', function(context) {
+      $.getJSON('/account/logout', function(user) {
+          //app.log.debug('logged out');
+      });
+      context.store.set('user', null);
+      context.redirect('#/');
+      $('#welcome').html(i18n('text_welcome', '#/account/account', '#/account/register'))
     });
 
   }

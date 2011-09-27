@@ -3,6 +3,7 @@ package controllers;
 import play.*;
 import play.cache.Cache;
 import play.data.validation.Required;
+import play.i18n.Lang;
 import play.i18n.Messages;
 import play.libs.Crypto;
 import play.mvc.*;
@@ -23,6 +24,10 @@ import models.*;
 public class Application extends Controller {
 
     public static void index() {
+	render();
+    }
+    
+    public static void messages() {
 	render();
     }
 }

@@ -6,17 +6,33 @@ $(function () {
     this.use('AppCheckout');
 
     // experimental, todo: app modules similar ( use in callback, but then routes are not ready on app.run)
-	$("head").append('<link rel="stylesheet" href="stylesheets/slideshow.css" type="text/css" />');
+    $("head").append('<link rel="stylesheet" href="stylesheets/slideshow.css" type="text/css" />');
     $.getScript('javascripts/jquery/nivo-slider/jquery.nivo.slider.pack.js');
 
+    // experimental, use play! ${i18n/} in play's app/view/main.html instead or static properties file
+    var i18n = function() {};
+    $.get('/application/messages', function(html) {
+      $('head').append(html);
+    });
+ 
+    /* other option
+    this.load('data/messages.ru.json').then(function(i18n) {
+      context.i18n = i18n;
+    }).then(callback);
+    */
+
     this.around(function(callback) {
-	  var context = this;
+      var context = this;
 
       context.store = new Sammy.Store({name: 'yogamamaddvd', element: this.$element(), type: 'local'});
+      
+      var welcome = i18n('text_welcome', '#/account/account', '#/account/register');
+      if (context.store.user) {
+        welcome = i18n('text_logged', '#/', 'test', '#/account/logout');
+      }
+      $('#welcome').html(welcome);
 
-	  this.load('data/messages.ru.json').then(function(i18n) {
-		context.i18n = i18n;
-	  }).then(callback);
+      callback();
     });
 
     this.get('#/', function(context) {
