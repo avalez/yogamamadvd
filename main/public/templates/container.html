@@ -1,0 +1,30 @@
+<div id="container">
+    <div id="logo"><img src="images/logo.png" alt="&{'logo'}" title="&{'logo'}"/></div>
+<div id="header">
+      <div id="product"><img src="images/product.png" alt="&{'product'}" title="&{'product'}"/></div>
+      <div id="menu">
+        <ul>
+          <li><a href="#/">${i18n('text_home')}</a></li>
+          <li><a href="#/checkout/checkout">${i18n('text_order')}</a></li>
+          <li><a href="#/account/account">${i18n('text_account')}</a></li>
+          <li><a href="#">${i18n('text_faq')}</a></li>
+        </ul>
+      </div>
+      <div id="welcome">
+      i18n('text_welcome', '#/account/account', '#/account/register')
+      </div>
+      <div class="heading">
+        <a href="#"><span id="cart_total">&nbsp;</span></a>
+      </div>
+  <!--div id="notification"></div-->
+  <div id="content">
+
+  </div>
+  <div id="footer">
+    <ul>
+      <li><a href="#">${i18n('text_affiliate')}</a></li>
+	  <li><a href="#">${i18n('text_terms')}</a></li>
+    </ul>
+  </div>
+  <div id="powered">{{html i18n('powered') }}</a></div>
+</div>

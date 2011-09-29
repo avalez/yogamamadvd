@@ -5,6 +5,12 @@ $(function () {
     this.use('AppAccount');
     this.use('AppCheckout');
 
+    $.ajax({url: 'templates/container.html', async: false,
+      success: function(html) {
+        $.tmpl(html).appendTo($('body'));
+      },
+    });
+
     // TODO: use session cookie (expires_in: -1) but fix sammy-cookie-play first
     this.store = new Sammy.Store({name: 'yogamamadvd', element: this.$element(), type: 'session'});
     
