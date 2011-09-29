@@ -131,11 +131,7 @@ label {
 	padding-right: 4px;
 	cursor: pointer;
 }
-.required {
-	color: #FF0000;
-	font-weight: bold;
-}
-.error {
+label.error {
 	display: block;
 	color: #FF0000;
 }

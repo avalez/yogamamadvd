@@ -27,10 +27,9 @@
         success: function(user) {
           app.store.set('user', user);
           context.redirect('#/account/account');
-          app.log('logged in');
         },
         error: function(jqXHR, textStatus) {
-          app.log('login failed');
+          $('div.warning').show().delay(3000).fadeOut('slow');            
         }
       });
     });

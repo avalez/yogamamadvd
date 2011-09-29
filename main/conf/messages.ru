@@ -36,10 +36,11 @@ text_forgotten = Забыли пароль?
 
 entry_email = E-Mail:
 entry_password = Пароль:
+error_username = Введите E-Mail
+error_login_password = Введите пароль
 
 secure.remember = Запомнить
 secure.error = Не верный E-Mail и/или пароль!
-sucure.success = Успех!
 
 # Account - register
 heading_register=Регистрация
