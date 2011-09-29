@@ -16,7 +16,7 @@
 {{/if}}
 
 <h2>${i18n('text_returning_customer')}</h2>
-<form action="#/account/authenticate" method="post" enctype="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${type}">
+<form action="#/account/login" method="post" enctype="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${type}">
   <div class="content" style="padding-top: 15px">
     {{if type != 'shipment'}}<p><b>${i18n('text_i_am_returning_customer')}</b></p>{{/if}}
     <span style="float: left; width: 100px"><label for="username">${i18n('entry_email')}</label></span>

@@ -17,13 +17,13 @@
       context.partial('templates/account/login.html', {flash: {}, type: 'account'});
     });
 
-    app.post('#/account/authenticate', function(context) {
+    app.post('#/account/login', function(context) {
       var params = {
         username: this.params.username,
         password: this.params.password,
         remember: this.params.remember
       };
-      $.ajax({url:'/ws/connect', data: params, type: 'json',
+      $.ajax({url:'/ws/connect', data: params,
         success: function(user) {
           app.store.set('user', user);
           context.redirect('#/account/account');
@@ -47,7 +47,7 @@
       if (!app.store.get('connected')) { // once
         // TODO?: replace in play! template
         app.store.set('connected', true);
-        $.ajax({url: '/ws/connected', type: 'json',
+        $.ajax({url: '/ws/connected',
           success: function(user) {
             app.store.set('user', user);
             callback(user);

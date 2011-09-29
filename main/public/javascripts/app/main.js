@@ -5,12 +5,6 @@ $(function () {
     this.use('AppAccount');
     this.use('AppCheckout');
 
-    // TODO: static properties file or use ${i18n/} in play! template
-    // TODO?: app modules similar ( 'use' in callback)
-    $.ajax({url: '/ws/messages', async: false, success: function(html) {
-      $('head').append(html);
-    }});
-
     // TODO: use session cookie (expires_in: -1) but fix sammy-cookie-play first
     this.store = new Sammy.Store({name: 'yogamamadvd', element: this.$element(), type: 'session'});
     
