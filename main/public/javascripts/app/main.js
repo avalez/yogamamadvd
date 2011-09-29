@@ -5,22 +5,23 @@ $(function () {
     this.use('AppAccount');
     this.use('AppCheckout');
 
-    // experimental, use play! ${i18n/} in play's app/view/main.html instead or static properties file
-    // todo: app modules similar ( 'use' in callback)
-    $.ajax({url: '/application/messages', async: false, success: function(html) {
+    // TODO: static properties file or use ${i18n/} in play! template
+    // TODO?: app modules similar ( 'use' in callback)
+    $.ajax({url: '/ws/messages', async: false, success: function(html) {
       $('head').append(html);
     }});
 
+    // TODO: use session cookie (expires_in: -1) but fix sammy-cookie-play first
+    this.store = new Sammy.Store({name: 'yogamamadvd', element: this.$element(), type: 'session'});
+    
     this.around(function(callback) {
-      var context = this;
-
-      context.store = new Sammy.Store({name: 'yogamamaddvd', element: this.$element(), type: 'local'});
-      
-      var welcome = i18n('text_welcome', '#/account/account', '#/account/register');
-      if (context.store.get('user')) {
-        welcome = i18n('text_logged', '#/', context.store.get('user').firstname, '#/account/logout');
-      }
-      $('#welcome').html(welcome);
+      app.connected(function(user) {
+        if (user) {
+          $('#welcome').html(i18n('text_logged', '#/', user.firstname, '#/account/logout'));
+        } else {
+          $('#welcome').html(i18n('text_welcome', '#/account/account', '#/account/register'));
+        }
+      });
 
       callback();
     });

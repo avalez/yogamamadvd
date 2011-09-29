@@ -1,20 +1,17 @@
 package controllers;
 
-import play.*;
+import models.User;
+import play.Play;
 import play.data.validation.Check;
-import play.data.validation.Required;
 import play.data.validation.Valid;
-import play.libs.Crypto;
-import play.mvc.*;
-
-import java.util.*;
-
-import models.*;
+import play.mvc.Before;
+import play.mvc.Controller;
+import play.mvc.With;
 
 @With(Security.class)
 public class Account extends Controller {
 
-  @Before(unless = { "login", "register", "create", "authenticate" })
+  @Before(unless = { "login", "register", "create", "authenticate", "connected" })
   static void checkAccess() throws Throwable {
     Secure.checkAccess();
 
@@ -82,19 +79,4 @@ public class Account extends Controller {
     }
   }
     
-  public static void authenticate(String username, String password, boolean remember) {
-    User user = User.find("byEmailAndPassword", username, password).first();
-    if (user != null) {
-      // Mark user as connected
-      session.put("username", username);
-      // Remember if needed
-      if (remember) {
-        response.setCookie("rememberme", Crypto.sign(username) + "-" + username, "30d");
-      }
-      user.password = "***";
-      renderJSON(user.toJson());
-    } else {
-      forbidden();
-    }
-  }
 }

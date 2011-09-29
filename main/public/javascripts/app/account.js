@@ -3,13 +3,14 @@
   Sammy = Sammy || {};
 
   Sammy.AppAccount = function(app, method_alias) {
-
     app.get('#/account/account', function(context) {
-      if (!context.store.get('user')) {
-        this.redirect('#/account/login');
-      } else {
-        this.partial('templates/account/account.html');
-      }
+      app.connected(function(user) {
+        if (!user) {
+          context.redirect('#/account/login');
+        } else {
+          context.partial('templates/account/account.html');
+        }
+      })
     });
 
     app.get('#/account/login', function(context) {
@@ -21,21 +22,44 @@
         username: this.params.username,
         password: this.params.password,
         remember: this.params.remember
-    };
-    $.post('/account/authenticate', params, function(user) {
-        context.store.set('user', user);
-        context.redirect('#/account/account');
+      };
+      $.ajax({url:'/ws/connect', data: params, type: 'json',
+        success: function(user) {
+          app.store.set('user', user);
+          context.redirect('#/account/account');
+          app.log('logged in');
+        },
+        error: function(jqXHR, textStatus) {
+          app.log('login failed');
+        }
       });
     });
 
     app.get('#/account/logout', function(context) {
-      $.getJSON('/account/logout', function(user) {
-          //app.log.debug('logged out');
+      $.getJSON('/ws/disconnect', function(user) {
+          app.log('logged out');
       });
-      context.store.set('user', null);
+      app.store.set('user', null);
       context.redirect('#/');
     });
-
+    
+    app.connected = function(callback) {
+      if (!app.store.get('connected')) { // once
+        // TODO?: replace in play! template
+        app.store.set('connected', true);
+        $.ajax({url: '/ws/connected', type: 'json',
+          success: function(user) {
+            app.store.set('user', user);
+            callback(user);
+          },
+          error: function() {
+            callback();
+          }
+        });
+      } else {
+        callback(app.store.get('user'));
+      }
+    }
   }
 
 })( jQuery );

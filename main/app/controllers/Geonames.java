@@ -1,17 +1,25 @@
 package controllers;
 
-import play.*;
-import play.data.validation.*;
-import play.mvc.*;
-import play.vfs.*;
-import play.libs.*;
-import play.i18n.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import java.util.*;
-import java.util.zip.*;
-import java.io.*;
+import play.Logger;
+import play.data.validation.Required;
+import play.i18n.Lang;
+import play.libs.WS;
+import play.mvc.Controller;
+import play.vfs.VirtualFile;
 
 public class Geonames extends Controller {
 

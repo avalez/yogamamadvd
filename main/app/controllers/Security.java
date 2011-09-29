@@ -1,8 +1,7 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
-import models.*;
+import models.User;
+import play.mvc.Before;
 
 public class Security extends Secure.Security {
     @Before
