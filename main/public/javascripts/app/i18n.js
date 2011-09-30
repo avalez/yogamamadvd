@@ -31,7 +31,7 @@
       return message;
   };
 
-  $.ajax({url: 'i18n/messages.properties', async: false, success: function(data) {
+  $.get('i18n/messages.properties', function(data) {
     // excerpt form jquery-i18n-properties plugin 
     var parameters = data.split( /\n/ );
     for(var i=0; i<parameters.length; i++ ) {
@@ -55,6 +55,6 @@
         } // END: if(pair.length > 0)
       } // END: skip comments
     }
-  }})
+  })
 
 })(jQuery);
