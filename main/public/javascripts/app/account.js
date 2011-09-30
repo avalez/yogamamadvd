@@ -34,6 +34,14 @@
       });
     });
 
+    app.get('#/account/register', function(context) {
+      context.partial('templates/account/register.html', {flash: {}, _shipment: ''});
+    });
+
+    app.post('#/account/register', function(context) {
+
+    });
+
     app.get('#/account/logout', function(context) {
       $.getJSON('/ws/disconnect', function(user) {
           app.log('logged out');
