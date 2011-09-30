@@ -150,10 +150,13 @@ table.form {
 table.form tr td:first-child {
 	width: 150px;
 }
+table.login-form tr td:first-child {
+	width: 78px;
+}
 table.form > * > * > td {
 	color: #000000;
 }
-table.form td {
+table.form td, table.login-form td {
 	padding: 4px;
 }
 input.large-field, select.large-field {

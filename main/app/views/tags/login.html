@@ -2,25 +2,36 @@
       <form action="@{Secure.authenticate}" method="post" enctype="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${_type}">
         <input type="hidden" name="url" value="${_url}${params.url}"/>
         <div class="content" style="padding-top: 15px">
-          #{if _type != 'shipment'}<p><b>&{'text_i_am_returning_customer'}</b></p>#{/if}
-          <span style="float: left; width: 100px"><label for="username">&{'entry_email'}</label></span>
-          <input type="text" name="username" value="${params.username}" />
-          <input type="checkbox" name="remember" id="remember" value="true" ${flash.remember ? 'checked="true"' : ''} />
-          <label for="remember">&{'secure.remember'}</label>
-          #{ifError 'username'}
-            <span class="error">#{error 'username' /}</span>
-          #{/ifError}
-          <br /> <br />
-          <span style="float: left; width: 100px"><label for="password">&{'entry_password'}</label></span>
-          <input type="password" name="password" value="" />
-          &nbsp;<a href="#">&{'text_forgotten'}</a>
-          <br />
-          #{ifError 'password'}
-            <span class="error">#{error 'password' /}</span>
-            <br/>
-          #{/ifError}
-          <br />
-          <a onclick="$('#login${_type}').submit();" class="button"><span>&{'button_login'}</span></a>
+          <table class="login-form">
+            #{if _type != 'shipment'}
+            <tr>
+              <td colspan="3"><b>&{'text_i_am_returning_customer'}</b></td>
+            </tr>
+            #{/if}
+            <tr>
+              <td><label for="username">&{'entry_email'}</label></td>
+              <td><input type="text" name="username" value="${params.username}" tabindex="1" #{if _type != 'shipment'}autofocus="true"#{/if}/>
+                #{ifError 'username'}
+                <span class="error">#{error 'username' /}</span>
+                #{/ifError}
+              </td>
+              <td><input type="checkbox" name="remember" id="remember" value="true" ${flash.remember ? 'checked="true"' : ''} tabindex="3"/>
+                <label for="remember">&{'secure.remember'}</label></td>
+            </tr>
+            <tr>
+              <td><label for="password">&{'entry_password'}</label></td>
+              <td><input type="password" name="password" value="" tabindex="2"/>
+                #{ifError 'password'}
+                <span class="error">#{error 'password' /}</span>
+                #{/ifError}
+              </td>
+              <td><a href="#">&{'text_forgotten'}</a></td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <a onclick="$('#login${_type}').submit();" class="button"><span>&{'button_login'}</span></a>
+              </td>
+          </table>
         </div>
       </form>
         

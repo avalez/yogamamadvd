@@ -14,7 +14,7 @@
     });
 
     app.get('#/account/login', function(context) {
-      context.partial('templates/account/login.html', {flash: {}, type: 'account'});
+      context.partial('templates/account/login.html', {_type: 'account'});
     });
 
     app.post('#/account/login', function(context) {

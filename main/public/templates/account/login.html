@@ -1,4 +1,4 @@
-{{if type == 'account'}}
+{{if _type != 'shipment'}}
 <div id="content">
   <h1>${i18n('heading_login')}</h1>
   <div class="warning" style="display: none">${i18n('secure.error')}</div>
@@ -14,39 +14,50 @@
 {{/if}}
 
 <h2>${i18n('text_returning_customer')}</h2>
-<form action="#/account/login" method="post" enctype="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${type}">
+<form action="#/account/login" method="post" enc_type="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${_type}">
   <div class="content" style="padding-top: 15px">
-    {{if type != 'shipment'}}<p><b>${i18n('text_i_am_returning_customer')}</b></p>{{/if}}
-    <span style="float: left; width: 100px"><label for="username">${i18n('entry_email')}</label></span>
-    <input type="text" name="username" value="${params.username}" tabindex="1" {{if type == 'account'}}autofocus="true"{{/if}}/>
-    <input type="checkbox" name="remember" id="remember" value="true" ${flash.remember ? 'checked="true"' : ''} />
-    <label for="remember">${i18n('secure.remember')}</label>
-    <br /> <br />
-    <span style="float: left; width: 100px"><label for="password">${i18n('entry_password')}</label></span>
-    <input type="password" name="password" class="" tabindex="2"/>
-    &nbsp;<a href="#">${i18n('text_forgotten')}</a>
-    <br />
-    <br />
-    <a onclick="$('#login${type}').submit();" class="button" tabindex="3"><span>${i18n('button_login')}</span></a>
+    <table class="login-form">
+      {{if _type != 'shipment'}}
+      <tr>
+        <td colspan="3"><b>${i18n('text_i_am_returning_customer')}</b></td>
+      </tr>
+      {{/if}}
+      <tr>
+        <td><label for="username">${i18n('entry_email')}</label></td>
+        <td><input type="text" name="username" value="${params.username}" tabindex="1" {{if _type != 'shipment'}}autofocus="true"{{/if}}/></td>
+        <td><input type="checkbox" name="remember" id="remember" tabindex="3"/>
+          <label for="remember">${i18n('secure.remember')}</label></td>
+      </tr>
+      <tr>
+        <td><label for="password">${i18n('entry_password')}</label></td>
+        <td><input type="password" name="password" value="" tabindex="2"/>
+        </td>
+        <td><a href="#">${i18n('text_forgotten')}</a></td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <a onclick="$('#login${_type}').submit();" class="button"><span>${i18n('button_login')}</span></a>
+        </td>
+    </table>
   </div>
 </form>
 
-{{if type == 'account'}}
+{{if _type == 'account'}}
     </div>
   </div>
 </div>
 {{/if}}
 
-<script type="text/javascript">
+<script _type="text/javascript">
   $('input[autofocus]').first().focus();
    
-  $('#login${type} input').keydown(function(e) {
+  $('#login${_type} input').keydown(function(e) {
     if (e.keyCode == 13) {
-      $('#login${type}').submit();
+      $('#login${_type}').submit();
     }
   });
 
-  var validator = $("#login${type}").validate({
+  var validator = $("#login${_type}").validate({
     rules: {
       username: {
         required: true,
@@ -57,9 +68,6 @@
     messages: {
       username: i18n('error_username'),
       password: i18n('error_login_password')
-    },
-    errorPlacement: function(error, element) {
-      error.insertBefore( element.prev() );
     },
     onkeyup: false
   });
