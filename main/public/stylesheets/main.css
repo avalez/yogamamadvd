@@ -265,9 +265,10 @@ a.button:hover span {
 }
 .buttons {
 	background: #FFFFFF;
-	border: 1px solid #EEEEEE;
+	//border: 1px solid #EEEEEE;
 	overflow: auto;
 	padding: 6px;
+	margin-top: 10px;
 	margin-bottom: 20px;
 }
 .buttons .left {
@@ -1307,4 +1308,7 @@ a.button:hover span {
 	margin-top: 5px;
 	text-align: right;
 	clear: both;
+}
+.ui-autocomplete-loading {
+    background: url('../images/ui-anim_basic_16x16.gif') right center no-repeat;
 }

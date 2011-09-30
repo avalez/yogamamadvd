@@ -1,5 +1,4 @@
   <form action="#/account/register" method="post" enctype="multipart/form-data" id="register${_shipment}">
-    <input type="hidden" name="url" value="${_url}"/>
     {{if _shipment}}
     <h2>${i18n('text_your_details')}</h2>
     {{else}}
@@ -9,24 +8,24 @@
       <table class="form">
         <tr>
           <td><span class="required">*</span> ${i18n('entry_firstname')}</td>
-          <td><input type="text" name="user.firstname" value="${flash['user.firstname']}" />
+          <td><input type="text" name="user.firstname"/>
         </tr>
         <tr>
           <td><span class="required">*</span> ${i18n('entry_lastname')}</td>
-          <td><input type="text" name="user.lastname" value="${flash['user.lastname']}" />
+          <td><input type="text" name="user.lastname"/>
         </tr>
         <tr>
           <td><span class="required">*</span> ${i18n('entry_email')}</td>
-          <td><input type="text" name="user.email" value="${flash['user.email']}" />
+          <td><input type="text" name="user.email"/>
         </tr>
         {{if _shipment != 'download'}}
         <tr>
           <td><span class="required">*</span> ${i18n('entry_telephone')}</td>
-          <td><input type="text" name="user.telephone" value="${flash['user.telephone']}" />
+          <td><input type="text" name="user.telephone"/>
         </tr>
         <tr>
           <td>${i18n('entry_fax')}</td>
-          <td><input type="text" name="user.fax" value="${flash['user.fax']}" /></td>
+          <td><input type="text" name="user.fax"/></td>
         </tr>
         {{/if}}
       </table>
@@ -37,31 +36,31 @@
       <table class="form">
         <tr>
           <td>${i18n('entry_company')}</td>
-          <td><input type="text" name="user.company" value="${flash['user.company']}" /></td>
+          <td><input type="text" name="user.company"/></td>
         </tr>
         <tr>
           <td><span class="required">*</span> ${i18n('entry_address_1')}</td>
-          <td><input type="text" name="user.address_1" value="${flash['user.address_1']}" />
+          <td><input type="text" name="user.address_1"/>
         </tr>
         <tr>
           <td>${i18n('entry_address_2')}</td>
-          <td><input type="text" name="user.address_2" value="${flash['user.address_2']}" /></td>
+          <td><input type="text" name="user.address_2"/></td>
         </tr>
           <tr>
-            <td><span class="required">*</span>${i18n('entry_city')}</td>
-            <td><input id="city" type="text" name="user.city" value="${flash['user.city']}" />
+            <td><span class="required">*</span> ${i18n('entry_city')}</td>
+            <td><input id="city" type="text" name="user.city"/>
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_postcode')}</td>
-            <td><input type="text" name="user.postcode" value="${flash['user.postcode']}" />
+            <td><input type="text" name="user.postcode"/>
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_country')}</td>
-            <td><input id="country" type="text" name="user.country" value="${flash['user.country']}"/>
+            <td><input id="country" type="text" name="user.country"/>
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_zone')}</td>
-            <td><input id="zone" type="text" name="user.zone" value="${flash['user.zone']}"/>
+            <td><input id="zone" type="text" name="user.zone"/>
           </tr>
       </table>
     </div>
@@ -72,11 +71,11 @@
       <table class="form">
         <tr>
           <td><span class="required">*</span> ${i18n('entry_password')}</td>
-          <td><input type="password" name="user.password" value="${flash['user.password']}" />
+          <td><input type="password" name="user.password" id="password" />
         </tr>
         <tr>
           <td><span class="required">*</span> ${i18n('entry_confirm')}</td>
-          <td><input type="password" name="user.confirm" value="${flash['user.confirm']}" />
+          <td><input type="password" name="user.confirm"/>
         </tr>
       </table>
     </div>
@@ -86,7 +85,7 @@
         <tr>
           <td>${i18n('entry_newsletter')}</td>
           <td>
-            <input type="radio" name="user.newsletter" value="1" />
+            <input type="radio" name="user.newsletter" value="1" checked="true"/>
             ${i18n('text_yes')}
             <input type="radio" name="user.newsletter" value="0" />
             ${i18n('text_no')}
@@ -98,7 +97,7 @@
     {{if typeof text_agree != 'undefined'}}
     <div class="buttons">
       <div class="right">${i18n('text_agree')}
-        <input type="checkbox" name="user.agree" value="1" />
+        <input type="checkbox" name="user.agree" value="1"/>
         <a onclick="$('#register${_shipment}').submit();" class="button"><span>${i18n('button_continue')}</span></a></div>
     </div>
     {{else}}
@@ -109,11 +108,11 @@
   </form>
 
 <script type="text/javascript">
-    $('#register${_shipment} input').keydown(function(e) {
-      if (e.keyCode == 13) {
-        $('#register${_shipment}').submit();
-      }
-    });
+  $('#register${_shipment} input').keydown(function(e) {
+    if (e.keyCode == 13) {
+      $('#register${_shipment}').submit();
+    }
+  });
 
 
   /*
@@ -129,29 +128,28 @@
     EEEE optional extension number, up to 4 digits
     Delimiters can be either a space, -, . or / and can be used anywhere in the number
 
-Examples:
+  Examples:
 
     usa:(305) 613 09 58 ext 101
     france:+33 1 47 37 62 24 x3
     germany:+49-4312 / 777 777
     china:+86 (10)69445464
     uk:(020) 1234 1234
-
-    http://jsfiddle.net/j5dwV/
-   */
-  jQuery.validator.addMethod("phone", function(phone_number, element) {
-	return this.optional(element) || phone_number.length > 9/* &&
-		phone_number.match(/^(\+\d{3}\s)?\(\d{6}\)\d{20}$/);       */
+  */
+  $.validator.addMethod("phone", function(phone_number, element) {
+	return this.optional(element) || phone_number.length > 9 &&
+	  /* excerpt from play framework/src/play/data/validation/PhoneCheck.java */
+		phone_number.match(/^([\+][0-9]{1,3}([ \.\-]))?([\(]{1}[0-9]{2,6}[\)])?([0-9 \.\-\/]{3,20})((x|ext|extension)[ ]?[0-9]{1,4})?$/);
   }, "Please specify a valid phone number");
 
-  var validator = $("#register${_shipment}").validate({
+  $("#register${_shipment}").validate({
     rules: {
       'user.firstname': 'required',
       'user.lastname': 'required',
       'user.email': {
         required: true,
         email: true,
-        remote: ''
+        remote: '/ws/checkEmail'
       },
       'user.telephone': {
           required: true,
@@ -169,7 +167,7 @@ Examples:
       },
       'user.confirm': {
           required: true,
-          equalTo: '#user.password'
+          equalTo: '#password'
       }
     },
     messages: {
@@ -192,6 +190,28 @@ Examples:
       'user.confirm': i18n('error_confirm')
     },
     onkeyup: false
+  });
+
+  $("#city").autocomplete({
+      source: function( request, response ) {
+          $.getJSON("http://ws.geonames.org/searchJSON?name_startsWith=" + request.term + "&featureClass=P&maxRows=12&stye=full&lang=ru", function( data ) {
+              response( $.map( data.geonames, function( item ) {
+                  return {
+                      label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                      value: item.name
+                  }
+              }));
+          });
+      },
+      minLength: 4,
+      select: function(event, ui) {
+          if (ui.item) {
+            var selected = ui.item.label.split(",");
+            $('#zone').val(selected[1].trim());
+            $('#country').val(selected[2].trim());
+            return false;
+          }
+      }
   });
 
 </script>

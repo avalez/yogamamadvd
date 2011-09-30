@@ -1,8 +1,12 @@
 package controllers;
 
+import com.google.gson.Gson;
+
 import models.User;
+import play.data.validation.CheckWith;
 import play.data.validation.Email;
 import play.data.validation.Required;
+import play.data.validation.Valid;
 import play.libs.Crypto;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -14,6 +18,21 @@ public class WS extends Controller {
   // Main ///////////////////////////////////////////////////////////////////
 
   // Account ////////////////////////////////////////////////////////////////
+
+  public static void register(@Valid User user) {
+    if (!validation.hasErrors()) {
+      user.save();
+      renderJSON(user);
+    } else {
+      error("Errors: " + validation.errorsMap());
+    }
+  }
+  
+  public static void checkEmail(@Valid User user) {
+    if (!validation.hasError("user.email")) {
+      renderJSON(Boolean.TRUE);
+    }
+  }
 
   public static void connect(@Required @Email String username, @Required String password, boolean remember) {
     if (!validation.hasErrors()) {
@@ -27,7 +46,7 @@ public class WS extends Controller {
               Crypto.sign(username) + "-" + username, "30d");
         }
         user.password = "***";
-        renderJSON(user.toJson());
+        renderJSON(user);
       } else {
         forbidden();
       }
@@ -54,7 +73,7 @@ public class WS extends Controller {
     if (Security.isConnected() || remembered()) {
       User user = User.find("byEmail", Security.connected()).first();
       user.password = "***";
-      renderJSON(user.toJson());
+      renderJSON(user);
     } else {
       forbidden();
     }
@@ -63,6 +82,5 @@ public class WS extends Controller {
   public static void disconnect() {
     session.clear();
     response.removeCookie("rememberme");
-    renderJSON("");
   }
 }

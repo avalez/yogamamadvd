@@ -18,12 +18,7 @@
     });
 
     app.post('#/account/login', function(context) {
-      var params = {
-        username: this.params.username,
-        password: this.params.password,
-        remember: this.params.remember
-      };
-      $.ajax({url:'/ws/connect', data: params,
+      $.ajax({url:'/ws/connect', data: this.params.toHash(), type: 'post',
         success: function(user) {
           app.store.set('user', user);
           context.redirect('#/account/account');
@@ -35,11 +30,19 @@
     });
 
     app.get('#/account/register', function(context) {
-      context.partial('templates/account/register.html', {flash: {}, _shipment: ''});
+      context.partial('templates/account/register.html', {_shipment: ''});
     });
 
     app.post('#/account/register', function(context) {
-
+      $.ajax({url:'/ws/register', data: this.params.toHash(), type: 'post',
+        success: function(user) {
+          app.store.set('user', user);
+          context.redirect('#/account/account');
+        },
+        error: function(jqXHR, textStatus) {
+          $('div.warning').show().delay(3000).fadeOut('slow');            
+        }
+      });
     });
 
     app.get('#/account/logout', function(context) {
