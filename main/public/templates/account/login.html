@@ -1,4 +1,4 @@
-{{if _type != 'shipment'}}
+{{if _type == 'account'}}
   <h1>${i18n('heading_login')}</h1>
   <div class="warning" style="display: none">${i18n('secure.error')}</div>
   <div class="login-content">
@@ -14,16 +14,17 @@
 
 <h2>${i18n('text_returning_customer')}</h2>
 <form action="#/account/login" method="post" enc_type="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${_type}">
+  <input type="hidden" name="_url" value="${_url}"/>
   <div class="content" style="padding-top: 15px">
     <table class="login-form">
-      {{if _type != 'shipment'}}
+      {{if _type == 'account'}}
       <tr>
         <td colspan="3"><b>${i18n('text_i_am_returning_customer')}</b></td>
       </tr>
       {{/if}}
       <tr>
         <td><label for="username">${i18n('entry_email')}</label></td>
-        <td><input type="text" name="username" value="${params.username}" tabindex="1" {{if _type != 'shipment'}}autofocus="true"{{/if}}/></td>
+        <td><input type="text" name="username" value="${params.username}" tabindex="1" {{if _type == 'account'}}autofocus="true"{{/if}}/></td>
         <td><input type="checkbox" name="remember" id="remember" tabindex="3"/>
           <label for="remember">${i18n('secure.remember')}</label></td>
       </tr>

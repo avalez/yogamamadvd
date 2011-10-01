@@ -15,7 +15,7 @@
           }
           // Standard ordered parameters
           for (var i=1; i<arguments.length; i++) {
-              message = message.replace(/%\w/, arguments[i]);
+              message = message.replace(/%s/, arguments[i]);
           }
       }
       // Decode encoded %% to single %

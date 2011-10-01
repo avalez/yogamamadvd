@@ -21,20 +21,17 @@
       Как только оплата поступит на наш счет, вы получите ссылки на скачивание курса с нашего сервера. </p>
     <p>В этом способе вы экономите на доставке и времени, но с другой стороны у вас не будет физической копии курса.
       Также имейте в виду, что этот вариант подходит для тех, у кого быстрый и безлимитный доступ к Интернету. </p>
-    #{if !user}
-      <div class="left">
-        #{register action:@downloadAndRegister(), url:@shipment(), shipment:'download' /}
+    {{if !app.connected()}}
+      <div class="left" id="download-register">
       </div>
-      <div class="right">
-        #{login url:@shipment(), type:'shipment'/}
+      <div class="right" id="download-login">
       </div>
-    #{/if}
-    #{else}
-      <form action="@{download()}" method="post" enctype="multipart/form-data" id="download"></form>
+    {{else}}
+      <form action="#/checkout/download" method="post" enctype="multipart/form-data" id="download"></form>
       <div class="buttons">
-        <a onclick="$('#download').submit();" class="button"><span>&{'button_continue'}</span></a>
+        <a onclick="$('#download').submit();" class="button"><span>${i18n('button_continue')}</span></a>
       </div>
-    #{/else}
+    {{/if}}
   </div>
   <h3><a href="#ship" name="ship">DVD-диск с доставкой по почте в любую точку мира.</a></h3>
   <div class="checkout-content">
@@ -43,26 +40,23 @@
       и со всей полиграфией (обложка, графика диска).</p>
     <p>Обратная сторона медали: посылку придется подождать 4-12 дней, в зависимости от места вашего
       проживания и заплатить за доставку, что немного увеличит итоговую цену. </p>
-    #{if !user}
-      <div class="left">
-        #{register action:@shipAndRegister(), url:@shipment(), shipment:'ship', countries:countries /}
+    {{if !app.connected()}}
+      <div class="left" id="shipment-register">
       </div>
-      <div class="right">
-        #{login url:@shipment(), type:'shipment' /}
+      <div class="right" id="shipment-login">
       </div>
-    #{/if}
-    #{else}
-      <form action="@{ship()}" method="post" enctype="multipart/form-data" id="ship"></form>
+    {{else}}
+      <form action="#/checkout/ship" method="post" enctype="multipart/form-data" id="ship"></form>
       <div class="buttons">
-        <a onclick="$('#ship').submit();" class="button"><span>&{'button_continue'}</span></a>
+        <a onclick="$('#ship').submit();" class="button"><span>${i18n('button_continue')}</span></a>
       </div>
-    #{/else}
+    {{/if}}
   </div>
 </div>
 <br/><br/><br/>
 
 <script type='text/javascript'>
   $("#accordion").accordion({autoHeight:false, navigation:true, navigationFilter: function() {
-    return this.name == '${cart.shipment}';
+    return this.name == '${app.store.get("cart").shipment}';
   } });
 </script>

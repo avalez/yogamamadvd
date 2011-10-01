@@ -1,5 +1,7 @@
   <form action="#/account/register" method="post" enctype="multipart/form-data" id="register${_shipment}">
-    {{if _shipment}}
+    <input type="hidden" name="_url" value="${_url}"/>
+    <input type="hidden" name="_shipment" value="${_shipment}"/>
+    {{if !_shipment}}
     <h2>${i18n('text_your_details')}</h2>
     {{else}}
     <h2>${i18n('text_new_customer')}</h2>

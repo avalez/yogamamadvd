@@ -34,6 +34,17 @@ public class WS extends Controller {
     }
   }
 
+  public static void registerShort(@Valid User user) {
+    if (!(validation.hasError("user.firstname") ||
+        validation.hasError("user.lastname") ||
+        validation.hasError("user.email"))) {
+      user.save();
+      renderJSON(user); 
+    } else {
+      error("Errors: " + validation.errorsMap());
+    }
+  }
+
   public static void connect(@Required @Email String username, @Required String password, boolean remember) {
     if (!validation.hasErrors()) {
       User user = User.find("byEmailAndPassword", username, password).first();
