@@ -6,7 +6,8 @@
     app.get('#/account/account', function(context) {
       app.connected(function(user) {
         if (!user) {
-          context.redirect('#/account/login?_url=' + escape(context.params._url));
+          var url = escape(context.params._url || '#/account/account');
+          context.redirect('#/account/login?_url=' + url);
         } else {
           context.partial('templates/account/account.html');
         }
@@ -58,27 +59,28 @@
       });
       app.store.set('user', null);
       var url = context.params._url || '#/';
+      if (url.match(/account/)) {
+        url = '#/';
+      }
       this.redirect(url);
     });
     
     app.connected = function(callback) {
-      if (!app.store.get('connected')) { // once
-        // TODO?: replace in play! template
-        app.store.set('connected', true);
-        $.ajax({url: '/ws/connected', async: callback,
-          success: function(user) {
+      if (typeof callback == 'undefined') {
+        return app.store.get('user');
+      } else {
+        if (!app.store.get('connected')) { // once
+          // TODO?: replace in play! template
+          app.store.set('connected', true);
+          $.get('/ws/connected', function(user) {
             app.store.set('user', user);
-            if (typeof callback != 'undefined') {
-              callback(user);
-            }
-          },
-          error: callback()
-        });
-      } else if (typeof callback != 'undefined') {
-        callback(app.store.get('user'));
+          }).then(callback);
+        } else {
+          callback(app.store.get('user'));
+        }
       }
-      return app.store.get('user');
     }
+ 
   }
 
 })( jQuery );

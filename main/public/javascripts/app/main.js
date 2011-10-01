@@ -10,14 +10,12 @@ $(function () {
     this.store = new Sammy.Store({name: 'yogamamadvd', element: this.$element(), type: 'session'});
     
     this.before(function(context) {
-      app.connected(function(user) {
-        var url = escape(context.path);
-        if (user) {
-          $('#welcome').html(i18n('text_logged', '#/', user.firstname, '#/account/logout?_url=' + url));
-        } else {
+      var url = escape(context.path);
+      if (app.connected()) {
+          $('#welcome').html(i18n('text_logged', '#/', app.connected().firstname, '#/account/logout?_url=' + url));
+      } else {
           $('#welcome').html(i18n('text_welcome', '#/account/account?_url=' + url, '#/account/register?_url=' + url));
-        }
-      });
+      }
     });
 
     this.get('#/', function(context) {

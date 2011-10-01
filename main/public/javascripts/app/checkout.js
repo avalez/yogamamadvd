@@ -7,10 +7,14 @@
     app.around(function(callback) {
       var context = this;
       if (app.contextMatchesOptions(context, /checkout/)) {
-        // automate context.cart
-        context.cart = app.store.get('cart') || {};
-        callback(function() {
-          app.store.set('cart', context.cart);
+        // check if user is connected
+        app.connected(function(user) {
+          // automate context.cart
+          context.cart = app.store.get('cart') || {};
+          app.store.set('cart', context.cart); // for tmpl
+          callback(function() {
+            app.store.set('cart', context.cart); // update
+          });
         });
       } else {
         callback();
