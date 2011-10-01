@@ -31,7 +31,8 @@
       return message;
   };
 
-  $.get('i18n/messages.properties', function(data) {
+  // TODO: for browser language   
+  i18nLoaded = $.get('i18n/messages.properties', function(data) {
     // excerpt form jquery-i18n-properties plugin 
     var parameters = data.split( /\n/ );
     for(var i=0; i<parameters.length; i++ ) {
