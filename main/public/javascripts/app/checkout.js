@@ -10,11 +10,12 @@
         // check if user is connected
         app.connected(function(user) {
           // automate context.cart
-          context.cart = app.store.get('cart') || {};
-          app.store.set('cart', context.cart); // for tmpl
-          callback(function() {
-            app.store.set('cart', context.cart); // update
-          });
+          if (!app.store.get('cart')) {
+            app.store.set('cart', {});
+          }  
+          context.cart = app.store.get('cart');
+          callback();
+          app.store.set('cart', context.cart);
         });
       } else {
         callback();
@@ -37,11 +38,23 @@
     
     app.any('#/checkout/download', function(context) {
       context.cart.shipment = 'download';
-      context.redirect('#/checkout/checkout');
+      context.redirect('#/checkout/payment');
     });
     
     app.any('#/checkout/ship', function(context) {
       context.cart.shipment = 'ship';
+      context.redirect('#/checkout/payment');
+    });
+    
+    app.get('#/checkout/payment', function(context) {
+      context.load('data/gateways.json', function(data) {
+        var categories = ['ondelivery', 'internet', 'normal', 'visa_mastercard'];
+        context.partial('templates/checkout/payment.html', {categories: categories, gateways: data});
+      })
+    });
+    
+    app.post('#/checkout/payment', function(context) {
+      context.cart.payment = context.params.gateway;
       context.redirect('#/checkout/checkout');
     });
 
