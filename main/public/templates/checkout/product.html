@@ -1,0 +1,77 @@
+<div id="nav">
+  <ul>
+    <li class=""><a href="#/checkout/shipment">Выбор способа доставки</a></li>
+
+    <li class=""><a href="#/checkout/payment">Выбор способа оплаты</a></li>
+
+    <li class=""><a href="#/checkout/product">Выбор курса</a></li>
+
+    <li class=""><a href="#/checkout/checkout">Заказ</a></li>
+  </ul>
+</div>
+    
+  <h2>Курс</h2>
+
+  <form action="#/checkout/product" method="post" enctype="multipart/form-data" id="cart">
+
+  <p>Курс можно выбрать для всех или некоторых триместров:</p>
+
+  <div class="warning" style="display: none">${i18n('error_product')}</div>
+
+  <div class="product-list">
+  {{each(i, product) products}}
+    <div>
+      <input id="product-${product.id}" type="checkbox" value="${product.id}" name="products" style="display: none">
+      <label for="product-${product.id}" style="padding: 20px; margin-top: 30px; float: left;"></label>
+        <div>
+          <div class="left">
+            {{if product.thumb}}
+            <div class="image"><a href="#/product/${product.id}"><img src="images/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+            {{/if}}
+            <div class="price">
+            Цена:
+            {{if product.price}}
+              {{if !product.special}}
+              ${i18n('format_price', product.price)} 
+              {{else}}
+              <span class="price-old">${i18n('format_price', product.price)}</span> <span class="price-new">${i18n('format_price', product.special)}</span>
+              {{/if}}
+            {{/if}}
+            <div class="quantity">
+              Количество:
+              <select name="qties.${product.id}" class="select_qty">
+                {{each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
+                <option value="${$value}">${$value}</option>
+                {{/each}}
+              </select> шт.
+            </div>
+            </div>
+            <div class="name"><a href="@{Catalog.show(product.id)}">${product.name}</a></div>
+            <div class="description">${product.description.substring(0, 250)}...</div>
+          </div>
+        </div>
+      </label>
+    </div>
+  {{/each}}
+  </div>
+  <div class="buttons">
+    <a onclick="$('#cart').submit();" class="button"><span>${i18n('button_checkout')}</span></a>
+  </div>
+
+  </form>
+
+<script type="text/javascript">
+  $('input').customInput();
+
+  $("#cart").validate({
+    rules: {
+      products: "required"
+    },
+    errorPlacement: function(error, element) {
+      $('div.warning').show().delay(3000).fadeOut();
+    },
+    onkeyup: false
+  });
+</script>
+  
+
