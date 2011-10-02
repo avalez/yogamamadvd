@@ -9,8 +9,8 @@ $(function () {
     // TODO: use session cookie (expires_in: -1) but fix sammy-cookie-play first, then make sammy support this
     this.store = new Sammy.Store({name: 'yogamamadvd', element: this.$element(), type: 'session'});
     
-    this.before(function(context) {
-      var url = escape(context.path);
+    this.bind('location-changed', function(context) {
+      var url = escape(app.getLocation().split('?')[0]);
       if (app.connected()) {
           $('#welcome').html(i18n('text_logged', '#/', app.connected().firstname, '#/account/logout?_url=' + url));
       } else {

@@ -6,7 +6,10 @@
 
     // helper    
     var cart = function(key, value) {
-      var cart = app.store.get('cart') || {};
+      var cart = app.store.get('cart');
+      if (!cart) {
+        app.store.set('cart', cart = {});
+      }
       if (arguments.length === 0) {
         return cart;
       } else if (arguments.length === 2) {
@@ -17,6 +20,7 @@
     }
 
     app.get('#/checkout/shipment', function(context) {
+      cart(); // init
       app.connected(function() {
         context.partial('templates/checkout/shipment.html')
         .render('templates/account/register.html', {_shipment: 'download', _url: '#/checkout/download'}, function(html) {
@@ -95,14 +99,11 @@
       if (!cart('items')) {
         context.redirect('#/checkout/product');
       } else {
-        context.partial('templates/checkout/checkout.html');
         context.load('data/products.json', function(products) {
           $.each(products, function(i, product) {
-            product.id = i;
             product.selected = i % 2;
           });
-          context.renderEach('templates/checkout/selected.html', products).appendTo('#selected');
-          context.renderEach('templates/checkout/available.html', products).appendTo('#available');
+          context.partial('templates/checkout/checkout.html', {products: products});
 	      });
 	    }
     });

@@ -19,10 +19,13 @@
     });
 
     app.post('#/account/login', function(context) {
-      $.ajax({url:'/ws/connect', data: context.params.toHash(), type: 'post',
+      $.ajax({url:'../ws/connect', data: context.params.toHash(), type: 'post',
         success: function(user) {
           app.store.set('user', user);
-          var url = context.params._url || '#/account/account';
+          var url = context.params._url;
+          if (!url || url.match(/account/)) {
+            url =  '#/account/account';
+          }
           context.redirect(url);
         },
         error: function(jqXHR, textStatus) {
@@ -37,14 +40,17 @@
     });
 
     app.post('#/account/register', function(context) {
-      var url = '/ws/register';
+      var url = '../ws/register';
       if (context.params._shipment == 'download') {
         url += 'Short';
       }
       $.ajax({url:url, data: context.params.toHash(), type: 'post',
         success: function(user) {
           app.store.set('user', user);
-          var url = context.params._url || '#/account/account';
+          var url = context.params._url;
+          if (!url || url.match(/account/)) {
+            url =  '#/account/account';
+          }
           context.redirect(url);
         },
         error: function(jqXHR, textStatus) {
@@ -54,7 +60,7 @@
     });
 
     app.get('#/account/logout', function(context) {
-      $.getJSON('/ws/disconnect', function(user) {
+      $.get('../ws/disconnect', function(user) {
           app.log('logged out');
       });
       app.store.set('user', null);
@@ -72,9 +78,11 @@
         if (!app.store.get('connected')) { // once
           // TODO?: replace in play! template
           app.store.set('connected', true);
-          $.get('/ws/connected', function(user) {
+          $.get('../ws/connected', function(user) {
             app.store.set('user', user);
-          }).then(callback);
+             // update welcome text
+            app.trigger('location-changed');
+          }).always(callback);
         } else {
           callback(app.store.get('user'));
         }
