@@ -6,7 +6,7 @@
 
     <li class=""><a href="#/checkout/product">Выбор курса</a></li>
 
-    <li class=""><a href="#/checkout/checkout">Заказ</a></li>
+    <li class="disabled">Заказ</li>
   </ul>
 </div>
     
@@ -20,8 +20,10 @@
 
   <div class="product-list">
   {{each(i, product) products}}
+  {{var selected = app.cart("items") ? app.cart("items")[product.id] : undefined }}
     <div>
-      <input id="product-${product.id}" type="checkbox" value="${product.id}" name="products" style="display: none">
+      <input id="product-${product.id}" type="checkbox" value="${product.id}" name="products" style="display: none"
+       {{if selected }}checked="true"{{/if}}>
       <label for="product-${product.id}" style="padding: 20px; margin-top: 30px; float: left;"></label>
         <div>
           <div class="left">
@@ -41,7 +43,7 @@
               Количество:
               <select name="qties.${product.id}" class="select_qty">
                 {{each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
-                <option value="${$value}">${$value}</option>
+                <option value="${$value}" {{if selected && selected.quantity == $value }}selected="true"{{/if}}>${$value}</option>
                 {{/each}}
               </select> шт.
             </div>

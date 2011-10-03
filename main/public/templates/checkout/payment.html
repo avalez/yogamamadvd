@@ -15,6 +15,7 @@
 <p>Курс можно оплатить следующими способами:</p>
 
 <form action="#/checkout/payment" method="post" enctype="multipart/form-data" id="payment">
+  <input id="category" type="hidden" name="_category" value="${app.cart('_category') || 'post'}"/>
   
 <div class="warning" style="display: none">${i18n('error_payment_gateway')}</div>
 
@@ -24,8 +25,10 @@
   <div class="checkout-content">
     {{each(j, gateway) gateways}}
     {{if $.inArray(category, gateway.categories) >= 0}}
+    {{var payment = app.cart("payment") }}
       <div class="pgw">
-      <input id="radio-${category}-${gateway.name}" type="radio" value="${gateway.name}" name="gateway">
+      <input id="radio-${category}-${gateway.name}" type="radio" value="${gateway.name}" name="gateway"
+       {{if payment == gateway.name }}checked="true"{{/if}}>
       <label for="radio-${category}-${gateway.name}">${i18n('pgw_' + gateway.name)}
         <img alt="подсказка" src="images/help.gif" class="tip_help" title="${i18n('pgw_' + gateway.name + '_tooltip')}">
         <div><img alt="картинка" src="images/${gateway.name}.png"></div>
@@ -46,9 +49,15 @@
 </form>
 
 <script type="text/javascript">
-  $("#accordion").accordion({autoHeight:false, navigation:true, navigationFilter: function() {
-    return this.name == '${app.store.get("cart").gateway_category}';
-  } });
+  $("#accordion").accordion({
+    autoHeight:false, navigation:true,
+    navigationFilter: function() {
+     return this.name == '${app.cart("_category")}';
+    },
+    change: function(event, ui) {
+      $('input#category').val(ui.newHeader.find('a').attr('name'));
+    }
+  });
   $('input').customInput();
   $(".tip_help").tipTip({maxWidth: "250px", edgeOffset: 3});
   

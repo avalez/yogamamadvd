@@ -4,12 +4,10 @@
 
   Sammy.AppCheckout = function(app, method_alias) {
 
-    // helper    
-    var cart = function(key, value) {
-      var cart = app.store.get('cart');
-      if (!cart) {
-        app.store.set('cart', cart = {});
-      }
+    // functions  
+    
+    app.cart = function(key, value) {
+      var cart = app.store.get('cart') || {};
       if (arguments.length === 0) {
         return cart;
       } else if (arguments.length === 2) {
@@ -18,9 +16,78 @@
       }
       return cart[key];
     }
+    
+    app.updateCart = function(context, productIds, qties, callback) {
+      var items = app.cart('items') || {},
+        total_quantity = app.cart('quantity') || 0,
+        total = app.cart('total') || 0;
+
+      app.loadProducts(context, productIds, function(products) {
+        $.each(products, function(i, product) {
+          var item = items[product.id] || {};
+          var old_quantity = item.quantity || 0;
+          var old_price = item.price || 0;
+
+          total_quantity -= old_quantity;
+          total -= old_quantity * old_price;
+
+          if (qties) {
+            var quantity = parseInt(qties['qties.' + product.id]);
+            items[product.id] = {
+              quantity: quantity,
+              price: product.price,
+              total: product.price * quantity
+            }
+            total_quantity += quantity;
+            total += quantity * product.price
+          } else { // remove
+            items[product.id] = null;
+          }
+        })
+
+        app.cart('items', items);
+        app.cart('quantity', total_quantity);
+        app.cart('total', total);
+        
+        if (callback) {
+          callback();
+        }
+      })
+    }
+    
+    app.loadProducts = function(context, productIds, callback) {
+      if ($.isFunction(productIds)) {
+        callback = productIds;
+        productIds = null;
+      }
+      context.load('data/products.json', function(products) {
+        if (productIds) {
+          var ids = $.isArray(productIds) ? productIds : [productIds];
+          products = $.grep(products, function(product) {
+            return !productIds || $.inArray(product.id.toString(), ids) >= 0;
+          });
+        }
+        callback(products)
+      })
+    }
+
+    // let define new variable within jquery templates, e.g. {{var xxx=123}}    
+
+    $.extend($.tmpl.tag, {
+        "var": {
+            open: "var $1;"
+        }
+    });
+    
+    // events
+    
+    app.bind('updateCart', function(arg0, data) {
+      app.updateCart(this, data.products, data.qties, data.callback);
+    });
+    
+    // routes
 
     app.get('#/checkout/shipment', function(context) {
-      cart(); // init
       app.connected(function() {
         context.partial('templates/checkout/shipment.html')
         .render('templates/account/register.html', {_shipment: 'download', _url: '#/checkout/download'}, function(html) {
@@ -36,17 +103,17 @@
     });
     
     app.any('#/checkout/download', function(context) {
-      cart('shipment', 'download');
+      app.cart('shipment', 'download');
       context.redirect('#/checkout/payment');
     });
     
     app.any('#/checkout/ship', function(context) {
-      cart('shipment', 'ship');
+      app.cart('shipment', 'ship');
       context.redirect('#/checkout/payment');
     });
     
     app.get('#/checkout/payment', function(context) {
-      if (!cart('shipment')) {
+      if (!app.cart('shipment')) {
         context.redirect('#/checkout/shipment');
       } else {
         context.load('data/gateways.json', function(data) {
@@ -57,52 +124,35 @@
     });
     
     app.post('#/checkout/payment', function(context) {
-      cart('payment', context.params.gateway);
+      app.cart('payment', context.params.gateway);
+      app.cart('_category', context.params._category);
       context.redirect('#/checkout/product');
     });
-
+    
     app.get('#/checkout/product', function(context) {
-      if (!cart('payment')) {
+      if (!app.cart('payment')) {
         context.redirect('#/checkout/payment');
       } else {
-        context.load('data/products.json', function(data) {
-          context.partial('templates/checkout/product.html', {products: data});
+        app.loadProducts(context, function(products) {
+          context.partial('templates/checkout/product.html', {products: products});
         })
       }
     });
-    
+
     app.post('#/checkout/product', function(context) {
-      var items = {}, total_quantity = 0, total = 0;
-      context.load('data/products.json', function(products) {
-        $.each(products, function(i, product) {
-          var selected = $.isArray(context.params.products) ? context.params.products : [context.params.products];
-          if ($.inArray(product.id.toString(), selected) >= 0) {
-            var quantity = parseInt(context.params['qties.' + product.id]);
-            var price = product.price;
-            items[product.id] = {
-              quantity: quantity,
-              price: price,
-              total: price * quantity
-            };
-            total_quantity += quantity;
-            total += quantity * price;
-          }
-        })
-        cart('items', items);
-        cart('quantity', total_quantity);
-        cart('total', total);
+      app.cart('items', {});
+      app.cart('quantity', 0);
+      app.cart('total', 0);
+      app.updateCart(context, context.params.products, context.params, function() {
         context.redirect('#/checkout/checkout');
       })
     });
 
     app.get('#/checkout/checkout', function(context) {
-      if (!cart('items')) {
+      if (!app.cart('items')) {
         context.redirect('#/checkout/product');
       } else {
-        context.load('data/products.json', function(products) {
-          $.each(products, function(i, product) {
-            product.selected = i % 2;
-          });
+        app.loadProducts(context, function(products) {
           context.partial('templates/checkout/checkout.html', {products: products});
 	      });
 	    }

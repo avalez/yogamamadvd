@@ -15,7 +15,8 @@
     <h2 style="background: left top url(images/basket.png) no-repeat; padding-left: 28px;">Корзина</h2>
     <div class="product-grid content">
       {{each(i, product) products}}
-      <div id="selected-${product.id}" {{if !selected}} style="display:none" {{/if}}>
+      {{var selected = app.cart('items')[product.id] }}
+      <div id="selected-${product.id}" {{if !selected }} style="display:none" {{/if}}>
         {{if typeof thumb != 'undefined'}}
         <div class="image"><a href="${product.url}"><img src="images/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
         {{/if}}
@@ -24,19 +25,21 @@
         <label>Цена:</label>
         {{if price}}
           {{if typeof special == 'undefined'}}
-          ${product.price} 
+          ${i18n('format_price', product.price)} 
           {{else}}
-          <span class="price-old">${product.price}</span> <span class="price-new">${product.special}</span>
+          <span class="price-old">${i18n('format_price', product.price)}</span> <span class="price-new">${i18n('format_price', product.special)}</span>
           {{/if}}
         {{/if}}
         </div>
         <div class="quantity">
           <label for="count_disc11">Количество:</label>
-          <select name="qties.${product.id}" class="select_qty">
-          <option value="1" selected="selected">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>                                            
+          <select id="selected-qties-${product.id}" class="select_qty" onchange="updateQuantity('${product.id}')">
+            {{each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
+            <option value="${$value}" {{if selected && selected.quantity == $value }}selected="true"{{/if}}>${$value}</option>
+            {{/each}}
           </select> шт.
         </div>
-        <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" onclick="removeFromCart('/checkout/removeFromCart', ${product.id}, 'images')">Убрать из коризны</a></div>
+        <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" onclick="removeFromCart('${product.id}')">Убрать из коризны</a></div>
       </div>
       {{/each}}
     </div>
@@ -48,9 +51,8 @@
       <div class="cart-total">
         <table width="100%">
           <tr>
-            <td colspan="5"></td>
             <td class="right"><b>Итого:</b></td>
-            <td class="right">&nbsp;</td>
+            <td class="right">${i18n('format_price', app.cart('total'))}</td>
           </tr>
         </table>
       </div>
@@ -66,9 +68,9 @@
 <h2>Курс</h2>
 <div class="product-list">
   {{each(i, product) products}}
-  <div id="available-${product.id}" {{if selected}} style="display:none" {{/if}}>
+  <div id="available-${product.id}" {{if app.cart('items')[product.id] }} style="display:none" {{/if}}>
     <div class="right">
-      <div class="cart"><a onclick="addToCart('/checkout/addToCart', ${product.id}, $('#image${product.id}'), 1, 'images')" class="button"><span>Добавить в корзину</span></a></div>
+      <div class="cart"><a onclick="addToCart('${product.id}')" class="button"><span>Добавить в корзину</span></a></div>
     </div>
     <div class="left">
       {{if typeof thumb != 'undefined'}}
@@ -78,11 +80,19 @@
       <label>Цена:</label>
       {{if price}}
         {{if typeof special == 'undefined'}}
-        ${product.price}
+        ${i18n('format_price', product.price)}
         {{else}}
-        <span class="price-old">${product.price}</span> <span class="price-new">${product.special}</span>
+        <span class="price-old">${i18n('format_price', product.price)}</span> <span class="price-new">${i18n('format_price', product.special)}</span>
         {{/if}}
       {{/if}}
+      </div>
+      <div class="quantity" style="float: right">
+        Количество:
+        <select id="available-qties-${product.id}" class="select_qty">
+          {{each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
+          <option value="${$value}" {{if !$index}}selected="true"{{/if}}>${$value}</option>
+          {{/each}}
+        </select> шт.
       </div>
       <div class="name"><a href="${product.url}">${product.name}</a></div>
       <div class="description">{{html product.description.substring(0, 250)}}</div>
@@ -90,3 +100,33 @@
   </div>
   {{/each}}
 </div>
+
+<script type="text/javascript">
+function addToCart(productId) {
+  var quantity = $('select#available-qties-' + productId).val();
+  var qties = {};
+  qties['qties.' + productId] = quantity;
+  app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
+    $('select#selected-qties-' + productId).val(quantity);
+    $('#available-' + productId).fadeOut();
+    $('#selected-' + productId).fadeIn();
+    $('div.cart-total').tmplItem().update();
+  }})
+}
+
+function updateQuantity(productId, quantity) {
+  var qties = {};
+  qties['qties.' + productId] = $('select#selected-qties-' + productId).val();
+  app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
+      $('div.cart-total').tmplItem().update();
+  }})
+}
+
+function removeFromCart(productId) {
+  app.trigger('updateCart', {products: productId, callback: function() {
+    $('#selected-' + productId).fadeOut();
+    $('#available-' + productId).fadeIn();
+    $('div.cart-total').tmplItem().update();
+  }})
+}
+</script>

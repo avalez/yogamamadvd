@@ -1,7 +1,7 @@
 $(function () {
 
   // initialize
-  var app = Sammy('#content', function() {
+  app = Sammy('#content', function() {
     this.use('Tmpl', 'html');
     this.use('AppAccount');
     this.use('AppCheckout');
