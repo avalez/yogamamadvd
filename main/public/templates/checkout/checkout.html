@@ -33,7 +33,7 @@
         </div>
         <div class="quantity">
           <label for="count_disc11">Количество:</label>
-          <select id="selected-qties-${product.id}" class="select_qty" onchange="updateQuantity('${product.id}')">
+          <select id="selected-qty-${product.id}" class="select_qty" onchange="updateQuantity('${product.id}')">
             {{each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
             <option value="${$value}" {{if selected && selected.quantity == $value }}selected="true"{{/if}}>${$value}</option>
             {{/each}}
@@ -69,45 +69,41 @@
 <div class="product-list">
   {{each(i, product) products}}
   <div id="available-${product.id}" {{if app.cart('items')[product.id] }} style="display:none" {{/if}}>
-    <div class="right">
-      <div class="cart"><a onclick="addToCart('${product.id}')" class="button"><span>Добавить в корзину</span></a></div>
-    </div>
-    <div class="left">
-      {{if typeof thumb != 'undefined'}}
-      <div class="image"><a href="${product.url}"><img src="images/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
-      {{/if}}
-      <div class="price">
+    {{if typeof thumb != 'undefined'}}
+    <div class="image"><a href="${product.url}"><img src="images/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+    {{/if}}
+    <div class="price">
       <label>Цена:</label>
       {{if price}}
         {{if typeof special == 'undefined'}}
-        ${i18n('format_price', product.price)}
+          ${i18n('format_price', product.price)}
         {{else}}
         <span class="price-old">${i18n('format_price', product.price)}</span> <span class="price-new">${i18n('format_price', product.special)}</span>
         {{/if}}
       {{/if}}
-      </div>
-      <div class="quantity" style="float: right">
+      <div class="quantity">
         Количество:
-        <select id="available-qties-${product.id}" class="select_qty">
+        <select id="available-qty-${product.id}" class="select_qty">
           {{each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
           <option value="${$value}" {{if !$index}}selected="true"{{/if}}>${$value}</option>
           {{/each}}
         </select> шт.
       </div>
-      <div class="name"><a href="${product.url}">${product.name}</a></div>
-      <div class="description">{{html product.description.substring(0, 250)}}</div>
-    </div>    
+      <div class="buttons"><a onclick="addToCart('${product.id}')" class="button"><span>Добавить в корзину</span></a></div>
+    </div>
+    <div class="name"><a href="${product.url}">${product.name}</a></div>
+    <div class="description">{{html product.description.substring(0, 250)}}</div>
   </div>
   {{/each}}
 </div>
 
 <script type="text/javascript">
 function addToCart(productId) {
-  var quantity = $('select#available-qties-' + productId).val();
+  var quantity = $('select#available-qty-' + productId).val();
   var qties = {};
   qties['qties.' + productId] = quantity;
   app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
-    $('select#selected-qties-' + productId).val(quantity);
+    $('select#selected-qty-' + productId).val(quantity);
     $('#available-' + productId).fadeOut();
     $('#selected-' + productId).fadeIn();
     $('div.cart-total').tmplItem().update();
@@ -116,7 +112,7 @@ function addToCart(productId) {
 
 function updateQuantity(productId, quantity) {
   var qties = {};
-  qties['qties.' + productId] = $('select#selected-qties-' + productId).val();
+  qties['qties.' + productId] = $('select#selected-qty-' + productId).val();
   app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
       $('div.cart-total').tmplItem().update();
   }})
