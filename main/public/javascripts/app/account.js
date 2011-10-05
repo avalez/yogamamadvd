@@ -29,8 +29,7 @@
           context.redirect(url);
         },
         error: function(jqXHR, textStatus) {
-          // FIXME: in shipment
-          $('div.warning').show().delay(3000).fadeOut('slow');            
+          $('div.login-warning').show().delay(3000).fadeOut('slow');            
         }
       });
     });
@@ -38,13 +37,17 @@
     app.get('#/account/register', function(context) {
       context.partial('templates/account/register.html', {_shipment: ''});
     });
-
+    
+    // routes
     app.post('#/account/register', function(context) {
       var url = '../ws/register';
-      if (context.params._shipment == 'download') {
+      if (context.params._action === 'update') {
+        url += 'Update';
+      } else if (context.params._shipment == 'download') {
         url += 'Short';
       }
-      $.ajax({url:url, data: context.params.toHash(), type: 'post',
+      var data = context.params.toHash ? context.params.toHash() : context.params;
+      $.ajax({url:url, data: data, type: 'post',
         success: function(user) {
           app.store.set('user', user);
           var url = context.params._url;
@@ -54,9 +57,9 @@
           context.redirect(url);
         },
         error: function(jqXHR, textStatus) {
-          $('div.warning').show().delay(3000).fadeOut('slow');            
+          $('div.register-warning').show().delay(3000).fadeOut('slow');            
         }
-      });
+      })
     });
 
     app.get('#/account/logout', function(context) {

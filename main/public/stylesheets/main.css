@@ -8,7 +8,7 @@ body {
 	font-family: "Lucida Grande","Lucida Sans Unicode",Helvetica,Arial,Verdana,sans-serif;
 	margin: 0px;
 	padding: 0px;
-    background: #FFFFFF url('../images/bg.png') center repeat-y;
+  background: #FFFFFF url('../images/bg.png') top center repeat-y;
 }
 body, td, th, input, textarea, select, a {
 	font-size: 12px;
@@ -40,13 +40,16 @@ input[type='text'], input[type='password'], textarea {
 	margin-left: 0px;
 	margin-right: 0px;
 }
-/*
-form select {
+
+select.box {
 	background: #F8F8F8;
 	border: 1px solid #CCCCCC;
 	padding: 2px;
+	margin-left: -1px;
+	margin-bottom: 2px;
+	margin-top: 2px;
 }
-*/
+
 label {
 	cursor: pointer;
 }
@@ -1165,17 +1168,24 @@ a.button:hover span {
 	overflow: auto;
 }
 .cart-total {
-	border-top: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
 	overflow: auto;
-	padding-top: 8px;
-	margin-bottom: 15px;
+	padding-bottom: 7px;
+	margin-bottom: 7px;
 }
 .cart-total table {
-	float: right;
+	margin-left: 40px;
 }
 .cart-total td {
 	padding: 3px;
 	text-align: right;
+}
+.cart-details tr:nth-child(2) td{
+	padding-bottom: 7px;
+}
+.cart-details tr:nth-child(3) td{
+	border-top: 1px solid #DDDDDD;
+	padding-top: 7px;
 }
 /* checkout */
 .checkout-heading {
@@ -1208,11 +1218,11 @@ a.button:hover span {
 }
 .checkout-cart-content .left {
     float: left;
-    width: 68%;
+    width: 58%;
 }
 .checkout-cart-content .right {
     float: right;
-    width: 28%;
+    width: 38%;
 }
 .checkout-content .buttons {
 	clear: both;

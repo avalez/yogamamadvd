@@ -11,7 +11,7 @@ import play.mvc.With;
 @With(Security.class)
 public class Account extends Controller {
 
-  @Before(unless = { "login", "register", "create", "authenticate", "connected" })
+  @Before(unless = { "login", "register", "create", "authenticate" })
   static void checkAccess() throws Throwable {
     Secure.checkAccess();
 

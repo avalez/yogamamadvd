@@ -10,7 +10,7 @@
   </ul>
 </div>
 
-<div class="checkout-cart-content" style="height: 270px">
+<div class="checkout-cart-content">
   <div class="left">
     <h2 style="background: left top url(images/basket.png) no-repeat; padding-left: 28px;">Корзина</h2>
     <div class="product-grid content">
@@ -33,27 +33,94 @@
         </div>
         <div class="quantity">
           <label for="count_disc11">Количество:</label>
-          <select id="selected-qty-${product.id}" class="select_qty" onchange="updateQuantity('${product.id}')">
+          <select id="selected-qty-${product.id}" class="select_qty selected-qty" productId="${product.id}">
             {{each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
             <option value="${$value}" {{if selected && selected.quantity == $value }}selected="true"{{/if}}>${$value}</option>
             {{/each}}
           </select> шт.
         </div>
-        <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" onclick="removeFromCart('${product.id}')">Убрать из коризны</a></div>
+        <div class="remove"><a class="ui-icon ui-icon-trash removeFromCart" title="Убрать из корзины" productId="${product.id}">Убрать из коризны</a></div>
       </div>
       {{/each}}
     </div>
   </div>
 
   <div class="right">
-    <h2 style="background: left top url(images/package.png) no-repeat; padding-left: 28px;">Доставка</h2>
+    <h2 style="background: left top url(images/package.png) no-repeat; padding-left: 28px;">Заказ</h2>
     <div class="content">
       <div class="cart-total">
+        <table>
+          <tr>
+            <td>Стоимость курса:</td>
+            <td>${i18n('format_price', app.cart('total'))}</td>
+          </tr>
+          <tr>
+            <td>Доставка:</td>
+            <td>${i18n('format_price', app.cart('additional_costs'))}</td>
+          </tr>
+          <tr>
+            <td><b>Итого:</b></td>
+            <td><b>${i18n('format_price', app.cart('grand_total'))}</b></td>
+          </td>
+        </table>
+      </div>
+      <div class="cart-details">
         <table width="100%">
           <tr>
-            <td class="right"><b>Итого:</b></td>
-            <td class="right">${i18n('format_price', app.cart('total'))}</td>
+            <td>Способ оплаты:</td>
+            <td><select class="box">
+              {{each(i, gateway) gateways}}
+              {{var value = gateway.name}}
+              {{var payment = app.cart("payment")}}
+              <option value="${value}" {{if payment == value}}selected="true"{{/if}}>${i18n('pgw_' + value)}</option>
+              {{/each}}
+              </select></td>
           </tr>
+          <tr>
+            <td>Способ доставки:</td>
+            <td><select id="shipment" class="box">
+              {{each ['download', 'ship']}}
+                <option value="${$value}" {{if app.cart('shipment') == $value}}selected="true"{{/if}}>${i18n('shipment_' + $value)}</option>
+              {{/each}}
+            </select>
+            </td>
+          </tr>
+          {{if !(app.cart('shipment') == 'download' && app.connected())}}
+            <tr>
+              <td colspan="2"></td>
+            </tr>
+            {{if app.connected()}}
+            <tr>
+              <td>Адрес доставки:</td>
+              {{if app.connected().address_1}}
+              <td>${app.connected().firstname} ${app.connected().lastname}</td>
+            </tr>
+            <tr>
+                <td><a onclick="$('#dialog').dialog('open')" style="float: right; padding-right: 20px">Изменить</a></td>
+              <td>${app.connected().address_1}</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>${app.connected().city}</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>${app.connected().zone}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>${app.connected().country} ${app.connected().postcode}</td>
+              {{else}}
+              <td><a onclick="$('#dialog').dialog('open')">Ввести</a></td>
+              {{/if}}
+            </tr>
+            {{else}}
+            <tr>
+              {{var url = '#/checkout/checkout' }}
+              <td colspan="2">{{html i18n('text_welcome', '#/account/login?_url=' + escape(url), '#/account/register?_url=' + escape(url))}}</td>
+            </tr>
+            {{/if}}
+          {{/if}}
         </table>
       </div>
     </div>
@@ -89,7 +156,7 @@
           {{/each}}
         </select> шт.
       </div>
-      <div class="buttons"><a onclick="addToCart('${product.id}')" class="button"><span>Добавить в корзину</span></a></div>
+      <div class="buttons"><a productId="${product.id}" class="button addToCart"><span>Добавить в корзину</span></a></div>
     </div>
     <div class="name"><a href="${product.url}">${product.name}</a></div>
     <div class="description">{{html product.description.substring(0, 250)}}</div>
@@ -97,8 +164,16 @@
   {{/each}}
 </div>
 
-<script type="text/javascript">
-function addToCart(productId) {
+{{if !$('#dialog')[0]}}
+<div id="dialog" style="display: none">
+</div>
+{{/if}}
+
+<script type="text/javascript" id="checkout">
+$('#dialog').dialog({ autoOpen: false, modal: true }).dialog('close');
+
+$('a.addToCart').click(function() {
+  var productId = $(this).attr('productId');
   var quantity = $('select#available-qty-' + productId).val();
   var qties = {};
   qties['qties.' + productId] = quantity;
@@ -108,21 +183,32 @@ function addToCart(productId) {
     $('#selected-' + productId).fadeIn();
     $('div.cart-total').tmplItem().update();
   }})
-}
+});
 
-function updateQuantity(productId, quantity) {
+
+$('select.selected-qty').change(function() {
+  var productId = $(this).attr('productId');
+  var quantity = $(this).val();
   var qties = {};
-  qties['qties.' + productId] = $('select#selected-qty-' + productId).val();
+  qties['qties.' + productId] = quantity;
   app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
-      $('div.cart-total').tmplItem().update();
+    $('div.cart-total').tmplItem().update();
   }})
-}
+});
 
-function removeFromCart(productId) {
+$('a.removeFromCart').click(function() {
+  var productId = $(this).attr('productId');
   app.trigger('updateCart', {products: productId, callback: function() {
     $('#selected-' + productId).fadeOut();
     $('#available-' + productId).fadeIn();
     $('div.cart-total').tmplItem().update();
   }})
-}
+});
+
+$('select#shipment').change(function() {
+  var shipment = $(this).val();
+  app.trigger('updateCart', {shipment: shipment, callback: function() {
+      $('div.content').tmplItem().update();
+  }})
+});
 </script>

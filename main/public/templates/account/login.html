@@ -1,6 +1,5 @@
 {{if _type == 'account'}}
   <h1>${i18n('heading_login')}</h1>
-  <div class="warning" style="display: none">${i18n('secure.error')}</div>
   <div class="login-content">
     <div class="left">
       <h2>${i18n('text_new_customer')}</h2>
@@ -13,8 +12,10 @@
 {{/if}}
 
 <h2>${i18n('text_returning_customer')}</h2>
+<div class="warning login-warning" style="display: none">${i18n('secure.error')}</div>
 <form action="#/account/login" method="post" enc_type="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${_type}">
   <input type="hidden" name="_url" value="${_url}"/>
+  <input type="submit" style="display: none;">
   <div class="content" style="padding-top: 15px">
     <table class="login-form">
       {{if _type == 'account'}}
@@ -50,12 +51,6 @@
 <script _type="text/javascript">
   $('input[autofocus]').first().focus();
    
-  $('#login${_type} input').keydown(function(e) {
-    if (e.keyCode == 13) {
-      $('#login${_type}').submit();
-    }
-  });
-
   $("#login${_type}").validate({
     rules: {
       username: {

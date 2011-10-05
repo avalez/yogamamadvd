@@ -48,6 +48,8 @@
         app.cart('items', items);
         app.cart('quantity', total_quantity);
         app.cart('total', total);
+        app.cart('additional_costs', 1);
+        app.cart('grand_total', total + 1);
         
         if (callback) {
           callback();
@@ -82,7 +84,17 @@
     // events
     
     app.bind('updateCart', function(arg0, data) {
-      app.updateCart(this, data.products, data.qties, data.callback);
+      if (data.shipment) {
+        app.cart('shipment', data.shipment);
+        if (data.callback) {
+          data.callback();
+        }
+      } else if (data.products) {
+        app.updateCart(this, data.products, data.qties, data.callback);
+      } else {
+        throw "unknown update";
+      }
+      
     });
     
     // routes
@@ -152,10 +164,20 @@
       if (!app.cart('items')) {
         context.redirect('#/checkout/product');
       } else {
-        app.loadProducts(context, function(products) {
-          context.partial('templates/checkout/checkout.html', {products: products});
-	      });
-	    }
+        app.connected(function(user) {
+          // register form will appear only for 'ship' +  conected
+          var register = {_shipment: 'ship', _action: 'update', _url: '#/checkout/checkout'};
+          app.loadProducts(context, function(products) {
+            context.load('data/gateways.json', function(gateways) {
+              context.partial('templates/checkout/checkout.html',
+                {products: products, gateways: gateways}
+              ).render('templates/account/register.html', register, function(html) {
+                  $('#dialog').html(html)
+              })
+            })
+	        })
+	      })
+      }
     });
 
   }

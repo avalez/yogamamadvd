@@ -6,6 +6,17 @@ User(admin):
     firstname: Administrator
     isAdmin: true
     
+User(user):
+    email: azhdanov@me.com
+    password: test
+    firstname: Test
+    lastname: User
+    address_1: Rizska 1492/2
+    city: Praha
+    country: Czech Republic
+    zone: Praha Hlavni Mesto
+    postcode: 10200
+
 Product(DVD1):
     name:   Йога 1
     thumb:  yoga1-80x80.png

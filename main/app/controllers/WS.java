@@ -22,6 +22,7 @@ public class WS extends Controller {
   public static void register(@Valid User user) {
     if (!validation.hasErrors()) {
       user.save();
+      user.password = "***";
       renderJSON(user);
     } else {
       error("Errors: " + validation.errorsMap());
@@ -39,7 +40,29 @@ public class WS extends Controller {
         validation.hasError("user.lastname") ||
         validation.hasError("user.email"))) {
       user.save();
+      user.password = "***";
       renderJSON(user); 
+    } else {
+      error("Errors: " + validation.errorsMap());
+    }
+  }
+
+  public static void registerUpdate(@Valid User user) {
+    if (!(validation.hasError("user.address_1") ||
+        validation.hasError("user.city") ||
+        validation.hasError("user.postcode") ||
+        validation.hasError("user.country") ||
+        validation.hasError("user.zone"))) {
+      User current = User.find("byEmail", Security.connected()).first();
+      current.address_1 = user.address_1;
+      current.address_2 = user.address_2;
+      current.city = user.city;
+      current.postcode = user.postcode;
+      current.country = user.country;
+      current.zone = user.zone;
+      current.save();
+      current.password = "***";
+      renderJSON(current); 
     } else {
       error("Errors: " + validation.errorsMap());
     }
