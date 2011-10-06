@@ -39,7 +39,7 @@ public class Checkout extends Controller {
 
     @Before
     static void setCart() {
-	Cart cart = Cart.fromJson(getCookie("cart"));
+	Cart cart = Cart.fromJsonSafe(getCookie("cart"));
 	renderArgs.put("cart", cart);
     }
 
@@ -218,7 +218,7 @@ public class Checkout extends Controller {
 	    payment();
 	} else {
 	    Cart cart = getCart();
-	    cart.gateway = gateway;
+	    cart.payment = gateway;
 	    setCookie("cart", cart.toJson());
 	    product();
 	}
@@ -236,7 +236,7 @@ public class Checkout extends Controller {
     
     public static void product() {
 	Cart cart = getCart();
-	if (cart.gateway == null) {
+	if (cart.payment == null) {
 	    payment();
 	}
 	List<Product> products = Product.findAll();

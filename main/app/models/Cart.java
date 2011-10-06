@@ -14,7 +14,7 @@ public class Cart {
     public Long quantity = 0L;
     public Double total = 0D;
     public String shipment;
-    public String gateway;
+    public String payment;
     
     public void reset() {
 	items.clear();
@@ -62,16 +62,20 @@ public class Cart {
 	}
     }
     
-    public static Cart fromJson(String json) {
+    public static Cart fromJsonSafe(String json) {
 	if (json != null) {
 	    try {
-		return new Gson().fromJson(json, Cart.class);
+	      return fromJson(json);
 	    } catch (JsonParseException e) {
 		Logger.warn("Invalid cart, ingoring: %s, %s", json,
 		        e.getMessage());
 	    }
 	}
 	return new Cart();
+    }
+    
+    public static Cart fromJson(String json) {
+      return new Gson().fromJson(json, Cart.class);
     }
 
     public String toJson() {

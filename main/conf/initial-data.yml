@@ -45,16 +45,16 @@ Product(DVD3):
     price: 1
 
 Status(new):
-    name:   Новый
+    name:   new
 
 Status(payed):
-    name:   Оплачено
+    name:   paid
 
 Status(shipped):
-    name:   Отправлено
+    name:   shipped
 
 Status(delivered):
-    name:   Доставлено
+    name:   delivered
     
 PaymentGatewayCategory(ondelivery):
     name:   ondelivery

@@ -1,7 +1,11 @@
 package controllers;
 
-import com.google.gson.Gson;
+import java.util.ArrayList;
 
+import models.Cart;
+import models.Order;
+import models.Product;
+import models.Status;
 import models.User;
 import play.data.validation.CheckWith;
 import play.data.validation.Email;
@@ -46,20 +50,25 @@ public class WS extends Controller {
       error("Errors: " + validation.errorsMap());
     }
   }
+  
+  private static User getConnectedUser() {
+    if (Security.isConnected() || remembered()) {
+      return User.find("byEmail", Security.connected()).first();
+    } else {
+      forbidden();
+      return null; // will not occur, forbidden throws Forbidden
+    }
+  }
 
+  // allows full update but checks validates few feilds only
   public static void registerUpdate(@Valid User user) {
     if (!(validation.hasError("user.address_1") ||
         validation.hasError("user.city") ||
         validation.hasError("user.postcode") ||
         validation.hasError("user.country") ||
         validation.hasError("user.zone"))) {
-      User current = User.find("byEmail", Security.connected()).first();
-      current.address_1 = user.address_1;
-      current.address_2 = user.address_2;
-      current.city = user.city;
-      current.postcode = user.postcode;
-      current.country = user.country;
-      current.zone = user.zone;
+      User current = getConnectedUser();
+      current.edit("user", params.all());
       current.save();
       current.password = "***";
       renderJSON(current); 
@@ -104,17 +113,36 @@ public class WS extends Controller {
   }
 
   public static void connected() {
-    if (Security.isConnected() || remembered()) {
-      User user = User.find("byEmail", Security.connected()).first();
-      user.password = "***";
-      renderJSON(user);
-    } else {
-      forbidden();
-    }
+    User user = getConnectedUser();
+    user.password = "***";
+    renderJSON(user);
   }
 
   public static void disconnect() {
     session.clear();
     response.removeCookie("rememberme");
+  }
+  
+  public static void checkout(String jsonCart) {
+    Cart cart = Cart.fromJson(jsonCart);
+    Order order = new Order();
+    order.customer =  getConnectedUser();
+    order.products = new ArrayList<Product>(cart.quantity.intValue());
+    for (Long productId : cart.items.keySet()) {
+      Product product = Product.findById(productId);
+      if (product != null) {
+        Long quantity = cart.items.get(productId).quantity;
+        for (long i = 0; i < quantity; i++) {
+          order.products.add(product);
+        }
+        order.total = product.price * quantity;
+        // assert order.total == cart.total
+      }
+    }
+    order.shipping_method = cart.shipment;
+    order.payment_method = cart.payment;
+    order.order_status = Status.find("byName", Status.NEW).first();
+    order.save();
+    renderJSON(order);
   }
 }

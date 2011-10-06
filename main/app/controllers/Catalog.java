@@ -13,7 +13,7 @@ public class Catalog extends Controller {
 
     @Before
     static void setCart() throws Throwable {
-	Cart cart = Cart.fromJson(Checkout.getCookie("cart"));
+	Cart cart = Cart.fromJsonSafe(Checkout.getCookie("cart"));
 	renderArgs.put("cart", cart);
     }
 

@@ -126,7 +126,8 @@
     </div>
 
     <div class="buttons">
-      <a href="#" class="button"><span>Оформить заказ</span></a>
+      <form action="#/checkout/checkout" method="post" enctype="multipart/form-data" id="checkout"></form>
+      <a onclick="$('#checkout').submit()" class="button"><span>Оформить заказ</span></a>
     </div>
   </div>
 </div>
@@ -169,7 +170,7 @@
 </div>
 {{/if}}
 
-<script type="text/javascript" id="checkout">
+<script type="text/javascript">
 $('#dialog').dialog({ autoOpen: false, modal: true }).dialog('close');
 
 $('a.addToCart').click(function() {

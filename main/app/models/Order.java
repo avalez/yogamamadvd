@@ -4,15 +4,19 @@ import play.*;
 import play.db.jpa.*;
 
 import javax.persistence.*;
+
 import java.util.*;
 
 @Entity
+@Table(name="shoping_order")
 public class Order extends Model {
 
     public long invoice_no;
     public String invoice_prefix;
     @ManyToOne
     public User customer;
+    @ManyToMany(cascade=CascadeType.PERSIST)
+    public List<Product> products;
     public String shipping_firstname;
     public String shipping_lastname;
     public String shipping_company;
@@ -48,7 +52,7 @@ public class Order extends Model {
     */
     public String payment_method;
     public String comment;
-    public long total;
+    public double total;
     public Status order_status;
     /*
     public String language_id;

@@ -180,6 +180,18 @@
       }
     });
 
+    app.post('#/checkout/checkout', function(context) {
+      var data = {jsonCart: $.toJSON(app.cart())};
+      $.ajax({url:'../ws/checkout', data: data, type: 'post',
+        success: function(cart) {
+          context.redirect('#/account/account');
+        },
+        error: function(jqXHR, textStatus) {
+          $('div.checkout-warning').show().delay(3000).fadeOut('slow');            
+        }
+      })
+    });
+
   }
 
 })( jQuery );
