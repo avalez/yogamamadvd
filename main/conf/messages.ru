@@ -64,10 +64,12 @@ entry_telephone=Телефон:
 entry_fax=Факс:
 entry_company=Компания:
 entry_address_1=Адрес 1:
+address_1=Адрес 1:
 entry_address_2=Адрес 2:
 entry_postcode=Индекс:
 entry_city=Город:
 entry_country=Страна:
+country=Страна:
 entry_zone=Регион / Область:
 entry_newsletter=Подписаться:
 entry_password=Пароль:
@@ -156,3 +158,24 @@ pgw_bank = Банковский перевод
 pgw_bank_tooltip = Для физических лиц предусмотрена возможность оплаты по квитанции в любом банке России и для юридических лиц безналичная оплата по автоматически выписанному счету.
 
 error_product = Выберите курс
+
+////////////////////////////////////////////// CRUD ///////////////////////////
+
+firstname=Имя Отчество:
+lastname=Фамилия:
+email=E-Mail:
+telephone=Телефон:
+fax=Факс:
+company=Компания:
+address_2=Адрес 2:
+postoce==Индекс:
+city=Город:
+zone=Регион / Область:
+newsletter=Подписаться:
+password=Пароль:
+confirm=Повтор пароля:
+isAdmin=Администратор:
+
+customer=Клиент
+order_status=Статус Заказа
+total=Сумма Заказа

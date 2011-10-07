@@ -16,7 +16,7 @@ public class Order extends Model {
     @ManyToOne
     public User customer;
     @ManyToMany(cascade=CascadeType.PERSIST)
-    public List<Product> products;
+    public List<OrderItem> items;
     public String shipping_firstname;
     public String shipping_lastname;
     public String shipping_company;
@@ -53,6 +53,7 @@ public class Order extends Model {
     public String payment_method;
     public String comment;
     public double total;
+    @ManyToOne
     public Status order_status;
     /*
     public String language_id;

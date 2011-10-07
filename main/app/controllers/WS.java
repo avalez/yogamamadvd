@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import models.Cart;
 import models.Order;
+import models.OrderItem;
 import models.Product;
 import models.Status;
 import models.User;
@@ -127,15 +128,16 @@ public class WS extends Controller {
     Cart cart = Cart.fromJson(jsonCart);
     Order order = new Order();
     order.customer =  getConnectedUser();
-    order.products = new ArrayList<Product>(cart.quantity.intValue());
+    order.items = new ArrayList<OrderItem>(cart.quantity.intValue());
     for (Long productId : cart.items.keySet()) {
       Product product = Product.findById(productId);
       if (product != null) {
-        Long quantity = cart.items.get(productId).quantity;
-        for (long i = 0; i < quantity; i++) {
-          order.products.add(product);
-        }
-        order.total = product.price * quantity;
+        OrderItem item = new OrderItem();
+        item.product = product;
+        item.quantity = cart.items.get(productId).quantity;
+        //item.save();
+        order.items.add(item);
+        order.total += product.price * item.quantity;
         // assert order.total == cart.total
       }
     }

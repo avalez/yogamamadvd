@@ -1,18 +1,22 @@
 package models;
 
-import play.*;
-import play.db.jpa.*;
+import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Index;
-
-import java.util.*;
+import play.db.jpa.Model;
 
 @Entity
-@Table(name="order_status")
+@Table(name="order_status", uniqueConstraints=@UniqueConstraint(columnNames="name"))
 public class Status extends Model {
     public static final String NEW = "new";
-    @Index(name="idx_")
     public String name;
+    
+    public String toString() {
+      return name;
+    }
 }

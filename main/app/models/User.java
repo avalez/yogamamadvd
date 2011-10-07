@@ -61,8 +61,16 @@ public class User extends Model {
     public String zone;
 
     public boolean isAdmin;
-    
+
     public String toJson() {
 	return new Gson().toJson(this);
+    }
+
+    public String toString() {
+      return (firstname != null ? firstname + " " : "")
+        + (lastname != null ? lastname  + " " : "")
+        + (firstname != null || lastname != null ? "<" : "")
+        + email
+        + (firstname != null || lastname != null ? ">" : "");
     }
 }

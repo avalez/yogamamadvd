@@ -26,8 +26,9 @@ public class Product extends Model {
     public int rating;
 
     public int reviews;
-
-    public Product(String name) {
-	this.name = name;
+    
+    public String toString() {
+      return name;
     }
+
 }
