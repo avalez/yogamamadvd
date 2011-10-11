@@ -3,5 +3,8 @@
 require:
     - play
     - play -> secure
-    - crud
-    
+#    - crud
+    - play -> gae 1.4
+    - play -> siena 2.0.4
+    - play -> crudsiena 1.6_play1.2
+

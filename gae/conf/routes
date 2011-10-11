@@ -19,3 +19,4 @@ GET     /public/                                staticDir:public
 
 # Import Secure routes
 *       /                                       module:secure
+*       /admin                                  module:crudsiena

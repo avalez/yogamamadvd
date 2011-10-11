@@ -18,6 +18,7 @@ User(user):
     postcode: 10200
 
 Product(DVD1):
+    code:   DVD1
     name:   Йога 1
     thumb:  yoga1-80x80.png
     description:    >
@@ -27,6 +28,7 @@ Product(DVD1):
     price:  1
 
 Product(DVD2):
+    code:   DVD2
     name:   Йога 2
     thumb:  yoga2-80x80.png
     description:    >
@@ -36,6 +38,7 @@ Product(DVD2):
     price: 1
 
 Product(DVD3):
+    code:   DVD3
     name:   Йога 3
     thumb:  yoga3-80x80.png
     description:    >
@@ -56,55 +59,58 @@ Status(shipped):
 Status(delivered):
     name:   delivered
     
-PaymentGatewayCategory(ondelivery):
-    name:   ondelivery
-
-PaymentGatewayCategory(internet):
-    name:   internet
-
-PaymentGatewayCategory(normal):
-    name:   normal
-
-PaymentGatewayCategory(visa_mastercard):
-    name:   visa_mastercard
+#PaymentGatewayCategory(ondelivery):
+#    name:   ondelivery
+#
+#PaymentGatewayCategory(internet):
+#    name:   internet
+#
+#PaymentGatewayCategory(normal):
+#    name:   normal
+#
+#PaymentGatewayCategory(visa_mastercard):
+#   name:   visa_mastercard
 
 PaymentGateway(post):
     name:   post
-    categories: ondelivery
+    category: ondelivery
 
 PaymentGateway(yandex):
     name:   yandex
-    categories: internet
+    category: internet
 
 PaymentGateway(rbk):
     name:   rbk
-    categories: visa_mastercard
+    category: visa_mastercard
 
 PaymentGateway(webmoney):
     name:   webmoney
-    categories: internet
+    category: internet
 
 PaymentGateway(liqpay):
     name:   liqpay
-    categories: internet
+    category: internet
 
 PaymentGateway(qiwi):
     name:   qiwi
-    categories: normal
+    category: normal
 
 PaymentGateway(robokassa):
     name:   robokassa
-    categories: visa_mastercard
+    category: visa_mastercard
 
 PaymentGateway(transfer):
     name:   transfer
-    categories: normal
+    category: normal
 
 PaymentGateway(paypal):
     name:   paypal
-    categories: [internet, visa_mastercard]
+    category: internet
+
+PaymentGateway(paypal2):
+    name:   paypal
+    category: visa_mastercard
 
 PaymentGateway(bank):
     name:   bank
-    categories: normal
-    
+    category: normal
