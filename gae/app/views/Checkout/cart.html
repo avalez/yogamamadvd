@@ -1,0 +1,80 @@
+#{extends 'main.html' /}
+#{set title:'Йога для будущих мам - Корзина' /}
+
+<div id="content">
+#{if cart.quantity > 0}
+    <h1>&{'heading_cart'}
+      #{if weight}
+      &nbsp;(&{'weight'})
+      #{/if}
+    </h1>
+    #{if flash.attention}
+    <div class="attention">&{flash.attention}</div>
+    #{/if}    
+    #{if flash.success}
+    <div class="success">&{flash.success}</div>
+    #{/if}
+    #{if flash.error}
+    <div class="warning">&{flash.error}</div>
+    #{/if}
+    <form action="@{updateCart}" method="post" enctype="multipart/form-data" id="basket">
+      <div class="cart-info">
+        <table>
+          <thead>
+            <tr>
+              <td class="remove">&{'column_remove'}</td>
+              <td class="image">&{'column_image'}</td>
+              <td class="name">&{'column_name'}</td>
+              <td class="quantity">&{'column_quantity'}</td>
+              <td class="price">&{'column_price'}</td>
+              <td class="total">&{'column_total'}</td>
+            </tr>
+          </thead>
+          <tbody>
+            #{list items:products, as:'product'}
+            <tr>
+              <td class="remove"><input type="checkbox" name="remove" value="${product.id}" /></td>
+                <td class="image">#{if product.thumb}
+                <a href="@{Catalog.show(product.id)}"><img src="@{'/public/images'}/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a>
+                #{/if}</td>
+              <td class="name"><a href="@{Catalog.show(product.id)}">${product.name}</a>
+              <td class="quantity"><input type="text" name="items.${product.id}" value="${cart.items[product.id].quantity}" size="3" /></td>
+              <td class="price">${cart.items[product.id].price}</td>
+              <td class="total">${cart.items[product.id].total}</td>
+            </tr>
+            #{/list}
+          </tbody>
+        </table>
+      </div>
+    </form>
+    <div class="cart-total">
+      <table>
+        <tr>
+          <td colspan="5"></td>
+          <td class="right"><b>&{'text_total'}:</b></td>
+          <td class="right">${cart.total}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="buttons">
+      <div class="left"><a onclick="$('#basket').submit();" class="button"><span>&{'button_update'}</span></a></div>
+      <div class="right"><a href="@{checkout}" class="button"><span>&{'button_checkout'}</span></a></div>
+      <div class="center"><a href="@{Catalog.list}" class="button"><span>&{'button_shopping'}</span></a></div>
+    </div>
+
+<script type="text/javascript"><!--
+$('.cart-module .cart-heading').bind('click', function() {
+    if ($(this).hasClass('active')) {
+        $(this).removeClass('active');
+    } else {
+        $(this).addClass('active');
+    }
+        
+    $(this).parent().find('.cart-content').slideToggle('slow');
+});
+//--></script> 
+#{/if}
+#{else}
+ <h3>&{'text_cart_empty'}</h3>
+#{/else}
+</div>

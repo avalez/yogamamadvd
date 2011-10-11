@@ -1,0 +1,56 @@
+        <tr>
+          <td><span class="required">*</span> &{'entry_city'}</td>
+          <td><input id="city" type="text" name="user.city" value="${flash['user.city']}" />
+            #{ifError 'user.city'}
+            <span class="error">#{error 'user.city'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_postcode'}</td>
+          <td><input type="text" name="user.postcode" value="${flash['user.postcode']}" />
+            #{ifError 'user.postcode'}
+            <span class="error">#{error 'user.postcode'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_country'}</td>
+          <td><input id="country" type="text" name="user.country" value="${flash['user.country']}"/>
+            #{ifError 'user.country'}
+            <span class="error">#{error 'user.country'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_zone'}</td>
+          <td><input id="zone" type="text" name="user.zone" value="${flash['user.zone']}"/>
+            #{ifError 'user.zone'}
+            <span class="error">#{error 'user.zone'/}</span>
+            #{/ifError}</td>
+        </tr>
+#{set 'moreScripts'}
+<script type="text/javascript"><!--
+
+$(function() {
+    $( "#city" ).autocomplete({
+        source: function( request, response ) {
+            $.getJSON("http://ws.geonames.org/searchJSON?name_startsWith=" + request.term + "&featureClass=P&maxRows=12&stye=full&lang=" + '${lang}', function( data ) {
+                response( $.map( data.geonames, function( item ) {
+                    return {
+                        label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                        value: item.name
+                    }
+                }));
+            });
+        },
+        minLength: 4,
+        select: function( event, ui ) {
+            if (ui.item) {
+              var selected = ui.item.label.split(",")
+              $('#zone').val(selected[1]);
+              $('#country').val(selected[2]);
+            }
+        },
+    });
+});
+
+//--></script> 
+#{/set}

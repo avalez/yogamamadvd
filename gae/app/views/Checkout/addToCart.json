@@ -1,0 +1,3 @@
+{ "success": "${messages.get('text_success', actionBridge.Catalog.show(product.id).url, product.name, actionBridge.Checkout.cart().url).escapeJavaScript()}",
+  "total": "&{'text_items', cart.quantity, cart.total}"
+}

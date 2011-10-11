@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="ru" xml:lang="ru" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>#{get 'title' /}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=${_response_encoding}"/>
+        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}" type="text/css" >
+        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/menu.css'}" type="text/css" >
+        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/nav.css'}" type="text/css" >
+        #{get 'moreStyles' /}
+
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}"/>
+		<script type="text/javascript" src="@{'/public/javascripts/jquery/jquery-1.6.1.min.js'}" charset="${_response_encoding}"></script>
+		<script type="text/javascript" src="@{'/public/javascripts/jquery/ui/jquery-ui-1.8.9.custom.min.js'}"></script>
+		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
+		<script type="text/javascript" src="@{'/public/javascripts/jquery/ui/external/jquery.cookie.js'}"></script>
+		<script type="text/javascript" src="@{'/public/javascripts/jquery/fancybox/jquery.fancybox-1.3.4.pack.js'}"></script>
+		<link rel="stylesheet" type="text/css" href="@{'/public/javascripts/jquery/fancybox/jquery.fancybox-1.3.4.css'}" media="screen" />
+		<script type="text/javascript" src="@{'/public/javascripts/jquery/tabs.js'}"></script>
+		<script type="text/javascript" src="@{'/public/javascripts/common.js'}"></script>
+
+		<!--[if IE 7]>
+		<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ie7.css'}" />
+		<![endif]-->
+		<!--[if lt IE 7]>
+		<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/ie6.css'}" />
+		<script type="text/javascript" src="@{'/public/javascripts/DD_belatedPNG_0.0.8a-min.js'}"></script>
+		<script type="text/javascript">
+		DD_belatedPNG.fix('#logo img');
+		</script>
+		<![endif]-->
+		
+		<!-- TODO google analytics -->
+
+        #{get 'moreScripts' /}
+    </head>
+    <body>
+		<div id="container">
+        <div id="logo"><img src="@{'/public/images'}/logo.png" alt="&{'logo'}" title="&{'logo'}"/></div>
+		<div id="header">
+          <div id="product"><img src="@{'/public/images'}/product.png" alt="&{'product'}" title="&{'product'}"/></div>
+          <div id="menu">
+            <ul>
+              <li><a href="@{Application.index()}">&{'text_home'}</a></li>
+              <li><a href="@{Checkout.checkout()}">&{'text_order'}</a></li>
+              <li><a href="@{Account.index()}">&{'text_account'}</a></li>
+              <li><a href="#">&{'text_faq'}</a></li>
+            </ul>
+          </div>
+          <div id="welcome">
+            #{if !user}
+            &{'text_welcome', actionBridge.Account.index().url, actionBridge.Account.register().url}
+            #{/if}
+            #{else}
+            &{'text_logged', actionBridge.Account.index().url, user, actionBridge.Account.logout(request.url).url}
+            #{/else}
+          </div>
+          #{if cart}
+          <div class="heading">
+            <a href="@{Checkout.cart}"><span id="cart_total">&{'text_items', cart?.quantity, cart?.total}</span></a>
+          </div>
+          #{/if}
+		  <!--div id="notification"></div-->
+		  <div id="content"> #{doLayout /}</div>
+		  <div id="footer">
+		    <ul>
+		      <li><a href="#">&{'text_affiliate'}</a></li>
+			  <li><a href="#">&{'text_terms'}</a></li>
+		    </ul>
+		  </div>
+		  <div id="powered">&{'powered'}</div>
+		</div>
+	</body>
+</html>

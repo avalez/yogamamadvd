@@ -1,0 +1,54 @@
+#{extends 'main.html' /}
+#{set title:'Йога для будущих мам' /}
+
+<div id="content">
+
+  <div id="nav">
+    <ul>
+      <li><a href="#connect">Выбор способа доставки</a></li>
+
+      <li><a href="#command"">Выбор способа оплаты</a></li>
+
+      <li><a href="#command"">Выбор курса</a></li>
+
+      <li><a href="#command"">Заказ</a></li>
+    </ul>
+  </div>
+
+#{if products.size() > 0}
+  &nbsp;
+  <div class="product-filter"></div>
+  <div class="product-list">
+	#{list items:products, as:'product'}
+    <div>
+      <div class="right">
+        <div class="cart"><a onclick="addToCart('@{Checkout.addToCart}', '${product.id}', $('#image${product.id}'), 1, '@{'/public/images'}');" class="button"><span>&{'button_cart'}</span></a></div>
+      </div>
+	  <div class="left">
+        #{if product.thumb}
+        <div class="image"><a href="@{show(product.id)}"><img src="@{'/public/images'}/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+        #{/if}
+        #{if product.price}
+        <div class="price">
+          #{if !product.special}
+          &{'format_price', product.price.format('0')} 
+          #{/if}
+          #{else}
+          <span class="price-old">&{'format_price', product.price.format('0')}</span> <span class="price-new">&{'format_price', product.special.format('0')}</span>
+          #{/else}
+        </div>
+        #{/if}
+        <div class="name"><a href="@{show(product.id)}">${product.name}</a></div>
+        <div class="description">${product.description.substring(0, 100)}...</div>
+        #{if product.rating}
+        <div class="rating"><img src="@{'/public/images'}/stars-${product.rating}.png" alt="&{text_reviews, product.reviews}"/></div>
+        #{/if}
+      </div>
+    </div>
+	#{/list}
+  </div>
+#{/if}
+#{else}
+ &{'text_empty'}
+#{/else}
+</div>

@@ -1,0 +1,6 @@
+<div class="breadcrumb">
+  <a href="@{Application.index()}">&{'text_home'}</a>
+  #{list items:_arg, as:'breadcrumb'}
+  &nbsp;»&nbsp;<a href="#">&{breadcrumb}</a>
+  #{/list}
+</div>

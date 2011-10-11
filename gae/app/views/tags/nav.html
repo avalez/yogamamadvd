@@ -1,0 +1,11 @@
+  <div id="nav">
+    <ul>
+      <li class="${_shipment}">#{link disabled:_shipment, href:@Checkout.shipment()}Выбор способа доставки#{/link}</li>
+
+      <li class="${_payment}">#{link disabled:_payment, href:@Checkout.payment()}Выбор способа оплаты#{/link}</li>
+
+      <li class="${_cart}">#{link disabled:_cart, href:@Checkout.product()}Выбор курса#{/link}</li>
+
+      <li class="${_checkout}">#{link disabled:_checkout, href:@Checkout.checkout()}Заказ#{/link}</li>
+    </ul>
+  </div>

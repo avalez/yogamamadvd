@@ -1,0 +1,75 @@
+        <tr>
+          <td><span class="required">*</span> &{'entry_city'}</td>
+          <td><input type="text" name="user.city" value="${flash['user.city']}" />
+            #{ifError 'user.city'}
+            <span class="error">#{error 'user.city'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_postcode'}</td>
+          <td><input type="text" name="user.postcode" value="${flash['user.postcode']}" />
+            #{ifError 'user.postcode'}
+            <span class="error">#{error 'user.postcode'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_country'}</td>
+          <td><select name="user.country_id" onchange="loadZones(this.value)">
+            </select>
+            <input id="country" type="hidden" name="user.country" value="${flash['user.country']}"/>
+            #{ifError 'user.country'}
+            <span class="error">#{error 'user.country'/}</span>
+            #{/ifError}</td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> &{'entry_zone'}</td>
+          <td><select name="user.zone_id" onchange="$('#zone').attr('value', $('select[name=\'user.zone_id\'] option:selected').text());">
+            </select>
+            <input id="zone" type="hidden" name="user.zone" value="${flash['user.zone']}"/>
+            #{ifError 'user.zone'}
+            <span class="error">#{error 'user.zone'/}</span>
+            #{/ifError}</td>
+        </tr>
+
+#{set 'moreScripts'}
+<script type="text/javascript"><!--
+function loadCountries() {
+    var options = '<option value="">&{'text_select'}</option>';
+    $.getJSON("http://ws.geonames.org/countryInfoJSON" + "?maxRows=300&stye=short&lang=" + '${lang}', function( data ) {
+        $.map( data.geonames, function( item ) {
+            if (item.geonameId == "${flash['user.country_id']}") {
+              options += '<option value="' + item.geonameId  + '" selected="selected">' + item.countryName + '</option>';
+            } else {
+              options += '<option value="' + item.geonameId  + '">' + item.countryName + '</option>';
+            }
+        });
+        $('select[name=\'user.country_id\']').html(options);
+    });
+    
+}
+
+function loadZones(country_id) {
+  if (country_id != undefined && country_id.length > 0) {
+    $('#country').attr('value', $('select[name=\'user.country_id\'] option:selected').text());
+    var options = '<option value="">&{'text_select'}</option>';
+    $.getJSON("http://ws.geonames.org/childrenJSON?geonameId="  + country_id + "&stye=short&lang=" + '${lang}', function(data){
+        $.map( data.geonames, function( item ) {
+            if (item.geonameId == "${flash['user.zone_id']}") {
+              options += '<option value="' + item.geonameId  + '" selected="selected">' + item.name + '</option>';
+            } else {
+              options += '<option value="' + item.geonameId  + '">' + item.name + '</option>';
+            }
+        });
+        $('select[name=\'user.zone_id\']').html(options);
+    })
+  }
+}
+
+$(function() {
+  loadCountries();
+  loadZones("${flash['user.country_id']}");
+})
+
+    
+//--></script> 
+#{/set}

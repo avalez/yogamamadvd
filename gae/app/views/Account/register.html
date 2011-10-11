@@ -1,0 +1,10 @@
+#{extends 'main.html' /}
+#{set title:'Йога для будущих мам' /}
+
+<div id="content">
+  <h1>&{'heading_register'}</h1>
+  #{if flash.error}
+  <div class="warning">&{flash.error}</div>
+  #{/if}
+  #{register action:@Account.create(), countries:countries /}
+</div>

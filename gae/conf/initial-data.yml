@@ -1,0 +1,110 @@
+# Test data
+
+User(admin):
+    email: admin@example.com
+    password: password
+    firstname: Administrator
+    isAdmin: true
+    
+User(user):
+    email: azhdanov@me.com
+    password: test
+    firstname: Test
+    lastname: User
+    address_1: Rizska 1492/2
+    city: Praha
+    country: Czech Republic
+    zone: Praha Hlavni Mesto
+    postcode: 10200
+
+Product(DVD1):
+    name:   Йога 1
+    thumb:  yoga1-80x80.png
+    description:    >
+        Асаны (или иначе упражнения), которые мы выполняем в первом триместре беременности, помогают будущим мамам справиться с тошнотой, изжогой, улучшить работу кишечника и, в результате, избежать недомоганий и токсикоза (либо облегчить его течение), нормализовать работу эндокринной системы, создать пространство между ребрами и тазовыми костями для развития плода, сохранить мышцы в тонусе.
+        Практики на расслабление помогают избавиться от неуверенности, мнительности и страха, преследующего многих беременных женщин, и стабилизировать работу нервной системы
+        Позитивные аффирмации настраивают на светлое протекание беременности, помогают «видеть» будущего малыша здоровым и счастливым.
+    price:  1
+
+Product(DVD2):
+    name:   Йога 2
+    thumb:  yoga2-80x80.png
+    description:    >
+        Асаны (или иначе упражнения), которые мы выполняем во втором триместре беременности, помогают будущим мамам разгрузить почки, снять отечность ног, растянуть мышцы промежности, улучшить кровообращение в области малого таза и всего организма, сохранить мышцы в тонусе.
+        Дыхательные упражнения помогают увеличить внутреннее пространство в грудной клетке и в области живота, чтобы малышу было куда расти, насытить организм мамы и малыша кислородом, направлять осознанное дыхание в область живота и в родовые пути.
+        Практики на расслабление помогают избавиться от неуверенности, мнительности и страха, преследующего многих беременных женщин, и стабилизировать работу нервной системы.
+    price: 1
+
+Product(DVD3):
+    name:   Йога 3
+    thumb:  yoga3-80x80.png
+    description:    >
+        Асаны (или иначе упражнения), которые мы выполняем в третьем триместре беременности, помогают будущим мамам разгрузить почки и предотвратить чрезмерное отекание ног, улучшить работу кишечника, уменьшить нагрузку на сердце, уменьшить боли в пояснице, подготовить мышцы и связки тазовой области к предстоящим родам.
+        Дыхательные техники, осваиваемые будущими мамами, помогают избежать боли при родах, насытить организм мамы и малыша кислородом.
+        Практики на расслабление помогают избавиться от неуверенности, мнительности и страха, преследующего многих беременных женщин, и научиться правильно расслабляться, что необходимо для успешного протекания родов.
+    price: 1
+
+Status(new):
+    name:   new
+
+Status(payed):
+    name:   paid
+
+Status(shipped):
+    name:   shipped
+
+Status(delivered):
+    name:   delivered
+    
+PaymentGatewayCategory(ondelivery):
+    name:   ondelivery
+
+PaymentGatewayCategory(internet):
+    name:   internet
+
+PaymentGatewayCategory(normal):
+    name:   normal
+
+PaymentGatewayCategory(visa_mastercard):
+    name:   visa_mastercard
+
+PaymentGateway(post):
+    name:   post
+    categories: ondelivery
+
+PaymentGateway(yandex):
+    name:   yandex
+    categories: internet
+
+PaymentGateway(rbk):
+    name:   rbk
+    categories: visa_mastercard
+
+PaymentGateway(webmoney):
+    name:   webmoney
+    categories: internet
+
+PaymentGateway(liqpay):
+    name:   liqpay
+    categories: internet
+
+PaymentGateway(qiwi):
+    name:   qiwi
+    categories: normal
+
+PaymentGateway(robokassa):
+    name:   robokassa
+    categories: visa_mastercard
+
+PaymentGateway(transfer):
+    name:   transfer
+    categories: normal
+
+PaymentGateway(paypal):
+    name:   paypal
+    categories: [internet, visa_mastercard]
+
+PaymentGateway(bank):
+    name:   bank
+    categories: normal
+    

@@ -1,0 +1,102 @@
+#{extends 'main.html' /}
+#{set title:'Йога для будущих мам' /}
+
+#{nav checkout:'active'/}
+
+    #{if flash.attention}
+    <div class="attention">&{flash.attention}</div>
+    #{/if}    
+    #{if flash.success}
+    <div class="success">&{flash.success}</div>
+    #{/if}
+    #{if flash.error}
+    <div class="warning">&{flash.error}</div>
+    #{/if}
+
+  <form action="@{setProduct()}" method="post" enctype="multipart/form-data" id="cart">
+    
+  <div class="checkout-cart-content">
+    <div class="left">
+      <h2 style="background: left top url(@{'/public/images/basket.png'}) no-repeat; padding-left: 28px;">&{'heading_cart'}</h2>
+      <div id="selected" class="product-grid content">
+        #{list items:products, as:'product'}
+          <!-- FIXME: product code -->
+          <div id="selected-${product.id}" #{if !cart.items.containsKey(product.id.toString())} style="display:none" #{/if}>
+            #{if product.thumb}
+            <div class="image"><a href="@{Catalog.show(product.id)}"><img src="@{'/public/images'}/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+            #{/if}
+            <div class="name"><a href="@{Catalog.show(product.id)}">${product.name}</a></div>
+            <div class="price">
+            <label>Цена:</label>
+            #{if product.price}
+              #{if !product.special}
+              &{'format_price', product.price.format('0')} 
+              #{/if}
+              #{else}
+              <span class="price-old">&{'format_price', product.price.format('0')}</span> <span class="price-new">&{'format_price', product.special.format('0')}</span>
+              #{/else}
+            #{/if}
+            </div>
+            <div class="quantity">
+              <label for="count_disc11">Количество:</label>
+              <select name="qties.${product.id}" class="select_qty">
+              <option value="1" selected="selected">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>                                            
+              </select> шт.
+            </div>
+            <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" href="#" onclick="return removeFromCart('@{removeFromCart()}', ${product.id}, '@{'/public/images'}')">Убрать из коризны</a></div>
+          </div>
+        #{/list}
+      </div>
+    </div>
+
+    <div class="right">
+      <h2 style="background: left top url(@{'/public/images/package.png'}) no-repeat; padding-left: 28px;">Доставка</h2>
+      <div class="content">
+        <div class="cart-total">
+          <table>
+            <tr>
+              <td colspan="5"></td>
+              <td class="right"><b>&{'text_total'}:</b></td>
+              <td class="right">${cart.total}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <a href="@{checkout}" class="button"><span>&{'button_checkout'}</span></a>
+      </div>
+    </div>
+  </div>
+
+  <h2>Курс</h2>
+  <div id="available" class="product-list">
+    #{list items:products, as:'product'}
+    <!-- FIXME: product code -->
+    <div id="available-${product.id}" #{if cart.items.containsKey(product.id.toString())} style="display:none" #{/if}>
+      <div class="right">
+        <div class="cart"><a onclick="addToCart('@{Checkout.addToCart}', ${product.id}, $('#image${product.id}'), 1, '@{'/public/images'}');" class="button"><span>&{'button_cart'}</span></a></div>
+      </div>
+      <div class="left">
+        #{if product.thumb}
+        <div class="image"><a href="@{Catalog.show(product.id)}"><img src="@{'/public/images'}/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+        #{/if}
+        <div class="price">
+        <label>Цена:</label>
+        #{if product.price}
+          #{if !product.special}
+          &{'format_price', product.price.format('0')} 
+          #{/if}
+          #{else}
+          <span class="price-old">&{'format_price', product.price.format('0')}</span> <span class="price-new">&{'format_price', product.special.format('0')}</span>
+          #{/else}
+        #{/if}
+        </div>
+        <div class="name"><a href="@{Catalog.show(product.id)}">${product.name}</a></div>
+        <div class="description">${product.description.substring(0, 100)}...</div>
+      </div>
+    </div>
+    #{/list}
+  </div>
+  
+  </form>

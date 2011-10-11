@@ -1,0 +1,225 @@
+  <div class="warning register-warning" style="display: none">${i18n('error_validation')}</div>
+
+  <form action="#/account/register" method="post" enctype="multipart/form-data" id="register${_shipment}">
+    <input type="submit" style="display: none;">
+    <input type="hidden" name="_url" value="${_url}"/>
+    {{if typeof _action == 'undefined'}}
+    <input type="hidden" name="_shipment" value="${_shipment}"/>
+    {{if !_shipment}}
+    <h2>${i18n('text_your_details')}</h2>
+    {{else}}
+    <h2>${i18n('text_new_customer')}</h2>
+    {{/if}}
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_firstname')}</td>
+          <td><input type="text" name="user.firstname"/></td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_lastname')}</td>
+          <td><input type="text" name="user.lastname"/></td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_email')}</td>
+          <td><input type="text" name="user.email"/></td>
+        </tr>
+        {{if _shipment != 'download'}}
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_telephone')}</td>
+          <td><input type="text" name="user.telephone"/></td>
+        </tr>
+        <tr>
+          <td>${i18n('entry_fax')}</td>
+          <td><input type="text" name="user.fax"/></td>
+        </tr>
+        {{/if}}
+      </table>
+    </div>
+    {{else}}
+    <input type="hidden" name="_action" value="${_action}"/>
+    {{/if}}
+    {{if _shipment != 'download'}}
+    <h2>${i18n('text_your_address')} </h2>
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td>${i18n('entry_company')}</td>
+          <td><input type="text" name="user.company"/></td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_address_1')}</td>
+          <td><input type="text" name="user.address_1" {{if app.connected()}}value="${app.connected().address_1}"{{/if}}/></td>
+        </tr>
+        <tr>
+          <td>${i18n('entry_address_2')}</td>
+          <td><input type="text" name="user.address_2" {{if app.connected()}}value="${app.connected().address_2}"{{/if}}/></td>
+        </tr>
+          <tr>
+            <td><span class="required">*</span> ${i18n('entry_city')}</td>
+            <td><input id="city" type="text" name="user.city" {{if app.connected()}}value="${app.connected().city}"{{/if}}/></td>
+          </tr>
+          <tr>
+            <td><span class="required">*</span> ${i18n('entry_postcode')}</td>
+            <td><input type="text" name="user.postcode" {{if app.connected()}}value="${app.connected().postcode}"{{/if}}/></td>
+          </tr>
+          <tr>
+            <td><span class="required">*</span> ${i18n('entry_country')}</td>
+            <td><input id="country" type="text" name="user.country" {{if app.connected()}}value="${app.connected().country}"{{/if}}/></td>
+          </tr>
+          <tr>
+            <td><span class="required">*</span> ${i18n('entry_zone')}</td>
+            <td><input id="zone" type="text" name="user.zone" {{if app.connected()}}value="${app.connected().zone}"{{/if}}/></td>
+          </tr>
+      </table>
+    </div>
+    {{/if}}
+    {{if !_shipment}}
+    <h2>${i18n('text_your_password')}</h2>
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_password')}</td>
+          <td><input type="password" name="user.password" id="password" /></td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_confirm')}</td>
+          <td><input type="password" name="user.confirm"/></td>
+        </tr>
+      </table>
+    </div>
+    <h2>${i18n('text_newsletter')}</h2>
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td>${i18n('entry_newsletter')}</td>
+          <td>
+            <input type="radio" name="user.newsletter" value="1" checked="true"/>
+            ${i18n('text_yes')}
+            <input type="radio" name="user.newsletter" value="0" />
+            ${i18n('text_no')}
+          </td>
+        </tr>
+      </table>
+    </div>
+    {{/if}}
+    {{if typeof text_agree != 'undefined'}}
+    <div class="buttons">
+      <div class="right">${i18n('text_agree')}
+        <input type="checkbox" name="user.agree" value="1"/>
+        <a onclick="$('#register${_shipment}').submit();" class="button"><span>${i18n('button_continue')}</span></a></div>
+    </div>
+    {{else}}
+    <div class="buttons">
+      <a onclick="$('#register${_shipment}').submit();" class="button"><span>${i18n('button_continue')}</span></a>
+    </div>
+    {{/if}}
+  </form>
+
+<script type="text/javascript">
+  /*
+  http://www.playframework.org/documentation/1.2.3/validation-builtin#phone
+
+  Format: +CCC (SSSSSS)9999999999xEEEE
+
+    + optional country code mark
+    CCC optional country code, up to 3 digits, note than it MUST be followed be a delimiter
+    (SSSSSS) optional subzone, up to 6 digits
+    9999999999 mandatory number, up to 20 digits (which should cover all know cases current and future)
+    x optional extension, can also be spelled “ext” or "extension"
+    EEEE optional extension number, up to 4 digits
+    Delimiters can be either a space, -, . or / and can be used anywhere in the number
+
+  Examples:
+
+    usa:(305) 613 09 58 ext 101
+    france:+33 1 47 37 62 24 x3
+    germany:+49-4312 / 777 777
+    china:+86 (10)69445464
+    uk:(020) 1234 1234
+  */
+  $.validator.addMethod("phone", function(phone_number, element) {
+	return this.optional(element) || phone_number.length > 9 &&
+	  /* excerpt from play framework/src/play/data/validation/PhoneCheck.java */
+		phone_number.match(/^([\+][0-9]{1,3}([ \.\-]))?([\(]{1}[0-9]{2,6}[\)])?([0-9 \.\-\/]{3,20})((x|ext|extension)[ ]?[0-9]{1,4})?$/);
+  }, "Please specify a valid phone number");
+
+  $("#register${_shipment}").validate({
+    rules: {
+      'user.firstname': 'required',
+      'user.lastname': 'required',
+      'user.email': {
+        required: true,
+        email: true,
+        remote: '/ws/checkEmail'
+      },
+      'user.telephone': {
+          required: true,
+          phone: true
+      },
+      'user.fax': 'phone',
+      'user.address_1': 'required',
+      'user.city': 'required',
+      'user.postcode': 'required',
+      'user.country': 'required',
+      'user.zone': 'required',
+      'user.password': {
+          required: true,
+          minlength: 4
+      },
+      'user.confirm': {
+          required: true,
+          equalTo: '#password'
+      }
+    },
+    messages: {
+      'user.firstname': i18n('error_firstname'),
+      'user.lastname': i18n('error_lastname'),
+      'user.email': {
+          required: i18n('error_email'),
+          email: i18n('error_email'),
+          remote: i18n('error_exists')
+
+      },
+      'user.telephone': i18n('error_telephone'),
+      'user.fax': i18n('error_fax'),
+      'user.address_1': i18n('error_address_1'),
+      'user.city': i18n('error_city'),
+      'user.postcode': i18n('error_postcode'),
+      'user.country': i18n('error_country'),
+      'user.zone': i18n('error_zone'),
+      'user.password': i18n('error_password'),
+      'user.confirm': i18n('error_confirm')
+    },
+    {{if typeof _action != 'undefined'}}
+    /* workaround dialog + sammy problem */
+    submitHandler: function(form) {
+      var returned = app._checkFormSubmission($(form));
+    },
+    {{/if}}
+    onkeyup: false
+  });
+
+  $("#city").autocomplete({
+      source: function( request, response ) {
+          $.getJSON("http://ws.geonames.org/searchJSON?name_startsWith=" + request.term + "&featureClass=P&maxRows=12&stye=full&lang=ru", function( data ) {
+              response( $.map( data.geonames, function( item ) {
+                  return {
+                      label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                      value: item.name
+                  }
+              }));
+          });
+      },
+      minLength: 4,
+      select: function(event, ui) {
+          if (ui.item) {
+            var selected = ui.item.label.split(",");
+            $('#zone').val(selected[1].trim());
+            $('#country').val(selected[2].trim());
+            return false;
+          }
+      }
+  });
+
+</script>

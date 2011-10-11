@@ -1,0 +1,70 @@
+#{extends 'main.html' /}
+#{set title:'Йога для будущих мам - Корзина' /}
+
+#{nav cart:'active', checkout:'disabled'/}
+
+    
+  <h2>Курс</h2>
+
+  <form action="@{setProduct()}" method="post" enctype="multipart/form-data" id="cart">
+
+  <p>Курс можно выбрать для всех или некоторых триместров:</p>
+
+  #{ifError 'products'}
+  <div class="warning">#{error 'products'/}</div>
+  #{/ifError}</td>
+
+  <div class="product-list">
+  #{list items:products, as:'product'}
+    <div>
+      <input id="product-${product.id}" type="checkbox" value="${product.id}" name="products" style="display: none">
+      <label for="product-${product.id}" style="padding: 20px; margin-top: 30px; float: left;"></label>
+        <div>
+          <div class="left">
+            #{if product.thumb}
+            <div class="image"><a href="@{Catalog.show(product.id)}"><img src="@{'/public/images'}/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+            #{/if}
+            <div class="price">
+            Цена:
+            #{if product.price}
+              #{if !product.special}
+              &{'format_price', product.price.format('0')} 
+              #{/if}
+              #{else}
+              <span class="price-old">&{'format_price', product.price.format('0')}</span> <span class="price-new">&{'format_price', product.special.format('0')}</span>
+              #{/else}
+            #{/if}
+            <div class="quantity">
+              Количество:
+              <select name="qties.${product.id}" class="select_qty">
+              <option value="1" selected="selected">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>                                            
+              </select> шт.
+            </div>
+            </div>
+            <div class="name"><a href="@{Catalog.show(product.id)}">${product.name}</a></div>
+            <div class="description">${product.description.substring(0, 250)}...</div>
+          </div>
+        </div>
+      </label>
+    </div>
+  #{/list}
+  </div>
+  <div class="buttons">
+    <a onclick="$('#cart').submit();" class="button"><span>&{'button_checkout'}</span></a>
+  </div>
+
+  </form>
+
+#{set 'moreStyles'}
+<link media="screen" href="@{'/public/stylesheets/customInput.css'}" type="text/css" rel="stylesheet">
+#{/set}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/jquery/customInput.jquery.js'}" type="text/javascript"></script>
+<script type="text/javascript"><!--
+$(function() {
+    $('input').customInput();
+});
+--></script>
+#{/set}
+  
+

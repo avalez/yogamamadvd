@@ -1,0 +1,32 @@
+#{extends 'main.html' /}
+#{set title:'Йога для будущих мам' /}
+
+<div id="content">
+  <h1>&{'heading_login'}</h1>
+  #{if flash.success}
+  <div class="success">&{flash.success}</div>
+  #{/if}
+  #{if flash.error}
+  <div class="warning">&{flash.error}</div>
+  #{/if}
+  <div class="login-content">
+    <div class="left">
+      <h2>&{'text_new_customer'}</h2>
+      <div class="content">
+        <p><b>&{'text_register'}</b></p>
+        <p>&{'text_register_account'}</p>
+        <a href="@{Account.register}" class="button"><span>&{'button_continue'}</span></a></div>
+    </div>
+    <div class="right">
+        #{login url:flash.url /}
+    </div>
+  </div>
+#{set 'moreScripts'}
+<script type="text/javascript"><!--
+$('#login input').keydown(function(e) {
+	if (e.keyCode == 13) {
+		$('#login').submit();
+	}
+});
+//--></script>   
+#{/set}
