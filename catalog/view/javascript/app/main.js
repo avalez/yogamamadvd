@@ -29,9 +29,12 @@ $(function () {
     
   });
 
-  // run app, when i18n loaded
+  // when i18n loaded, render body then run app
   i18nLoaded.then(function() {
-    app.run('#/')
+    $.get('catalog/view/theme/yogamamadvd/templates/container.html', function(html) {
+        $.tmpl(html).appendTo($('body'));
+        app.run('#/');
+    })
   })
 
 });

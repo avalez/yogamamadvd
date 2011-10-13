@@ -81,7 +81,7 @@
         if (!app.store.get('connected')) { // once
           // TODO?: replace in play! template
           app.store.set('connected', true);
-          $.get('../ws/connected', function(user) {
+          $.get('index.php?route=account/loginx', function(user) {
             app.store.set('user', user);
              // update welcome text
             app.trigger('location-changed');

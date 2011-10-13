@@ -55,6 +55,13 @@
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery.tipTip.minified.js"></script>
 
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery.json-2.3.min.js"></script>
+<?php if ($logged) { ?>
+<script type="text/javascript" id="loggedIn">
+    $(function() {
+        app.store.set('loggedIn', true)
+    })
+</script>
+<?php } ?>
 
 <?php foreach ($scripts as $script) { ?>
 <script type="text/javascript" src="<?php echo $script; ?>"></script>
@@ -72,28 +79,3 @@ DD_belatedPNG.fix('#logo img');
 <?php echo $google_analytics; ?>
 </head>
 <body>
-<div id="container">
-  <?php if ($logo) { ?>
-  <div id="logo"><img src="<?php echo $logo; ?>" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
-  <?php } ?>
-  <div id="header">
-        <div id="product"><img src="catalog/view/theme/yogamamadvd/image/product.png" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
-        <div id="menu">
-          <ul>
-            <li><a href="#/"><?php echo $text_home; ?></a></li>
-            <li><a href="#/checkout/checkout"><?php echo $text_order; ?></a></li>
-            <li><a href="#/account/account"><?php echo $text_account; ?></a></li>
-            <li><a href="#"><?php echo $text_faq; ?></a></li>
-          </ul>
-        </div>
-        <div id="welcome">
-          <?php if (!$logged) { ?>
-          <?php echo $text_welcome; ?>
-          <?php } else { ?>
-          <?php echo $text_logged; ?>
-          <?php } ?>
-        </div>
-        <div class="heading">
-          <a href="#"><span id="cart_total">&nbsp;</span></a>
-        </div>
-    <div id="notification"></div>
