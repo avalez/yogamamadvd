@@ -80,7 +80,20 @@ abstract class Resource extends Controller
             $this->response->setOutput(json_encode($object));
         }
     }
-
+    
+    public static function customerToUser($customer) {
+  		if ($customer->isLogged()) {
+  		  $user = array();
+  		  $user['id'] = $customer->getId();
+  		  $user['firstname'] = $customer->getFirstname();
+  		  $user['lastname'] = $customer->getLastname();
+  		  $user['email'] = $customer->getEmail();
+    		return $user;
+  		} else {
+  		  return null;
+		  }
+    }
+    
     /**
      * HTTP response code constant
      */

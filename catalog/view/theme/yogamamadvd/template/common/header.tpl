@@ -39,33 +39,6 @@
 <script type="text/javascript" src="<?php echo $script; ?>"></script>
 <?php } ?>
 
-<script type="text/javascript" src="catalog/view/javascript/sammy.min/sammy.js" charset="utf-8"></script>
-<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.tmpl.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.storage.js"></script>
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/app/i18n.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/app/main.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/app/checkout.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/app/account.js"></script>
-
-<link rel="stylesheet" href="catalog/view/theme/yogamamadvd/stylesheet/customInput.css">
-<link rel="stylesheet" href="catalog/view/theme/yogamamadvd/stylesheet/tipTip.css">
-<script type="text/javascript" src="catalog/view/javascript/jquery/customInput.jquery.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/jquery/jquery.tipTip.minified.js"></script>
-
-<script type="text/javascript" src="catalog/view/javascript/jquery/jquery.json-2.3.min.js"></script>
-<?php if ($logged) { ?>
-<script type="text/javascript" id="loggedIn">
-    $(function() {
-        app.store.set('loggedIn', true)
-    })
-</script>
-<?php } ?>
-
-<?php foreach ($scripts as $script) { ?>
-<script type="text/javascript" src="<?php echo $script; ?>"></script>
-<?php } ?>
 <!--[if IE 7]>
 <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/ie7.css" />
 <![endif]-->
@@ -79,3 +52,29 @@ DD_belatedPNG.fix('#logo img');
 <?php echo $google_analytics; ?>
 </head>
 <body>
+<div id="container">
+  <?php if ($logo) { ?>
+  <div id="logo"><img src="<?php echo $logo; ?>" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
+  <?php } ?>
+  <div id="header">
+        <div id="product"><img src="catalog/view/theme/yogamamadvd/image/product.png" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
+        <div id="menu">
+          <ul>
+            <li><a href="#/"><?php echo $text_home; ?></a></li>
+            <li><a href="#/checkout/shipment"><?php echo $text_order; ?></a></li>
+            <li><a href="#/account/account"><?php echo $text_account; ?></a></li>
+            <li><a href="#"><?php echo $text_faq; ?></a></li>
+          </ul>
+        </div>
+        <div id="welcome">
+          <?php if (!$logged) { ?>
+          <?php echo $text_welcome; ?>
+          <?php } else { ?>
+          <?php echo $text_logged; ?>
+          <?php } ?>
+        </div>
+        <div class="heading">
+          <a href="#"><span id="cart_total">&nbsp;</span></a>
+        </div>
+    </div>
+    <div id="notification"></div>

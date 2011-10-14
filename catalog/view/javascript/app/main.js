@@ -10,31 +10,29 @@ $(function () {
     this.store = new Sammy.Store({name: 'yogamamadvd', element: this.$element(), type: 'session'});
     
     this.bind('location-changed', function(context) {
-      // TODO: run once!
-      var link = $('link[type*=x-icon]').remove().attr("href");
-      $('<link href="'+ link +'" rel="shortcut icon" type="image/x-icon" />').appendTo('head');
+      // TODO? on redirect
+      //var link = $('link[type*=x-icon]').remove().attr("href");
+      //$('<link href="'+ link +'" rel="shortcut icon" type="image/x-icon" />').appendTo('head');
       
       // TODO: remove!
       var url = escape(app.getLocation().split('?')[0]);
       if (app.connected()) {
-          $('#welcome').html(i18n('text_logged', '#/', app.connected().firstname, '#/account/logout?_url=' + url));
+          $('#welcome').html(i18n('text_logged', '#/account/account', app.connected().firstname, '#/account/logout?_url=' + url));
       } else {
           $('#welcome').html(i18n('text_welcome', '#/account/account?_url=' + url, '#/account/register?_url=' + url));
       }
     });
 
-    this.get('#/', function(context) {
-      context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
+    this.get('#?/(index.php)?', function(context) {
+      //context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
+      context.load('index.php?route=common/main').swap();
     });
     
   });
 
-  // when i18n loaded, render body then run app
-  i18nLoaded.then(function() {
-    $.get('catalog/view/theme/yogamamadvd/templates/container.html', function(html) {
-        $.tmpl(html).appendTo($('body'));
-        app.run('#/');
-    })
+  // run app, when i18n loaded
+  i18nLoaded.always(function() {
+      app.run();
   })
 
 });

@@ -71,18 +71,21 @@ label {
 #column-right {
 	float: right;
 	width: 180px;
+	margin-right: 95px;
 }
 #content {
 	min-height: 400px;
 	margin-bottom: 25px;
-	width: 850px;
+	width: 875px;
 	margin: auto;
 }
 #column-left + #column-right + #content, #column-left + #content {
 	margin-left: 195px;
+	width: 775px;
 }
 #column-right + #content {
 	margin-right: 195px;
+	width: 775px;
 }
 #header {
 	margin-bottom: 7px;
@@ -91,6 +94,7 @@ label {
 	z-index: 99;
 	width: 880px;
 	margin: auto;
+	height: 95px;
 }
 #header #product {
 	width: 400px;
@@ -331,7 +335,7 @@ a.button:hover span {
 	-khtml-border-radius: 7px 7px 0px 0px;
 	border-radius: 7px 7px 0px 0px;
 	border: 1px solid #DBDEE1;
-	background: url('../image/background.png') repeat-x;
+	/* FIXME: background: url('../image/background.png') repeat-x; */
 	padding: 8px 10px 7px 10px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
@@ -1294,6 +1298,8 @@ a.button:hover span {
 	border-top: 1px solid #DBDEE1;
 	border-bottom: 1px solid #DBDEE1;
 	background: #F8F8F8;
+	width: 875px;
+	margin: auto;
 }
 #footer ul {
 	list-style: none;
@@ -1315,9 +1321,11 @@ a.button:hover span {
 	text-decoration: underline;
 }
 #powered {
-	margin-top: 5px;
 	text-align: right;
 	clear: both;
+	width: 875px;
+	margin: auto;
+	margin-top: 10px;
 }
 .ui-autocomplete-loading {
     background: url('../image/ui-anim_basic_16x16.gif') right center no-repeat;

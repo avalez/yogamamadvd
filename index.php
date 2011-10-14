@@ -22,6 +22,7 @@ require_once(DIR_SYSTEM . 'library/tax.php');
 require_once(DIR_SYSTEM . 'library/weight.php');
 require_once(DIR_SYSTEM . 'library/length.php');
 require_once(DIR_SYSTEM . 'library/cart.php');
+require_once(DIR_SYSTEM . 'library/resource.php');
 
 // Registry
 $registry = new Registry();

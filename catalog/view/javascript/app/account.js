@@ -78,8 +78,8 @@
       if (typeof callback == 'undefined') {
         return app.store.get('user');
       } else {
+        // TODO: remove, see also main.tpl
         if (!app.store.get('connected')) { // once
-          // TODO?: replace in play! template
           app.store.set('connected', true);
           $.get('index.php?route=account/loginx', function(user) {
             app.store.set('user', user);

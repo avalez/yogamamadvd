@@ -1,5 +1,4 @@
 <?php
-require_once(DIR_SYSTEM . 'library/resource.php');
 class ControllerAccountLoginX extends Resource
 {
     /**
@@ -12,7 +11,7 @@ class ControllerAccountLoginX extends Resource
 
         } else {
 
-            $this->renderJson($this->customer);
+            $this->renderJson($this->customerToUser($this->customer));
 
         }
     }
@@ -37,7 +36,7 @@ class ControllerAccountLoginX extends Resource
                 $this->tax->setZone($address_info['country_id'], $address_info['zone_id']);
             }
 
-            $this->renderJson($this->customer);
+            $this->renderJson($this->customerToUser($this->customer));
         }
     }
 }

@@ -9,6 +9,7 @@
     <?php } ?>
   </div>
 </div>
+<script type="text/javascript" src="catalog/view/javascript/jquery/nivo-slider/jquery.nivo.slider.pack.js"></script>
 <script type="text/javascript"><!--
 $(document).ready(function() {
 	$('#slideshow<?php echo $module; ?>').nivoSlider();
