@@ -26,6 +26,9 @@ abstract class Controller {
 
 	protected function redirect($url, $status = 302) {
 		header('Status: ' . $status);
+        if (isset($this->request->get['partial'])) {
+            $url .= '&partial=true';
+        }
 		header('Location: ' . str_replace('&amp;', '&', $url));
 		exit();
 	}
@@ -52,7 +55,12 @@ abstract class Controller {
 	
 	protected function render() {
 		foreach ($this->children as $child) {
-			$this->data[basename($child)] = $this->getChild($child);
+            if (isset($this->request->get['partial'])
+                && ($child == 'common/header' || $child == 'common/footer')) {
+                $this->data[basename($child)] = "";
+            } else {
+			    $this->data[basename($child)] = $this->getChild($child);
+            }
 		}
 		
 		if (file_exists(DIR_TEMPLATE . $this->template)) {

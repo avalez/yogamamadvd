@@ -60,7 +60,7 @@ DD_belatedPNG.fix('#logo img');
         <div id="product"><img src="catalog/view/theme/yogamamadvd/image/product.png" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
         <div id="menu">
           <ul>
-            <li><a href="#/"><?php echo $text_home; ?></a></li>
+            <li><a href="index.php?route=common/home"><?php echo $text_home; ?></a></li>
             <li><a href="#/checkout/shipment"><?php echo $text_order; ?></a></li>
             <li><a href="#/account/account"><?php echo $text_account; ?></a></li>
             <li><a href="#"><?php echo $text_faq; ?></a></li>
