@@ -319,7 +319,7 @@
         if (!every) { every = 10; }
         var hashCheck = function() {
           var current_location = proxy.getLocation();
-          if (typeof Sammy.DefaultLocationProxy._last_location == 'undefined' ||
+          if (typeof Sammy.DefaultLocationProxy._last_location != 'undefined' &&
             current_location != Sammy.DefaultLocationProxy._last_location) {
             window.setTimeout(function() {
               $(window).trigger('hashchange', [true]);
@@ -877,7 +877,7 @@
         this.setLocation(start_url);
       }
       // check url
-      this._checkLocation();
+      //this._checkLocation();
       this._location_proxy.bind();
       this.bind('location-changed', function() {
         app._checkLocation();

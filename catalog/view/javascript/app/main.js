@@ -23,19 +23,29 @@ $(function () {
       }
     });
 
-    this.get('#?/(index.php)?', function(context) {
+    this.get('#?/(index.php)?$', function(context) {
       //context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
+      var route = this.params.route || 'common/home'
       if (!this.params.route || this.params.route == 'common/home') {
-        //TODO? partial: this.params.route = 'common/main';
-        context.load('index.php?route=common/main').swap();
+        //this.params.route = 'common/main';
+        //context.load('index.php?route=common/main').swap();
       } else {
-        window.location.reload();
+        //window.location.reload();
       }
-      //TODO? partial: context.load('index.php?route=' + this.params.route + '&partial=true').swap();
+      if (route == 'checkoutx/shipment') {
+        app.runRoute('get', '#/checkout/shipment', this.params)
+      } else {
+        this.load('index.php?route=' + route + '&partial=true').swap();
+      }
     })
     
-  });
+    this.post('/index.php$', function(context) {
+      var url = 'index.php?route=' + this.params.route + '&partial=true';
+      this.send($.post, url, this.params.toHash()).swap();
+    })
 
+  });
+  
   // run app, when i18n loaded
   i18nLoaded.always(function() {
       app.run();

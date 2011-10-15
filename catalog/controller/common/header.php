@@ -85,6 +85,7 @@ class ControllerCommonHeader extends Controller {
 		$this->data['home'] = $this->url->link('common/home');
 		$this->data['wishlist'] = $this->url->link('account/wishlist');
 		$this->data['logged'] = $this->customer->isLogged();
+		$this->data['user'] = json_encode(Resource::customerToUser($this->customer));
 		$this->data['account'] = $this->url->link('account/account', '', 'SSL');
 		$this->data['cart'] = $this->url->link('checkout/cart');
 		$this->data['checkout'] = $this->url->link('checkout/checkout', '', 'SSL');

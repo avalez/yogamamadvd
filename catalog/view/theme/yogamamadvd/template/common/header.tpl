@@ -39,6 +39,33 @@
 <script type="text/javascript" src="<?php echo $script; ?>"></script>
 <?php } ?>
 
+<script type="text/javascript" src="catalog/view/javascript/sammy/sammy.js" charset="utf-8"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.tmpl.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.storage.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/i18n.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/main.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/checkout.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/account.js"></script>
+
+<link rel="stylesheet" href="catalog/view/theme/yogamamadvd/stylesheet/customInput.css">
+<link rel="stylesheet" href="catalog/view/theme/yogamamadvd/stylesheet/tipTip.css">
+<script type="text/javascript" src="catalog/view/javascript/jquery/customInput.jquery.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/jquery/jquery.tipTip.minified.js"></script>
+
+<script type="text/javascript" src="catalog/view/javascript/jquery/jquery.json-2.3.min.js"></script>
+
+<script type="text/javascript">
+$(function() {
+  <?php if ($logged) { ?>
+    var user = <?php echo $user ?>;
+    app.store.set('user', user);
+  <?php } ?>
+  app.store.set('connected', true) // TODO: remove, see also account.js#connnected
+})
+</script>
+
 <!--[if IE 7]>
 <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/ie7.css" />
 <![endif]-->
@@ -61,7 +88,7 @@ DD_belatedPNG.fix('#logo img');
         <div id="menu">
           <ul>
             <li><a href="index.php?route=common/home"><?php echo $text_home; ?></a></li>
-            <li><a href="#/checkout/shipment"><?php echo $text_order; ?></a></li>
+            <li><a href="index.php?route=checkoutx/shipment"><?php echo $text_order; ?></a></li>
             <li><a href="#/account/account"><?php echo $text_account; ?></a></li>
             <li><a href="#"><?php echo $text_faq; ?></a></li>
           </ul>
@@ -78,3 +105,4 @@ DD_belatedPNG.fix('#logo img');
         </div>
     </div>
     <div id="notification"></div>
+    <div id="content">
