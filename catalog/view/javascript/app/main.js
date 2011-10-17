@@ -23,16 +23,14 @@ $(function () {
       }
     });
 
-    this.get('#?/(index.php)?', function(context) {
+    this.get('#?/(index.php)?$', function(context) {
       //context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
       if (!this.params.route || this.params.route == 'common/home') {
-        //TODO? partial: this.params.route = 'common/main';
         context.load('index.php?route=common/main').swap();
       } else {
         window.location.reload();
       }
-      //TODO? partial: context.load('index.php?route=' + this.params.route + '&partial=true').swap();
-    })
+    });
     
   });
 

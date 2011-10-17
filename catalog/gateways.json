@@ -1,0 +1,42 @@
+[
+  {
+    "name": "post",
+    "categories": ["ondelivery"]
+  },
+  {
+    "name": "yandex",
+    "categories": ["internet"]
+  },
+  {
+    "name": "rbk",
+    "categories": ["visa_mastercard"]
+  },
+  {
+    "name": "webmoney",
+    "categories": ["internet"]
+  },
+  {
+    "name": "liqpay",
+    "categories": ["internet"]
+  },
+  {
+    "name": "qiwi",
+    "categories": ["normal"]
+  },
+  {
+    "name": "robokassa",
+    "categories": ["visa_mastercard"]
+  },
+  {
+    "name": "transfer",
+    "categories": ["normal"]
+  },
+  {
+    "name": "paypal",
+    "categories": ["internet", "visa_mastercard"]
+  },
+  {
+    "name": "bank",
+    "categories": ["normal"]
+  }
+]

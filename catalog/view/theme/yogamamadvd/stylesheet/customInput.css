@@ -23,11 +23,11 @@
     cursor: pointer;
 }
 .custom-checkbox label {
-    background: url(../images/checkbox.gif) no-repeat; 
+    background: url(../image/checkbox.gif) no-repeat; 
 }
 
 .custom-radio label { 
-    background: url(../images/radiobutton.gif) no-repeat; 
+    background: url(../image/radiobutton.gif) no-repeat; 
 }
 .custom-checkbox label, .custom-radio label {
     background-position: -10px -14px;

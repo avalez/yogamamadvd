@@ -963,17 +963,15 @@ class ControllerSaleCustomer extends Controller {
 	
 				$this->load->model('localisation/country');
 				
-				$country_info = $this->model_localisation_country->getCountry($value['country_id']);
-						
-				if ($country_info && $country_info['postcode_required'] && (strlen(utf8_decode($value['postcode'])) < 2) || (strlen(utf8_decode($value['postcode'])) > 10)) {
+				if ((strlen(utf8_decode($value['postcode'])) < 2) || (strlen(utf8_decode($value['postcode'])) > 10)) {
 					$this->error['address_postcode'][$key] = $this->language->get('error_postcode');
 				}
 			
-				if ($value['country_id'] == '') {
+				if ($value['country'] == '') {
 					$this->error['address_country'][$key] = $this->language->get('error_country');
 				}
 				
-				if ($value['zone_id'] == '') {
+				if ($value['zone'] == '') {
 					$this->error['address_zone'][$key] = $this->language->get('error_zone');
 				}	
 			}

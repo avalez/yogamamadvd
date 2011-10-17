@@ -40,7 +40,7 @@
     
     // routes
     app.post('#/account/register', function(context) {
-      var url = '../ws/register';
+      var url = 'index.php?route=account/registerx';
       if (context.params._action === 'update') {
         url += 'Update';
       } else if (context.params._shipment == 'download') {
@@ -63,7 +63,7 @@
     });
 
     app.get('#/account/logout', function(context) {
-      $.get('../ws/disconnect', function(user) {
+      $.get('index.php?route=account/logoutx', function(user) {
           app.log('logged out');
       });
       app.store.set('user', null);

@@ -12,13 +12,13 @@
 
 <div class="checkout-cart-content">
   <div class="left">
-    <h2 style="background: left top url(images/basket.png) no-repeat; padding-left: 28px;">Корзина</h2>
+    <h2 style="background: left top url(catalog/view/theme/yogamamadvd/image/basket.png) no-repeat; padding-left: 28px;">Корзина</h2>
     <div class="product-grid content">
       {{each(i, product) products}}
       {{var selected = app.cart('items')[product.id] }}
       <div id="selected-${product.id}" {{if !selected }} style="display:none" {{/if}}>
         {{if typeof thumb != 'undefined'}}
-        <div class="image"><a href="${product.url}"><img src="images/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+        <div class="image"><a href="${product.url}"><img src="image/cache/data/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
         {{/if}}
         <div class="name"><a href="${product.url}">${product.name}</a></div>
         <div class="price">
@@ -46,7 +46,7 @@
   </div>
 
   <div class="right">
-    <h2 style="background: left top url(images/package.png) no-repeat; padding-left: 28px;">Заказ</h2>
+    <h2 style="background: left top url(catalog/view/theme/yogamamadvd/image/package.png) no-repeat; padding-left: 28px;">Заказ</h2>
     <div class="content">
       <div class="cart-total">
         <table>
@@ -138,7 +138,7 @@
   {{each(i, product) products}}
   <div id="available-${product.id}" {{if app.cart('items')[product.id] }} style="display:none" {{/if}}>
     {{if typeof thumb != 'undefined'}}
-    <div class="image"><a href="${product.url}"><img src="images/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
+    <div class="image"><a href="${product.url}"><img src="image/cache/data/${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.id}" /></a></div>
     {{/if}}
     <div class="price">
       <label>Цена:</label>

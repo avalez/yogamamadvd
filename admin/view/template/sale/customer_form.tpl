@@ -164,29 +164,21 @@
               </tr>
               <tr>
                 <td><span class="required">*</span> <?php echo $entry_country; ?></td>
-                <td><select name="address[<?php echo $address_row; ?>][country_id]" id="address[<?php echo $address_row; ?>][country_id]" onchange="$('select[name=\'address[<?php echo $address_row; ?>][zone_id]\']').load('index.php?route=sale/customer/zone&token=<?php echo $token; ?>&country_id=' + this.value + '&zone_id=<?php echo $address['zone_id']; ?>');">
-                    <option value=""><?php echo $text_select; ?></option>
-                    <?php foreach ($countries as $country) { ?>
-                    <?php if ($country['country_id'] == $address['country_id']) { ?>
-                    <option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
+                <td><input id="address[<?php echo $address_row; ?>][country]" type="text" name="address[<?php echo $address_row; ?>][country]" value="<?php echo $address['country']; ?>"/>
                   <?php if (isset($error_address_country[$address_row])) { ?>
                   <span class="error"><?php echo $error_address_country[$address_row]; ?></span>
                   <?php } ?></td>
+                </td>
               </tr>
               <tr>
                 <td><span class="required">*</span> <?php echo $entry_zone; ?></td>
-                <td><select name="address[<?php echo $address_row; ?>][zone_id]">
-                  </select>
+                <td><input id="address[<?php echo $address_row; ?>][zone]" type="text" name="address[<?php echo $address_row; ?>][zone]" value="<?php echo $address['zone']; ?>"/>
                   <?php if (isset($error_address_zone[$address_row])) { ?>
                   <span class="error"><?php echo $error_address_zone[$address_row]; ?></span>
                   <?php } ?></td>
+                </td>
               </tr>
-			  <tr>
+              <tr>
                 <td><?php echo $entry_default; ?></td>
                 <td>
                 <?php if ((isset($address['default']) && $address['default']) || count($addresses) == 1) { ?>
@@ -303,19 +295,15 @@ function addAddress() {
     html += '      <td><?php echo $entry_postcode; ?></td>';
     html += '      <td><input type="text" name="address[' + address_row + '][postcode]" value="" /></td>';
     html += '    </tr>';
+    html += '    <tr>';
     html += '      <td><?php echo $entry_country; ?></td>';
-    html += '      <td><select name="address[' + address_row + '][country_id]" onchange="$(\'select[name=\\\'address[' + address_row + '][zone_id]\\\']\').load(\'index.php?route=sale/customer/zone&token=<?php echo $token; ?>&country_id=\' + this.value + \'&zone_id=0\');">';
-    html += '         <option value=""><?php echo $text_select; ?></option>';
-    <?php foreach ($countries as $country) { ?>
-    html += '         <option value="<?php echo $country['country_id']; ?>"><?php echo addslashes($country['name']); ?></option>';
-    <?php } ?>
-    html += '      </select></td>';
+    html += '      <td><input id="address[' + address_row + '][country]" name="address[' + address_row + '][country]" /></td>';
     html += '    </tr>';
     html += '    <tr>';
     html += '      <td><?php echo $entry_zone; ?></td>';
-    html += '      <td><select name="address[' + address_row + '][zone_id]"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></td>';
+    html += '      <td><input id="address[' + address_row + '][zone]" name="address[' + address_row + '][zone]" /></td>';
     html += '    </tr>';
-	html += '    <tr>';
+	  html += '    <tr>';
     html += '      <td><?php echo $entry_default; ?></td>';
     html += '      <td><input type="radio" name="address[' + address_row + '][default]" value="1" /></td>';
     html += '    </tr>';
