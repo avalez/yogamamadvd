@@ -78,17 +78,11 @@
       if (typeof callback == 'undefined') {
         return app.store.get('user');
       } else {
-        // TODO: remove, see also main.tpl
-        if (!app.store.get('connected')) { // once
-          app.store.set('connected', true);
-          $.get('index.php?route=account/loginx', function(user) {
-            app.store.set('user', user);
-             // update welcome text
-            app.trigger('location-changed');
-          }).always(callback);
-        } else {
-          callback(app.store.get('user'));
-        }
+        $.get('index.php?route=account/loginx', function(user) {
+          app.store.set('user', user);
+           // update welcome text
+          app.trigger('location-changed');
+        }).always(callback);
       }
     }
  

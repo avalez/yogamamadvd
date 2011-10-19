@@ -34,6 +34,7 @@
           if (qties) {
             var quantity = parseInt(qties['qties.' + product.id]);
             items[product.id] = {
+              name: product.name,
               quantity: quantity,
               price: product.price,
               total: product.price * quantity
@@ -182,9 +183,10 @@
 
     app.post('#/checkout/checkout', function(context) {
       var data = {jsonCart: $.toJSON(app.cart())};
-      $.ajax({url:'../ws/checkout', data: data, type: 'post',
-        success: function(cart) {
-          context.redirect('#/account/account');
+      $.ajax({url:'index.php?route=checkout/checkoutx', data: data, type: 'post',
+        success: function(html) {
+          app.swap(html.output);
+          //context.redirect('#/account/account');
         },
         error: function(jqXHR, textStatus) {
           $('div.checkout-warning').show().delay(3000).fadeOut('slow');            
