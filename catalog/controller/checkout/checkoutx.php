@@ -43,8 +43,17 @@ class ControllerCheckoutCheckoutX extends Resource
 					$this->load->model('total/' . $result['code']);
 		
 					$this->{'model_total_' . $result['code']}->getTotal($total_data, $total, $taxes);
+					
+					if ($result['code'] == 'sub_total') {
+					  $sub_total = end($total_data);
+      			$sub_total['value'] = $cart->total;
+      			$sub_total['text'] = $this->currency->format($cart->total);
+      			$total_data[key($total_data)] = $sub_total;
+      			$total += $cart->total;
+					}
 				}
 			}
+			
 			
 			$sort_order = array(); 
 		  
@@ -185,6 +194,18 @@ class ControllerCheckoutCheckoutX extends Resource
 			$this->load->model('checkout/order');
 			
 			$this->session->data['order_id'] = $this->model_checkout_order->create($data);
+
+      $this->language->load('checkout/checkout');
+
+			$this->data['column_name'] = $this->language->get('column_name');
+			$this->data['column_model'] = $this->language->get('column_model');
+			$this->data['column_quantity'] = $this->language->get('column_quantity');
+			$this->data['column_price'] = $this->language->get('column_price');
+			$this->data['column_total'] = $this->language->get('column_total');
+	
+			$this->data['products'] = $product_data;
+
+			$this->data['vouchers'] = array();
 
 			$this->data['totals'] = $total_data;
 	
