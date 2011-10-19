@@ -24,7 +24,7 @@
 
       app.loadProducts(context, productIds, function(products) {
         $.each(products, function(i, product) {
-          var item = items[product.id] || {};
+          var item = items[product.product_id] || {};
           var old_quantity = item.quantity || 0;
           var old_price = item.price || 0;
 
@@ -32,17 +32,17 @@
           total -= old_quantity * old_price;
 
           if (qties) {
-            var quantity = parseInt(qties['qties.' + product.id]);
-            items[product.id] = {
+            var quantity = parseInt(qties['qties.' + product.product_id]);
+            items[product.product_id] = {
               name: product.name,
               quantity: quantity,
-              price: product.price,
+              price: parseFloat(product.price),
               total: product.price * quantity
             }
             total_quantity += quantity;
-            total += quantity * product.price
+            total += quantity * parseFloat(product.price)
           } else { // remove
-            items[product.id] = null;
+            items[product.product_id] = null;
           }
         })
 
@@ -63,11 +63,11 @@
         callback = productIds;
         productIds = null;
       }
-      context.load('catalog/products.json', function(products) {
+      context.load('index.php?route=product/categoryx&name=Cameras', {cache: false}, function(products) {
         if (productIds) {
           var ids = $.isArray(productIds) ? productIds : [productIds];
           products = $.grep(products, function(product) {
-            return !productIds || $.inArray(product.id.toString(), ids) >= 0;
+            return !productIds || $.inArray(product.product_id, ids) >= 0;
           });
         }
         callback(products)

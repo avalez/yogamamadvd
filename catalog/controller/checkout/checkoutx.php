@@ -22,6 +22,11 @@ class ControllerCheckoutCheckoutX extends Resource
         return;
       }
 
+			$product_data = array();
+      foreach ($cart->items as $id => $product) {
+        $this->cart->add($id, $product->quantity);
+      }
+
 			$total_data = array();
 			$total = 0;
 			$taxes = $this->cart->getTaxes();
@@ -43,14 +48,6 @@ class ControllerCheckoutCheckoutX extends Resource
 					$this->load->model('total/' . $result['code']);
 		
 					$this->{'model_total_' . $result['code']}->getTotal($total_data, $total, $taxes);
-					
-					if ($result['code'] == 'sub_total') {
-					  $sub_total = end($total_data);
-      			$sub_total['value'] = $cart->total;
-      			$sub_total['text'] = $this->currency->format($cart->total);
-      			$total_data[key($total_data)] = $sub_total;
-      			$total += $cart->total;
-					}
 				}
 			}
 			
@@ -147,26 +144,26 @@ class ControllerCheckoutCheckoutX extends Resource
 			$data['payment_method'] = $cart->payment;
 
 			$product_data = array();
-      foreach ($cart->items as $id => $product) {
+      foreach ($this->cart->getProducts() as $product) {
 				$product_data[] = array(
-					'product_id' => $id,
-					'name'       => $product->name,
-					'model'      => '',
+					'product_id' => $product['product_id'],
+					'name'       => $product['name'],
+					'model'      => $product['model'],
 					'option'     => array(),
-					'download'   => array(),
-					'quantity'   => $product->quantity,
-					'subtract'   => '',
-					'price'      => $product->price,
-					'total'      => $product->total,
-					'tax'        => ''
+					'download'   => $product['download'],
+					'quantity'   => $product['quantity'],
+					'subtract'   => $product['subtract'],
+					'price'      => $product['price'],
+					'total'      => $product['total'],
+					'tax'        => $this->tax->getRate($product['tax_class_id'])
 				); 
       }
 			
 			$data['products'] = $product_data;
 			$data['totals'] = $total_data;
 			$data['comment'] = '';
-			$data['total'] = '';
-			$data['reward'] = '';
+			$data['total'] = $total;
+			$data['reward'] = $this->cart->getTotalRewardPoints();
 			
 			if (isset($this->request->cookie['tracking'])) {
 				$this->load->model('affiliate/affiliate');
