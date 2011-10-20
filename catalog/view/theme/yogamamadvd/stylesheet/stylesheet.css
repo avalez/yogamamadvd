@@ -80,12 +80,12 @@ label {
 	margin: auto;
 }
 #column-left + #column-right + #content, #column-left + #content {
-	margin-left: 195px;
-	width: 775px;
+	margin-left: 295px;
+	width: 675px;
 }
 #column-right + #content {
-	margin-right: 195px;
-	width: 775px;
+	margin-right: 295px;
+	width: 675px;
 }
 #header {
 	margin-bottom: 7px;

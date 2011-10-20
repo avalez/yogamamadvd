@@ -89,15 +89,45 @@ class ControllerCheckoutCheckoutX extends Resource
 
             // TODO: from languages
 						$this->session->data['shipping_method']['title'] = 'Доставка'; 
+						
+						break;
 					}
 				}
 			}
 
-			$this->session->data['payment_method'] = $cart->payment;
-			
 			$total_data = array();
 			$taxes = $this->cart->getTaxes();
 			$total = $this->getTotals($total_data, $taxes);
+
+      $payment = $cart->payment == 'post' ? 'cod' : $cart->payment;
+      
+      $this->session->data['payment_method'] = null;
+
+      if (!isset($this->session->data['payment_method'])
+          || $this->session->data['payment_method']['code'] != $payment) {
+				// Payment availability TODO
+				$address_data = array(
+				  'country_id'     => 0,
+					'zone_id'        => 0
+				);
+
+				$this->load->model('setting/extension');
+				
+				$results = $this->model_setting_extension->getExtensions('payment');
+		
+				foreach ($results as $result) {
+					if ($result['code'] == $payment && $this->config->get($result['code'] . '_status')) {
+						$this->load->model('payment/' . $result['code']);
+						
+						$method = $this->{'model_payment_' . $result['code']}->getMethod($address_data, $total); 
+						
+    				$this->session->data['payment_method'] = $method;
+    				
+    				break;
+					}
+				}
+							 
+			}			
 
 			$this->renderJson($total_data);
 
@@ -192,7 +222,7 @@ class ControllerCheckoutCheckoutX extends Resource
 			$data['shipping_country_id'] = $shipping_address['country_id'];
 			$data['shipping_address_format'] = $shipping_address['address_format'];
 
-			$data['payment_method'] = $this->session->data['payment_method'];
+			$data['payment_method'] = $this->session->data['payment_method']['title'];
 
 			$product_data = array();
       foreach ($this->cart->getProducts() as $product) {
@@ -258,7 +288,7 @@ class ControllerCheckoutCheckoutX extends Resource
 
 			$this->data['totals'] = $total_data;
 	
-			$this->data['payment'] = $this->getChild('payment/' . $data['payment_method']);
+			$this->data['payment'] = $this->getChild('payment/' . $this->session->data['payment_method']['code']);
 	
 			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/checkout/confirm.tpl')) {
 				$this->template = $this->config->get('config_template') . '/template/checkout/confirm.tpl';

@@ -64,9 +64,11 @@
             <td>Способ оплаты:</td>
             <td><select id="payment" class="box">
               {{each(i, gateway) gateways}}
+              {{if app.cart('shipment') != 'download' || $.inArray('ondelivery', gateway.categories) == -1 }}
               {{var value = gateway.name}}
               {{var payment = app.cart("payment")}}
               <option value="${value}" {{if payment == value}}selected="true"{{/if}}>${i18n('pgw_' + value)}</option>
+              {{/if}}
               {{/each}}
               </select></td>
           </tr>

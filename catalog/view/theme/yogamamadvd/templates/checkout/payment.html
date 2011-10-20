@@ -21,6 +21,7 @@
 
 <div id="accordion">
   {{each(i, category) categories}}
+  {{if app.cart('shipment') != 'download' || category != 'ondelivery'}}
   <h3><a name="${category}">${i18n('pgwc_' + category)}</strong></a></h3>
   <div class="checkout-content">
     {{each(j, gateway) gateways}}
@@ -37,6 +38,7 @@
     {{/if}}
     {{/each}}
   </div>
+  {{/if}}
   {{/each}}
 </div>
 

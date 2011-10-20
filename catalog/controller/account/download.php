@@ -164,27 +164,11 @@ class ControllerAccountDownload extends Controller {
 		$download_info = $this->model_account_download->getDownload($order_download_id);
 		
 		if ($download_info) {
-			$file = DIR_DOWNLOAD . $download_info['filename'];
-			$mask = basename($download_info['mask']);
-			$mime = 'application/octet-stream';
-			$encoding = 'binary';
-
+		  
+      $location = 'download/' . $download_info['filename'];
+      //$location =  S3::getAuthenticatedURL("yogamamadvd", $download_info['mask'], 1000);
 			if (!headers_sent()) {
-				if (file_exists($file)) {
-					header('Pragma: public');
-					header('Expires: 0');
-					header('Content-Description: File Transfer');
-					header('Content-Type: ' . $mime);
-					header('Content-Transfer-Encoding: ' . $encoding);
-					header('Content-Disposition: attachment; filename=' . ($mask ? $mask : basename($file)));
-					header('Content-Length: ' . filesize($file));
-				
-					$file = readfile($file, 'rb');
-				
-					print($file);
-				} else {
-					exit('Error: Could not find file ' . $file . '!');
-				}
+				header('Location: ' . $location);
 			} else {
 				exit('Error: Headers already sent out!');
 			}

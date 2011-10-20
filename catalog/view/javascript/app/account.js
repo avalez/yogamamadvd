@@ -9,7 +9,8 @@
           var url = escape(context.params._url || '#/account/account');
           context.redirect('#/account/login?_url=' + url);
         } else {
-          context.partial('catalog/view/theme/yogamamadvd/templates/account/account.html');
+          window.location = "index.php?route=account/account";
+          //context.partial('catalog/view/theme/yogamamadvd/templates/account/account.html');
         }
       })
     });

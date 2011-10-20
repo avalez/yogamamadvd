@@ -180,17 +180,26 @@
 	      })
       }
     });
-
+    
     app.post('#/checkout/checkout', function(context) {
       $.ajax({url:'index.php?route=checkout/checkoutx', type: 'get',
-        success: function(html) {
-          app.swap(html.output);
-          //context.redirect('#/account/account');
+        success: function(json) {
+          // redirect after post
+          app.store.set('html', json.output);
+          context.redirect('#/checkout/confirm');
         },
         error: function(jqXHR, textStatus) {
           $('div.checkout-warning').show().delay(3000).fadeOut('slow');            
         }
       })
+    });
+
+    app.get('#/checkout/confirm', function(context) {
+      if (!app.store.get('html')) {
+        context.redirect('#/checkout/checkout');
+      } else {
+        app.swap(app.store.get('html'));
+      }
     });
 
   }

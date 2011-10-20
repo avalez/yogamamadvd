@@ -4,6 +4,8 @@ $(function() {
   <?php if ($logged) { ?>
     var user = <?php echo $user ?>;
     app.store.set('user', user);
+  <?php } else { ?>
+    app.store.clear('user');
   <?php } ?>
   app.store.set('connected', true) // TODO: remove, see also account.js#connnected
 })
