@@ -1,7 +1,7 @@
 <?php
 class ModelTotalShipping extends Model {
 	public function getTotal(&$total_data, &$total, &$taxes) {
-		if ($this->cart->hasShipping() && isset($this->session->data['shipping_method'])) {
+		if (isset($this->session->data['shipping_method'])) {
 			$total_data[] = array( 
 				'code'       => 'shipping',
         		'title'      => $this->session->data['shipping_method']['title'],
