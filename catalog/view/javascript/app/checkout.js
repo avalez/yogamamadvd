@@ -21,41 +21,43 @@
       var items = app.cart('items') || {},
         total_quantity = app.cart('quantity') || 0,
         total = app.cart('total') || 0;
-
-      app.loadProducts(context, productIds, function(products) {
-        $.each(products, function(i, product) {
-          var item = items[product.product_id] || {};
-          var old_quantity = item.quantity || 0;
-          var old_price = item.price || 0;
-
-          total_quantity -= old_quantity;
-          total -= old_quantity * old_price;
-
-          if (qties) {
-            var quantity = parseInt(qties['qties.' + product.product_id]);
-            items[product.product_id] = {
-              name: product.name,
-              quantity: quantity,
-              price: parseFloat(product.price),
-              total: product.price * quantity
-            }
-            total_quantity += quantity;
-            total += quantity * parseFloat(product.price)
-          } else { // remove
-            items[product.product_id] = null;
+      
+      var totals = function() {
+        // update totals
+        var data = {jsonCart: $.toJSON(app.cart())};
+        $.ajax({url:'index.php?route=checkout/checkoutx', data: data, type: 'post',
+          success: function(totals) {
+            app.cart('totals', totals)
+          },
+          error: function(jqXHR, textStatus) {
+            $('div.checkout-warning').show().delay(3000).fadeOut('slow')
           }
-        })
+        }).always(callback)
+      };
 
-        app.cart('items', items);
-        app.cart('quantity', total_quantity);
-        app.cart('total', total);
-        app.cart('additional_costs', 1);
-        app.cart('grand_total', total + 1);
-        
-        if (callback) {
-          callback();
-        }
-      })
+      if (productIds) {
+        // update cart
+        app.loadProducts(context, productIds, function(products) {
+          $.each(products, function(i, product) {
+            var item = items[product.product_id] || {};
+
+            if (qties) {
+              var quantity = parseInt(qties['qties.' + product.product_id]);
+              items[product.product_id] = {
+                name: product.name,
+                quantity: quantity,
+              }
+            } else { // remove
+              items[product.product_id] = null;
+            }
+          });
+
+          app.cart('items', items);
+          totals()
+        })
+      } else {
+        totals()
+      }
     }
     
     app.loadProducts = function(context, productIds, callback) {
@@ -63,7 +65,7 @@
         callback = productIds;
         productIds = null;
       }
-      context.load('index.php?route=product/categoryx&name=Cameras', {cache: false}, function(products) {
+      return context.load('index.php?route=product/categoryx&name=Cameras', {cache: true}, function(products) {
         if (productIds) {
           var ids = $.isArray(productIds) ? productIds : [productIds];
           products = $.grep(products, function(product) {
@@ -87,15 +89,11 @@
     app.bind('updateCart', function(arg0, data) {
       if (data.shipment) {
         app.cart('shipment', data.shipment);
-        if (data.callback) {
-          data.callback();
-        }
-      } else if (data.products) {
-        app.updateCart(this, data.products, data.qties, data.callback);
-      } else {
-        throw "unknown update";
       }
-      
+      if (data.payment) {
+        app.cart('payment', data.payment);
+      }
+      app.updateCart(this, data.products, data.qties, data.callback);
     });
     
     // routes
@@ -173,7 +171,7 @@
               context.partial('catalog/view/theme/yogamamadvd/templates/checkout/checkout.html',
                 {products: products, gateways: gateways}
               ).render('catalog/view/theme/yogamamadvd/templates/account/register.html', register, function(html) {
-                  $('#dialog').html(html)
+                  $('#dialog').html(html);
               })
             })
 	        })
@@ -182,8 +180,7 @@
     });
 
     app.post('#/checkout/checkout', function(context) {
-      var data = {jsonCart: $.toJSON(app.cart())};
-      $.ajax({url:'index.php?route=checkout/checkoutx', data: data, type: 'post',
+      $.ajax({url:'index.php?route=checkout/checkoutx', type: 'get',
         success: function(html) {
           app.swap(html.output);
           //context.redirect('#/account/account');

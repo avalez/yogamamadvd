@@ -1178,7 +1178,7 @@ a.button:hover span {
 	margin-bottom: 7px;
 }
 .cart-total table {
-	margin-left: 40px;
+	margin: auto;
 }
 .cart-total td {
 	padding: 3px;

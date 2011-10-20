@@ -1,36 +1,9 @@
 <?php
 class ControllerCheckoutCheckoutX extends Resource
 {
-
-    /**
-     * Checkout, see checkout/confirm.php
-     *
-     * jsonCart
-     * {"shipment":"download",
-     *  "payment":"post",
-     *  "items":{"1":{"quantity":1,"price":1,"total":1}},
-     *  "quantity":1,
-     *  "total":1,
-     *  "additional_costs":1,
-     *  "grand_total":2}
-     */
-    function post($jsonCart) {
-      $cart = json_decode(html_entity_decode($jsonCart));
-      
-      if (!$cart || !$cart->shipment || !$cart->payment || !$cart->items) {
-        $this->error("invalid cart", Resource::BADREQUEST);
-        return;
-      }
-
-			$product_data = array();
-      foreach ($cart->items as $id => $product) {
-        $this->cart->add($id, $product->quantity);
-      }
-
-			$total_data = array();
+    function getTotals(&$total_data, &$taxes) {
 			$total = 0;
-			$taxes = $this->cart->getTaxes();
-			 
+      
 			$this->load->model('setting/extension');
 			
 			$sort_order = array(); 
@@ -59,6 +32,83 @@ class ControllerCheckoutCheckoutX extends Resource
 			}
 	
 			array_multisort($sort_order, SORT_ASC, $total_data);
+
+			return $total;
+      
+    }
+
+    /**
+     * Update cart
+     *
+     * jsonCart
+     * {"shipment":"download",
+     *  "payment":"post",
+     *  "items":{"1":{"quantity":1,"price":1,"total":1}},
+     *  "quantity":1,
+     *  "total":1,
+     *  "additional_costs":1,
+     *  "grand_total":2}
+     */
+    function post($jsonCart) {
+      $cart = json_decode(html_entity_decode($jsonCart));
+      
+      if (!$cart || !$cart->shipment || !$cart->payment || !$cart->items) {
+        $this->error("invalid cart", Resource::BADREQUEST);
+        return;
+      }
+
+      $shipping = $cart->shipment == 'download' ? 'free' : 'flat';
+
+      if ($this->session->data['shipping_method'] != $shipping) {
+				// Shipping cost, see checkout/shipping.php
+				$address_data = array(
+				  'country_id'     => 0,
+					'zone_id'        => 0
+				);
+
+				$this->load->model('setting/extension');
+				
+				$results = $this->model_setting_extension->getExtensions('shipping');
+				
+				foreach ($results as $result) {
+					$total_data[] = $result;
+
+					if ($result['code'] == $shipping && $this->config->get($result['code'] . '_status')) {
+						$this->load->model('shipping/' . $result['code']);
+						
+						$quote = $this->{'model_shipping_' . $result['code']}->getQuote($address_data);
+						
+      			$this->session->data['shipping_method'] = $quote['quote'][$result['code']];
+
+            // TODO: from languages
+						$this->session->data['shipping_method']['title'] = 'Доставка'; 
+					}
+				}
+			}
+
+			$this->session->data['payment_method'] = $cart->shipment;
+
+			$product_data = array();
+      $this->cart->clear();
+      foreach ($cart->items as $id => $product) {
+        $this->cart->add($id, $product->quantity);
+      }
+
+			$total_data = array();
+			$taxes = $this->cart->getTaxes();
+			$total = $this->getTotals($total_data, $taxes);
+			
+			$this->renderJson($total_data);
+
+    }
+
+    /**
+     * Checkout, see checkout/confirm.php
+     */
+    function get() {
+			$total_data = array();
+			$taxes = $this->cart->getTaxes();
+			$total = $this->getTotals($total_data, $taxes);
 
 			$data = array();
 			
@@ -89,12 +139,12 @@ class ControllerCheckoutCheckoutX extends Resource
 
 			$shipping_address = $this->model_account_address->getAddress($this->customer->getAddressId());
 
-  		if ($cart->shipment == 'ship' && !$shipping_address) {
+			$data['shipping_method'] = $this->session->data['shipping_method'];
+
+  		if ($data['shipping_method']['code'] == 'flat.flat' /* TODO: $this->cart->hasShipping() */ && !$shipping_address) {
         $this->error("no address", Resource::BADREQUEST);
 			  return;
   		}
-  		
-			$data['shipping_method'] = $cart->shipment;
 
   		if (!$shipping_address) {
 				$shipping_address['firstname'] = '';
@@ -141,7 +191,7 @@ class ControllerCheckoutCheckoutX extends Resource
 			$data['shipping_country_id'] = $shipping_address['country_id'];
 			$data['shipping_address_format'] = $shipping_address['address_format'];
 
-			$data['payment_method'] = $cart->payment;
+			$data['payment_method'] = $this->session->data['payment_method'];
 
 			$product_data = array();
       foreach ($this->cart->getProducts() as $product) {
@@ -220,7 +270,9 @@ class ControllerCheckoutCheckoutX extends Resource
 
   		$this->response->setOutput(Json::encode($json));		
 	  	  
+      
     }
+
     
 }
 

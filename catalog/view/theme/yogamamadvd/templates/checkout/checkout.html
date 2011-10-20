@@ -25,9 +25,9 @@
         <label>Цена:</label>
         {{if price}}
           {{if typeof special == 'undefined'}}
-          ${i18n('format_price', product.price)} 
+          ${product.price}
           {{else}}
-          <span class="price-old">${i18n('format_price', product.price)}</span> <span class="price-new">${i18n('format_price', product.special)}</span>
+          <span class="price-old">${product.price}</span> <span class="price-new">${product.special}</span>
           {{/if}}
         {{/if}}
         </div>
@@ -50,25 +50,19 @@
     <div class="content">
       <div class="cart-total">
         <table>
+          {{each(i, total) app.cart("totals")}}
           <tr>
-            <td>Стоимость курса:</td>
-            <td>${i18n('format_price', app.cart('total'))}</td>
+            <td>${total.title}:</td>
+            <td>${i18n('format_price', total.value)}</td> <!-- ${total.text} -->
           </tr>
-          <tr>
-            <td>Доставка:</td>
-            <td>${i18n('format_price', app.cart('additional_costs'))}</td>
-          </tr>
-          <tr>
-            <td><b>Итого:</b></td>
-            <td><b>${i18n('format_price', app.cart('grand_total'))}</b></td>
-          </td>
+          {{/each}}
         </table>
       </div>
       <div class="cart-details">
         <table width="100%">
           <tr>
             <td>Способ оплаты:</td>
-            <td><select class="box">
+            <td><select id="payment" class="box">
               {{each(i, gateway) gateways}}
               {{var value = gateway.name}}
               {{var payment = app.cart("payment")}}
@@ -143,10 +137,10 @@
     <div class="price">
       <label>Цена:</label>
       {{if price}}
-        {{if typeof special == 'undefined'}}
-          ${i18n('format_price', product.price)}
+        {{if !product.special}}
+          ${product.price}
         {{else}}
-        <span class="price-old">${i18n('format_price', product.price)}</span> <span class="price-new">${i18n('format_price', product.special)}</span>
+        <span class="price-old">${product.price}</span> <span class="price-new">${product.special}</span>
         {{/if}}
       {{/if}}
       <div class="quantity">
@@ -186,7 +180,6 @@ $('a.addToCart').click(function() {
   }})
 });
 
-
 $('select.selected-qty').change(function() {
   var productId = $(this).attr('productId');
   var quantity = $(this).val();
@@ -206,10 +199,17 @@ $('a.removeFromCart').click(function() {
   }})
 });
 
+$('select#payment').change(function() {
+  var payment = $(this).val();
+  app.trigger('updateCart', {payment: payment, callback: function() {
+    $('div.content').tmplItem().update();
+  }})
+});
+
 $('select#shipment').change(function() {
   var shipment = $(this).val();
   app.trigger('updateCart', {shipment: shipment, callback: function() {
-      $('div.content').tmplItem().update();
+    $('div.content').tmplItem().update();
   }})
 });
 </script>
