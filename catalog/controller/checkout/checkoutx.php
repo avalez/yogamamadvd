@@ -57,9 +57,16 @@ class ControllerCheckoutCheckoutX extends Resource
         return;
       }
 
+			$product_data = array();
+      $this->cart->clear();
+      foreach ($cart->items as $id => $product) {
+        $this->cart->add($id, $product->quantity);
+      }
+
       $shipping = $cart->shipment == 'download' ? 'free' : 'flat';
 
-      if ($this->session->data['shipping_method'] != $shipping) {
+      if (!isset($this->session->data['shipping_method'])
+          || $this->session->data['shipping_method']['code'] != $shipping . "." . $shipping) {
 				// Shipping cost, see checkout/shipping.php
 				$address_data = array(
 				  'country_id'     => 0,
@@ -86,18 +93,12 @@ class ControllerCheckoutCheckoutX extends Resource
 				}
 			}
 
-			$this->session->data['payment_method'] = $cart->shipment;
-
-			$product_data = array();
-      $this->cart->clear();
-      foreach ($cart->items as $id => $product) {
-        $this->cart->add($id, $product->quantity);
-      }
-
+			$this->session->data['payment_method'] = $cart->payment;
+			
 			$total_data = array();
 			$taxes = $this->cart->getTaxes();
 			$total = $this->getTotals($total_data, $taxes);
-			
+
 			$this->renderJson($total_data);
 
     }
@@ -139,12 +140,12 @@ class ControllerCheckoutCheckoutX extends Resource
 
 			$shipping_address = $this->model_account_address->getAddress($this->customer->getAddressId());
 
-			$data['shipping_method'] = $this->session->data['shipping_method'];
-
-  		if ($data['shipping_method']['code'] == 'flat.flat' /* TODO: $this->cart->hasShipping() */ && !$shipping_address) {
+  		if ($this->session->data['shipping_method']['code'] == 'flat.flat' /* TODO: $this->cart->hasShipping() */ && !$shipping_address) {
         $this->error("no address", Resource::BADREQUEST);
 			  return;
   		}
+
+			$data['shipping_method'] = $this->session->data['shipping_method']['title'];
 
   		if (!$shipping_address) {
 				$shipping_address['firstname'] = '';
@@ -205,7 +206,8 @@ class ControllerCheckoutCheckoutX extends Resource
 					'subtract'   => $product['subtract'],
 					'price'      => $product['price'],
 					'total'      => $product['total'],
-					'tax'        => $this->tax->getRate($product['tax_class_id'])
+					'tax'        => $this->tax->getRate($product['tax_class_id']),
+					'href'        => $this->url->link('product/product', 'product_id=' . $product['product_id'])
 				); 
       }
 			
@@ -256,7 +258,7 @@ class ControllerCheckoutCheckoutX extends Resource
 
 			$this->data['totals'] = $total_data;
 	
-			$this->data['payment'] = $this->getChild('payment/' . $cart->payment);
+			$this->data['payment'] = $this->getChild('payment/' . $data['payment_method']);
 	
 			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/checkout/confirm.tpl')) {
 				$this->template = $this->config->get('config_template') . '/template/checkout/confirm.tpl';
