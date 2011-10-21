@@ -39,13 +39,10 @@
       context.partial('catalog/view/theme/yogamamadvd/templates/account/register.html', {_shipment: ''});
     });
     
-    // routes
     app.post('#/account/register', function(context) {
       var url = 'index.php?route=account/registerx';
       if (context.params._action === 'update') {
         url = 'index.php?route=account/addressx';
-      } else if (context.params._shipment == 'download') {
-        url += 'Short';
       }
       var data = context.params.toHash ? context.params.toHash() : context.params;
       $.ajax({url:url, data: data, type: 'post',

@@ -17,11 +17,11 @@ class ControllerAccountAddressX extends Resource
       		
       		if (!$address_data) {
       		  
-      		  $this->error('Address Not Found', Resource::NOTFOUND);
+      		  $this->responseJson(null, Resource::NOTFOUND);
       		  
       		} else {
       		  
-            $this->renderJson(array('address' => $address_data));
+            $this->renderJson($address_data);
       		}
 
         }

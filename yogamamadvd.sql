@@ -2,6 +2,11 @@ ALTER TABLE address add `country` varchar(128) COLLATE utf8_bin NOT NULL;
 ALTER TABLE address add `zone` varchar(128) COLLATE utf8_bin NOT NULL,
 
 /**
+enable payments LiqPay
+enable shipment free - 0, 
+fix Yoga category name for russian language;
+fix Yoga products links to store and to caregory;
+
 update langauges set english sort order = 2;
 update settngs set title, language, favicon, etc;
 update extension slideshow set banner=commingsoon, 850x409;
