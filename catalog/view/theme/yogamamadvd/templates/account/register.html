@@ -40,7 +40,11 @@
     <input type="hidden" name="_action" value="update"/>
     {{/if}}
     {{if _shipment != 'download'}}
+    {{if typeof _action == 'undefined'}}
     <h2>${i18n('text_your_address')} </h2>
+    {{else}}
+    <br/>
+    {{/if}}
     {{if app.connected()}}<input type="hidden" name="address_id" value="${app.connected().addressId}"/>{{/if}}
     <div class="content">
       <table class="form">

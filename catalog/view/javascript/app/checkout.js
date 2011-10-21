@@ -65,7 +65,7 @@
         callback = productIds;
         productIds = null;
       }
-      return context.load('index.php?route=product/categoryx&name=Cameras', {cache: true}, function(products) {
+      return context.load('index.php?route=product/categoryx&name=Yoga', {cache: true}, function(products) {
         if (productIds) {
           var ids = $.isArray(productIds) ? productIds : [productIds];
           products = $.grep(products, function(product) {

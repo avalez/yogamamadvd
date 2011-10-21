@@ -34,9 +34,9 @@
             Цена:
             {{if product.price}}
               {{if !product.special}}
-              ${i18n('format_price', product.price)} 
+              ${product.price}
               {{else}}
-              <span class="price-old">${i18n('format_price', product.price)}</span> <span class="price-new">${i18n('format_price', product.special)}</span>
+              <span class="price-old">${product.price}</span> <span class="price-new">${product.special}</span>
               {{/if}}
             {{/if}}
             <div class="quantity">

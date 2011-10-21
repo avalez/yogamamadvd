@@ -23,8 +23,8 @@
         <div class="name"><a href="${product.url}">${product.name}</a></div>
         <div class="price">
         <label>Цена:</label>
-        {{if price}}
-          {{if typeof special == 'undefined'}}
+        {{if product.price}}
+          {{if !product.special}}
           ${product.price}
           {{else}}
           <span class="price-old">${product.price}</span> <span class="price-new">${product.special}</span>
@@ -167,7 +167,7 @@
 {{/if}}
 
 <script type="text/javascript">
-$('#dialog').dialog({ autoOpen: false, modal: true }).dialog('close');
+$('#dialog').dialog({ autoOpen: false, modal: true, title: "${i18n('text_your_address')}" }).dialog('close');
 
 $('a.addToCart').click(function() {
   var productId = $(this).attr('productId');
