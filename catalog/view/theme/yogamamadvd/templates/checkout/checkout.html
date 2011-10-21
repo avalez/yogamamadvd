@@ -88,8 +88,8 @@
             {{if app.connected()}}
             <tr>
               <td>Адрес доставки:</td>
-              {{if !$.isEmptyObject(address)}}
-              <td>${app.connected().firstname} ${app.connected().lastname}</td>
+              {{if address}}
+              <td>${address.firstname} ${address.lastname}</td>
             </tr>
             <tr>
                 <td><a onclick="$('#dialog').dialog('open')" style="float: right; padding-right: 20px">Изменить</a></td>

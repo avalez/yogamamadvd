@@ -172,11 +172,11 @@
             };
             $.when(deferred()).always(function(address) {
               // register form will appear only for 'ship' +  conected
-              var register = {_shipment: 'ship', _action: 'update', _url: '#/checkout/checkout', address: address};
+              var register = {_shipment: 'ship', _action: 'update', _url: '#/checkout/checkout', address: address.address};
               app.loadProducts(context, function(products) {
                 context.load('catalog/gateways.json', function(gateways) {
                   context.partial('catalog/view/theme/yogamamadvd/templates/checkout/checkout.html',
-                    {products: products, gateways: gateways, address: address}
+                    {products: products, gateways: gateways, address: address.address}
                   ).render('catalog/view/theme/yogamamadvd/templates/account/register.html', register, function(html) {
                       $('#dialog').html(html);
                   })

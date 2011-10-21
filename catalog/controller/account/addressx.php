@@ -17,11 +17,11 @@ class ControllerAccountAddressX extends Resource
       		
       		if (!$address_data) {
       		  
-      		  $this->responseJson(null, Resource::NOTFOUND);
+      		  $this->error('Address Not Found', Resource::NOTFOUND);
       		  
       		} else {
       		  
-            $this->renderJson($address_data);
+            $this->renderJson(array('address' => $address_data));
       		}
 
         }
@@ -40,9 +40,13 @@ class ControllerAccountAddressX extends Resource
 
     		$this->load->model('account/address');
     		
-    		$this->request->post['firstname'] = $this->customer->getFirstName();
+    		if (!isset($this->request->post['firstname'])) {
+    		  $this->request->post['firstname'] = $this->customer->getFirstName();
+    		}
 
-    		$this->request->post['lastname'] = $this->customer->getLastName();
+        if (!isset($this->request->post['lastname'])) {
+    		  $this->request->post['lastname'] = $this->customer->getLastName();
+  		  }
 
       	if ($this->validateForm()) {
       	  

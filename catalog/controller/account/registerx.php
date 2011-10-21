@@ -54,7 +54,7 @@ class ControllerAccountRegisterX extends Resource
         		$this->error['lastname'] = $this->language->get('error_lastname');
       	}
 
-      	if ((strlen(utf8_decode($this->request->post['email'])) > 96) || !preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email'])) {
+      	if ((strlen(utf8_decode($this->request->post['email'])) > 96) || !preg_match('/^[^\@]+@.*\.[a-z]{1,6}$/i', $this->request->post['email'])) {
         		$this->error['email'] = $this->language->get('error_email');
       	}
 

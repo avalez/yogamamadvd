@@ -44,33 +44,43 @@
     {{if app.connected()}}<input type="hidden" name="address_id" value="${app.connected().addressId}"/>{{/if}}
     <div class="content">
       <table class="form">
+        {{if address}}
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_firstname')}</td>
+          <td><input type="text" name="firstname" {{if address}}value="${address.firstname}"{{/if}}/></td>
+        </tr>
+        <tr>
+          <td><span class="required">*</span> ${i18n('entry_lastname')}</td>
+          <td><input type="text" name="lastname" {{if address}}value="${address.lastname}"{{/if}}/></td>
+        </tr>
+        {{/if}}
         <tr>
           <td>${i18n('entry_company')}</td>
           <td><input type="text" name="company"/></td>
         </tr>
         <tr>
           <td><span class="required">*</span> ${i18n('entry_address_1')}</td>
-          <td><input type="text" name="address_1" {{if typeof address != 'undefined'}}value="${address.address_1}"{{/if}}/></td>
+          <td><input type="text" name="address_1" {{if address}}value="${address.address_1}"{{/if}}/></td>
         </tr>
         <tr>
           <td>${i18n('entry_address_2')}</td>
-          <td><input type="text" name="address_2" {{if typeof address != 'undefined'}}value="${address.address_2}"{{/if}}/></td>
+          <td><input type="text" name="address_2" {{if address}}value="${address.address_2}"{{/if}}/></td>
         </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_city')}</td>
-            <td><input id="city" type="text" name="city" {{if typeof address != 'undefined'}}value="${address.city}"{{/if}}/></td>
+            <td><input id="city" type="text" name="city" {{if address}}value="${address.city}"{{/if}}/></td>
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_postcode')}</td>
-            <td><input type="text" name="postcode" {{if typeof address != 'undefined'}}value="${address.postcode}"{{/if}}/></td>
+            <td><input type="text" name="postcode" {{if address}}value="${address.postcode}"{{/if}}/></td>
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_country')}</td>
-            <td><input id="country" type="text" name="country" {{if typeof address != 'undefined'}}value="${address.country}"{{/if}}/></td>
+            <td><input id="country" type="text" name="country" {{if address}}value="${address.country}"{{/if}}/></td>
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_zone')}</td>
-            <td><input id="zone" type="text" name="zone" {{if typeof address != 'undefined'}}value="${address.zone}"{{/if}}/></td>
+            <td><input id="zone" type="text" name="zone" {{if address}}value="${address.zone}"{{/if}}/></td>
           </tr>
       </table>
     </div>
