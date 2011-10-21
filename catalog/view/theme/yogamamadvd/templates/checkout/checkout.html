@@ -67,7 +67,7 @@
               {{if app.cart('shipment') != 'download' || $.inArray('ondelivery', gateway.categories) == -1 }}
               {{var value = gateway.name}}
               {{var payment = app.cart("payment")}}
-              <option value="${value}" {{if payment == value}}selected="true"{{/if}}>${i18n('pgw_' + value)}</option>
+              <option value="${value}" category="${gateway.categories[0]}" {{if payment == value}}selected="true"{{/if}}>${i18n('pgw_' + value)}</option>
               {{/if}}
               {{/each}}
               </select></td>
@@ -123,7 +123,7 @@
 
     <div class="buttons">
       <form action="#/checkout/checkout" method="post" enctype="multipart/form-data" id="checkout"></form>
-      <a onclick="$('#checkout').submit()" class="button"><span>Оформить заказ</span></a>
+      <a id="checkout-button" class="button"><span>Оформить заказ</span></a>
     </div>
   </div>
 </div>
@@ -133,7 +133,7 @@
 <div class="product-list">
   {{each(i, product) products}}
   <div id="available-${product.product_id}" {{if app.cart('items')[product.product_id] }} style="display:none" {{/if}}>
-    {{if typeof thumb != 'undefined'}}
+    {{if product.thumb}}
     <div class="image"><a href="${product.url}"><img src="${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.product_id}" /></a></div>
     {{/if}}
     <div class="price">
@@ -169,6 +169,16 @@
 <script type="text/javascript">
 $('#dialog').dialog({ autoOpen: false, modal: true, title: "${i18n('text_your_address')}" }).dialog('close');
 
+$('a#checkout-button').click(function(event) {
+  {{if address}}
+  $('#checkout').submit()
+  {{else}}
+  if (app.cart('shipment') != 'download') {
+    $('#dialog').dialog('open')
+  }
+  {{/if}}
+});
+
 $('a.addToCart').click(function() {
   var productId = $(this).attr('productId');
   var quantity = $('select#available-qty-' + productId).val();
@@ -203,7 +213,9 @@ $('a.removeFromCart').click(function() {
 
 $('select#payment').change(function() {
   var payment = $(this).val();
+  var category = $("option:selected", this).attr("category");
   app.trigger('updateCart', {payment: payment, callback: function() {
+    app.cart('_category', category);
     $('div.content').tmplItem().update();
   }})
 });
