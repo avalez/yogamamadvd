@@ -165,14 +165,21 @@
       } else {
         app.updateCart(context, null, null, function() {
           app.connected(function(user) {
-            // register form will appear only for 'ship' +  conected
-            var register = {_shipment: 'ship', _action: 'update', _url: '#/checkout/checkout'};
-            app.loadProducts(context, function(products) {
-              context.load('catalog/gateways.json', function(gateways) {
-                context.partial('catalog/view/theme/yogamamadvd/templates/checkout/checkout.html',
-                  {products: products, gateways: gateways}
-                ).render('catalog/view/theme/yogamamadvd/templates/account/register.html', register, function(html) {
-                    $('#dialog').html(html);
+            var deferred = function() {
+              if (typeof user.addressId != 'undefined' && user.addressId) {
+                return $.get('index.php?route=account/addressx&addressId=' + user.addressId);
+              }
+            };
+            $.when(deferred()).always(function(address) {
+              // register form will appear only for 'ship' +  conected
+              var register = {_shipment: 'ship', _action: 'update', _url: '#/checkout/checkout', address: address};
+              app.loadProducts(context, function(products) {
+                context.load('catalog/gateways.json', function(gateways) {
+                  context.partial('catalog/view/theme/yogamamadvd/templates/checkout/checkout.html',
+                    {products: products, gateways: gateways, address: address}
+                  ).render('catalog/view/theme/yogamamadvd/templates/account/register.html', register, function(html) {
+                      $('#dialog').html(html);
+                  })
                 })
               })
   	        })

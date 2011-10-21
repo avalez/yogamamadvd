@@ -43,7 +43,7 @@
     app.post('#/account/register', function(context) {
       var url = 'index.php?route=account/registerx';
       if (context.params._action === 'update') {
-        url += 'Update';
+        url = 'index.php?route=account/addressx';
       } else if (context.params._shipment == 'download') {
         url += 'Short';
       }

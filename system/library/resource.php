@@ -88,6 +88,7 @@ abstract class Resource extends Controller
   		  $user['firstname'] = $customer->getFirstname();
   		  $user['lastname'] = $customer->getLastname();
   		  $user['email'] = $customer->getEmail();
+  		  $user['addressId'] = $customer->getAddressId();
     		return $user;
   		} else {
   		  return null;

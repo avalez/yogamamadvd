@@ -88,24 +88,24 @@
             {{if app.connected()}}
             <tr>
               <td>Адрес доставки:</td>
-              {{if app.connected().address_1}}
+              {{if !$.isEmptyObject(address)}}
               <td>${app.connected().firstname} ${app.connected().lastname}</td>
             </tr>
             <tr>
                 <td><a onclick="$('#dialog').dialog('open')" style="float: right; padding-right: 20px">Изменить</a></td>
-              <td>${app.connected().address_1}</td>
+              <td>${address.address_1}</td>
             </tr>
             <tr>
               <td>&nbsp;</td>
-              <td>${app.connected().city}</td>
+              <td>${address.city}</td>
             </tr>
             <tr>
               <td>&nbsp;</td>
-              <td>${app.connected().zone}</td>
+              <td>${address.zone}</td>
             </tr>
             <tr>
               <td></td>
-              <td>${app.connected().country} ${app.connected().postcode}</td>
+              <td>${address.country} ${address.postcode}</td>
               {{else}}
               <td><a onclick="$('#dialog').dialog('open')">Ввести</a></td>
               {{/if}}
