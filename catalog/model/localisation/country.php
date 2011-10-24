@@ -6,6 +6,12 @@ class ModelLocalisationCountry extends Model {
 		return $query->row;
 	}	
 	
+	public function getCountryByCode($country_code) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "country WHERE iso_code_2 = '" . $country_code . "' AND status = '1'");
+		
+		return $query->row;
+	}	
+
 	public function getCountries() {
 		$country_data = $this->cache->get('country');
 		

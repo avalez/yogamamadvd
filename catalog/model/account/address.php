@@ -1,7 +1,16 @@
 <?php
 class ModelAccountAddress extends Model {
 	public function addAddress($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "address SET customer_id = '" . (int)$this->customer->getId() . "', company = '" . $this->db->escape($data['company']) . "', firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', address_1 = '" . $this->db->escape($data['address_1']) . "', address_2 = '" . $this->db->escape($data['address_2']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', city = '" . $this->db->escape($data['city']) . "', zone = '" . $data['zone'] . "', country = '" . $data['country'] . "'");
+		$this->load->model('localisation/country');
+
+		$country_info = $this->model_localisation_country->getCountryByCode($this->request->post['country_code']);
+		
+		if (!$country_info) {
+		  // fail proof
+		  $country_info = array('country_id' => 0);
+		}
+
+		$this->db->query("INSERT INTO " . DB_PREFIX . "address SET customer_id = '" . (int)$this->customer->getId() . "', company = '" . $this->db->escape($data['company']) . "', firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', address_1 = '" . $this->db->escape($data['address_1']) . "', address_2 = '" . $this->db->escape($data['address_2']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', city = '" . $this->db->escape($data['city']) . "', zone = '" . $data['zone'] . "', country_id = '" . (int)$country_info['country_id'] . "', country = '" . $data['country'] . "'");
 		
 		$address_id = $this->db->getLastId();
 		
@@ -13,7 +22,16 @@ class ModelAccountAddress extends Model {
 	}
 	
 	public function editAddress($address_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "address SET company = '" . $this->db->escape($data['company']) . "', firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', address_1 = '" . $this->db->escape($data['address_1']) . "', address_2 = '" . $this->db->escape($data['address_2']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', city = '" . $this->db->escape($data['city']) . "', zone = '" . $data['zone'] . "', country = '" . $data['country'] . "' WHERE address_id  = '" . (int)$address_id . "' AND customer_id = '" . (int)$this->customer->getId() . "'");
+		$this->load->model('localisation/country');
+
+		$country_info = $this->model_localisation_country->getCountryByCode($this->request->post['country_code']);
+		
+		if (!$country_info) {
+		  // fail proof
+		  $country_info = array('country_id' => 0);
+		}
+
+		$this->db->query("UPDATE " . DB_PREFIX . "address SET company = '" . $this->db->escape($data['company']) . "', firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', address_1 = '" . $this->db->escape($data['address_1']) . "', address_2 = '" . $this->db->escape($data['address_2']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', city = '" . $this->db->escape($data['city']) . "', zone = '" . $data['zone'] . "', country_id = '" . (int)$country_info['country_id'] . "', country = '" . $data['country'] . "' WHERE address_id  = '" . (int)$address_id . "' AND customer_id = '" . (int)$this->customer->getId() . "'");
 	
 		if (isset($data['default']) && $data['default'] == '1') {
 			$this->db->query("UPDATE " . DB_PREFIX . "customer SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$this->customer->getId() . "'");

@@ -7,7 +7,16 @@ class ModelAccountCustomer extends Model {
 		
 		if (isset($data['address_1'])) {
 			
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "address SET customer_id = '" . (int)$customer_id . "', firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', company = '" . $this->db->escape($data['company']) . "', address_1 = '" . $this->db->escape($data['address_1']) . "', address_2 = '" . $this->db->escape($data['address_2']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country = '" . (int)$data['country'] . "', zone = '" . (int)$data['zone'] . "'");
+  		$this->load->model('localisation/country');
+
+  		$country_info = $this->model_localisation_country->getCountryByCode($this->request->post['country_code']);
+  		
+  		if (!$country_info) {
+  		  // fail proof
+  		  $country_info = array('country_id' => 0);
+  		}
+
+      $this->db->query("INSERT INTO " . DB_PREFIX . "address SET customer_id = '" . (int)$customer_id . "', firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', company = '" . $this->db->escape($data['company']) . "', address_1 = '" . $this->db->escape($data['address_1']) . "', address_2 = '" . $this->db->escape($data['address_2']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$country_info['country_id'] . "', country = '" . $data['country'] . "', zone = '" . $data['zone'] . "'");
 		
 		    $address_id = $this->db->getLastId();
 

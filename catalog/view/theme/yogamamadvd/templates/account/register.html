@@ -80,7 +80,8 @@
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_country')}</td>
-            <td><input id="country" type="text" name="country" {{if address}}value="${address.country}"{{/if}}/></td>
+            <td><input id="country" type="text" name="country" {{if address}}value="${address.country}"{{/if}}/>
+              <input id="country_code" type="hidden" name="country_code" {{if address}}value="${address.country_code}"{{/if}}/></td>
           </tr>
           <tr>
             <td><span class="required">*</span> ${i18n('entry_zone')}</td>
@@ -220,7 +221,7 @@
           $.getJSON("http://ws.geonames.org/searchJSON?name_startsWith=" + request.term + "&featureClass=P&maxRows=12&stye=full&lang=ru", function( data ) {
               response( $.map( data.geonames, function( item ) {
                   return {
-                      label: item.name + (item.adminName1 ? ", " + item.adminName1 : ", ") + ", " + item.countryName,
+                      label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName + ", " + item.countryCode,
                       value: item.name
                   }
               }));
@@ -230,8 +231,15 @@
       select: function(event, ui) {
           if (ui.item) {
             var selected = ui.item.label.split(",");
-            $('#zone').val(selected[1].trim());
-            $('#country').val(selected[2].trim());
+            if (selected.length == 4) {
+              $('#zone').val(selected[1].trim());
+              $('#country').val(selected[2].trim());
+              $('#country_code').val(selected[3].trim())
+            } else {
+              $('#zone').val(ui.item.value);
+              $('#country').val(selected[1].trim());
+              $('#country_code').val(selected[2].trim())
+            }
             return false;
           }
       }
