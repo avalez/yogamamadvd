@@ -1,6 +1,8 @@
 <?php
 class ControllerInformationFaq extends Controller {
 	public function index() {
+  	$this->language->load('information/contact');
+
 		$this->load->language('information/faq');
 		$this->load->model('fido/faq');
 
@@ -17,6 +19,19 @@ class ControllerInformationFaq extends Controller {
 			'text'      => $this->language->get('heading_title'),
 			'separator' => $this->language->get('text_separator')
 		);
+
+		$this->data['text_contact'] = $this->language->get('text_contact');
+  	$this->data['entry_name'] = $this->language->get('entry_name');
+  	$this->data['entry_email'] = $this->language->get('entry_email');
+  	$this->data['entry_enquiry'] = $this->language->get('entry_enquiry');
+  	$this->data['entry_captcha'] = $this->language->get('entry_captcha');
+
+  	$this->data['name'] = '';
+  	$this->data['email'] = '';
+  	$this->data['enquiry'] = '';
+  	$this->data['captcha'] = '';
+  
+  	$this->data['action'] = $this->url->link('information/contact');
 
 		if (isset($this->request->get['topic'])) {
 			$topic = '';
@@ -44,8 +59,8 @@ class ControllerInformationFaq extends Controller {
 			$faq_info = $this->model_fido_faq->getTopic($faq_id);
 
 			$this->data['button_faq'] = $this->language->get('button_faq');
-
-			$this->data['faq'] = $this->url->link('information/faq');
+			
+			$this->data['faq'] = 'index.php?route=information/faq';
 
 			if ($faq_info) {
 				$this->getTopics($faq_id);
@@ -55,6 +70,7 @@ class ControllerInformationFaq extends Controller {
 		} else {
 			$this->getTopics(0);
 		}
+    	
 	}
 
 	private function getTopics($topic_id) {
@@ -73,15 +89,15 @@ class ControllerInformationFaq extends Controller {
 		  	} else {
 		  		$this->data['heading_title'] = $this->language->get('heading_title');
 
-		  		$this->data['description'] = $this->language->get('text_description');
+		  		$this->data['description'] = ''; // $this->language->get('text_description');
 		  	}
 
-			$topic_total = $this->model_fido_faq->getTotalFaqsByTopicId($topic_id);
+			//$topic_total = $this->model_fido_faq->getTotalFaqsByTopicId($topic_id);
 
-			if ($topic_total) {
+			//if ($topic_total) {
 				$this->data['topics'] = array();
 
-				foreach ($this->model_fido_faq->getTopics($topic_id) as $result) {
+				foreach ($topic_data as $result) {
 					if (isset($this->request->get['topic'])) {
 						$href = $this->url->link('information/faq', 'topic=' . $this->request->get['topic'] . '_' . $result['faq_id']);
 					} else {
@@ -90,13 +106,17 @@ class ControllerInformationFaq extends Controller {
 
 					$this->data['topics'][] = array(
 						'title' => $result['title'],
-						'href'  => $href
+						'href'  => $href,
+						'description' => html_entity_decode($result['description']),
+						'children' => $this->model_fido_faq->getTotalFaqsByTopicId($result['faq_id'])
 					);
 				}
 
-	     		$this->data['button_continue'] = $this->language->get('button_continue');
+	     	$this->data['button_continue'] = $this->language->get('button_continue');
 
 				$this->data['continue'] = $this->url->link('common/home');
+
+    		$this->data['button_more'] = $this->language->get('button_more');
 
 				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/information/faq.tpl')) {
 					$this->template = $this->config->get('config_template') . '/template/information/faq.tpl';
@@ -114,9 +134,9 @@ class ControllerInformationFaq extends Controller {
 				);
 
 				$this->response->setOutput($this->render());
-			} else {
-				$this->getError();
-			}
+			//} else {
+			//	$this->getError();
+			//}
 		} else {
 			$this->getTopic($topic_id);
 		}
@@ -182,7 +202,7 @@ class ControllerInformationFaq extends Controller {
 
 		$this->data['button_continue'] = $this->language->get('button_continue');
 
-		$this->data['continue'] = HTTP_SERVER . 'index.php?route=common/home';
+		$this->data['continue'] = 'index.php?route=common/home';
 
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/error/not_found.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/error/not_found.tpl';

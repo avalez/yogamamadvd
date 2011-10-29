@@ -27,6 +27,9 @@ $(function () {
       //context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
       if (!this.params.route || this.params.route == 'common/home') {
         context.load('index.php?route=common/main').swap();
+      } else if (this.params.route && this.params.route == 'information/faq') {
+        var url = app.getLocation() + '&partial=true';
+        context.load(url).swap();
       } else {
         window.location.reload();
       }
