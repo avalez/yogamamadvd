@@ -2,6 +2,9 @@
 class ControllerInformationFaq extends Controller {
 	public function index() {
   	$this->language->load('information/contact');
+		$this->load->model('information/contact');
+
+    $this->data['contacts'] = $this->model_information_contact->loadContacts();
 
 		$this->load->language('information/faq');
 		$this->load->model('fido/faq');
@@ -23,6 +26,7 @@ class ControllerInformationFaq extends Controller {
 		$this->data['text_contact'] = $this->language->get('text_contact');
   	$this->data['entry_name'] = $this->language->get('entry_name');
   	$this->data['entry_email'] = $this->language->get('entry_email');
+  	$this->data['entry_subject'] = $this->language->get('entry_subject');
   	$this->data['entry_enquiry'] = $this->language->get('entry_enquiry');
   	$this->data['entry_captcha'] = $this->language->get('entry_captcha');
 

@@ -2,35 +2,14 @@
 class ControllerInformationContact extends Controller {
 	private $error = array();
 
-    private function loadContacts() {
-        if (!isset($this->data['contacts'])) {
-            $contacts = file_get_contents('catalog/contacts.json', FILE_USE_INCLUDE_PATH);
-            $this->data['contacts'] = json_decode($contacts);
-        }
-
-        return $this->data['contacts'];
-    }
-
-    private function getContact($name) {
-
-        $contacts = $this->loadContacts();
-
-        if ($name) {
-            foreach ($contacts as $contact) {
-                if ($contact->name == $name) {
-                    return $contact;
-                }
-            }
-        }
-        return null;
-    }
-	    
   	public function index() {
 		$this->language->load('information/contact');
 
     	$this->document->setTitle($this->language->get('heading_title'));
 
-        $this->loadContacts();
+  		$this->load->model('information/contact');
+
+      $this->data['contacts'] = $this->model_information_contact->loadContacts();
 
     	if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$mail = new Mail();
@@ -41,7 +20,7 @@ class ControllerInformationContact extends Controller {
 			$mail->password = $this->config->get('config_smtp_password');
 			$mail->port = $this->config->get('config_smtp_port');
 			$mail->timeout = $this->config->get('config_smtp_timeout');
-            $contact = $this->getContact($this->request->post['subject']);
+            $contact = $this->model_information_contact->getContact($this->request->post['subject']);
 			$mail->setTo($contact->mailTo);
 	  		$mail->setFrom($this->request->post['email']);
 	  		$mail->setSender($this->request->post['name']);
@@ -224,7 +203,7 @@ class ControllerInformationContact extends Controller {
       		$this->error['email'] = $this->language->get('error_email');
     	}
 
-        if (!$this->getContact(utf8_decode($this->request->post['subject'])))  {
+        if (!$this->model_information_contact->getContact(utf8_decode($this->request->post['subject'])))  {
               $this->error['subject'] = $this->language->get('error_subject');
         }
 

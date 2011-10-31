@@ -3,6 +3,7 @@
   <ul>
     <li><a href="<?php echo $affiliate; ?>"><?php echo $text_affiliate; ?></a></li>
     <li><a href="#">Пользовательское соглашение</a></li>
+    <li><a href="index.php?route=information/contact">Контакты</a></li>
   </ul>
 </div>
 <!-- OpenCart is open source software and you are free to remove the powered by OpenCart if you want, but its

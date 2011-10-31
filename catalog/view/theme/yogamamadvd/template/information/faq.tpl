@@ -38,6 +38,14 @@
     <input type="text" name="email" value="<?php echo $email; ?>" />
     <br />
     <br />
+    <b><?php echo $entry_subject; ?></b><br />
+    <select name="subject" cols="40" rows="10" style="width: 49%;">
+        <?php foreach ($contacts as $contact) { ?>
+        <option value="<?php echo $contact->name; ?>"><?php echo $contact->title; ?></option>
+        <?php } ?>
+    </select>
+    <br />
+    <br />
     <b><?php echo $entry_enquiry; ?></b><br />
     <textarea name="enquiry" cols="40" rows="10" style="width: 99%;"><?php echo $enquiry; ?></textarea>
     <br />
