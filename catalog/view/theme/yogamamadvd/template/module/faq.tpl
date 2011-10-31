@@ -1,31 +1,36 @@
-<div class="box">
-  <div class="box-heading"><?php echo $heading_title; ?></div>
-  <div class="box-content">
-    <div class="box-category">
-      <ul>
-        <?php foreach ($faqs as $faq) { ?>
-        <li>
-          <?php if ($faq['faq_id'] == $topic_id) { ?>
-          <a href="<?php echo $faq['href']; ?>" class="active"><?php echo $faq['title']; ?></a>
-          <?php } else { ?>
-          <a href="<?php echo $faq['href']; ?>"><?php echo $faq['title']; ?></a>
-          <?php } ?>
-          <?php if ($faq['children']) { ?>
-          <ul>
-            <?php foreach ($faq['children'] as $child) { ?>
-            <li>
-              <?php if ($child['faq_id'] == $child_id) { ?>
-              <a href="<?php echo $child['href']; ?>" class="active"> - <?php echo $child['title']; ?></a>
-              <?php } else { ?>
-              <a href="<?php echo $child['href']; ?>"> - <?php echo $child['title']; ?></a>
-              <?php } ?>
-            </li>
-            <?php } ?>
-          </ul>
-          <?php } ?>
-        </li>
-        <?php } ?>
-      </ul>
+<h1><?php echo $heading_title; ?></h1>
+<div class="question-list">
+  <?php foreach ($faqs as $topic) { ?>
+  <div>
+    <a class="off"><?php echo $topic['title']; ?></a>
+    <div><?php echo $topic['description']; ?><br/ >
+      <?php if ($topic['children']) { ?>
+      <a href="<?php echo $topic['href']; ?>"><?php echo $button_more . ' (' . $topic['children'] . ')' ?></a>
+      <?php } ?>
     </div>
   </div>
+<?php } ?>
 </div>
+<div class="buttons">
+  <div class="right"><a href="<?php echo $continue; ?>" class="button"><span><?php echo $button_continue; ?></span></a></div>
+</div>
+
+<script language="javascript" type="text/javascript">
+$(function () {
+  var speed = 500;
+  $('a.off').die('click');
+  $('a.off').live('click', function(event){
+    event.preventDefault();
+    $('a.on').next().slideUp(speed);
+    $('a.on').attr('class', 'off');
+    $(this).attr('class', 'on');
+    $(this).next().slideDown(speed);
+  });
+  $('a.on').die('click');
+  $('a.on').live('click', function(event){
+    event.preventDefault();
+    $(this).attr('class', 'off');
+    $(this).next().slideUp(speed);
+  });
+});
+</script>

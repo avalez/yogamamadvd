@@ -1,12 +1,37 @@
 <?php 
 class ControllerInformationContact extends Controller {
-	private $error = array(); 
+	private $error = array();
+
+    private function loadContacts() {
+        if (!isset($this->data['contacts'])) {
+            $contacts = file_get_contents('catalog/contacts.json', FILE_USE_INCLUDE_PATH);
+            $this->data['contacts'] = json_decode($contacts);
+        }
+
+        return $this->data['contacts'];
+    }
+
+    private function getContact($name) {
+
+        $contacts = $this->loadContacts();
+
+        if ($name) {
+            foreach ($contacts as $contact) {
+                if ($contact->name == $name) {
+                    return $contact;
+                }
+            }
+        }
+        return null;
+    }
 	    
   	public function index() {
 		$this->language->load('information/contact');
 
-    	$this->document->setTitle($this->language->get('heading_title'));  
-	 
+    	$this->document->setTitle($this->language->get('heading_title'));
+
+        $this->loadContacts();
+
     	if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$mail = new Mail();
 			$mail->protocol = $this->config->get('config_mail_protocol');
@@ -15,11 +40,12 @@ class ControllerInformationContact extends Controller {
 			$mail->username = $this->config->get('config_smtp_username');
 			$mail->password = $this->config->get('config_smtp_password');
 			$mail->port = $this->config->get('config_smtp_port');
-			$mail->timeout = $this->config->get('config_smtp_timeout');				
-			$mail->setTo($this->config->get('config_email'));
+			$mail->timeout = $this->config->get('config_smtp_timeout');
+            $contact = $this->getContact($this->request->post['subject']);
+			$mail->setTo($contact->mailTo);
 	  		$mail->setFrom($this->request->post['email']);
 	  		$mail->setSender($this->request->post['name']);
-	  		$mail->setSubject(sprintf($this->language->get('email_subject'), $this->request->post['name']));
+	  		$mail->setSubject($contact->title);
 	  		$mail->setText(strip_tags(html_entity_decode($this->request->post['enquiry'], ENT_QUOTES, 'UTF-8')));
       		$mail->send();
 
@@ -50,6 +76,7 @@ class ControllerInformationContact extends Controller {
 
     	$this->data['entry_name'] = $this->language->get('entry_name');
     	$this->data['entry_email'] = $this->language->get('entry_email');
+        $this->data['entry_subject'] = $this->language->get('entry_subject');
     	$this->data['entry_enquiry'] = $this->language->get('entry_enquiry');
 		$this->data['entry_captcha'] = $this->language->get('entry_captcha');
 
@@ -65,6 +92,12 @@ class ControllerInformationContact extends Controller {
 			$this->data['error_email'] = '';
 		}		
 		
+        if (isset($this->error['subject'])) {
+            $this->data['error_subject'] = $this->error['subject'];
+        } else {
+            $this->data['error_subject'] = '';
+        }
+
 		if (isset($this->error['enquiry'])) {
 			$this->data['error_enquiry'] = $this->error['enquiry'];
 		} else {
@@ -190,6 +223,10 @@ class ControllerInformationContact extends Controller {
     	if (!preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email'])) {
       		$this->error['email'] = $this->language->get('error_email');
     	}
+
+        if (!$this->getContact(utf8_decode($this->request->post['subject'])))  {
+              $this->error['subject'] = $this->language->get('error_subject');
+        }
 
     	if ((strlen(utf8_decode($this->request->post['enquiry'])) < 10) || (strlen(utf8_decode($this->request->post['enquiry'])) > 3000)) {
       		$this->error['enquiry'] = $this->language->get('error_enquiry');

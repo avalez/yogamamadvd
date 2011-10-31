@@ -1,10 +1,11 @@
 <?php echo $header; ?><?php echo $column_left; ?><?php echo $column_right; ?>
-<div id="content"><?php echo $content_top; ?>
+<div id="content">
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
+  <?php echo $content_top; ?>
   <h1><?php echo $heading_title; ?></h1>
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="contact">
     <h2><?php echo $text_location; ?></h2>
@@ -39,6 +40,17 @@
     <br />
     <?php if ($error_email) { ?>
     <span class="error"><?php echo $error_email; ?></span>
+    <?php } ?>
+    <br />
+    <b><?php echo $entry_subject; ?></b><br />
+    <select name="subject" cols="40" rows="10" style="width: 49%;">
+        <?php foreach ($contacts as $contact) { ?>
+        <option value="<?php echo $contact->name; ?>"><?php echo $contact->title; ?></option>
+        <?php } ?>
+    </select>
+    <br />
+    <?php if ($error_subject) { ?>
+    <span class="error"><?php echo $error_subject; ?></span>
     <?php } ?>
     <br />
     <b><?php echo $entry_enquiry; ?></b><br />

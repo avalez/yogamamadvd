@@ -5,6 +5,8 @@ class ControllerModuleFaq extends Controller {
 		$this->load->model('fido/faq');
 
     	$this->data['heading_title'] = $this->language->get('heading_title');
+        $this->data['button_continue'] = $this->language->get('button_continue');
+        $this->data['continue'] = $this->url->link('common/home');
 
 		if (isset($this->request->get['topic'])) {
 			$parts = explode('_', (string)$this->request->get['topic']);
@@ -42,7 +44,7 @@ class ControllerModuleFaq extends Controller {
 				$children_data[] = array(
 					'faq_id'      => $child['faq_id'],
 					'title'       => $child['title'],
-					'href'        => $this->url->link('information/faq', 'topic=' . $faq['faq_id'] . '_' . $child['faq_id'])
+					'href'        => $this->url->link('information/faq', 'topic=' . $faq['faq_id'] . '_' . $child['faq_id']),
 				);
 			}
 
@@ -54,6 +56,7 @@ class ControllerModuleFaq extends Controller {
 			$this->data['faqs'][] = array(
 				'faq_id'      => $faq['faq_id'],
 				'title'       => $faq['title'],
+                'description' => html_entity_decode($faq['description']),
 				'children'    => $children_data,
 				'href'        => $this->url->link('information/faq', 'topic=' . $faq['faq_id'])
 			);
