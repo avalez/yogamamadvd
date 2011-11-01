@@ -1,7 +1,8 @@
 /*!40101 SET NAMES utf8 */;
 
-ALTER TABLE address add `country` varchar(128) COLLATE utf8_bin NOT NULL;
-ALTER TABLE address add `zone` varchar(128) COLLATE utf8_bin NOT NULL;
+ALTER TABLE `address` ADD `country` VARCHAR(128) COLLATE utf8_bin NOT NULL;
+ALTER TABLE `address` ADD `zone` VARCHAR(128) COLLATE utf8_bin NOT NULL;
+ALTER TABLE `faq_description` MODIFY `title` VARCHAR(256) COLLATE utf8_bin NOT NULL DEFAULT '';
 
 LOCK TABLES `setting` WRITE;
 /*!40000 ALTER TABLE `setting` DISABLE KEYS */;
@@ -146,4 +147,27 @@ INSERT INTO `download_description` VALUES (2,2,'DVD2.AVI');
 INSERT INTO `download_description` VALUES (3,1,'DVD3.AVI');
 INSERT INTO `download_description` VALUES (3,2,'DVD3.AVI');
 /*!40000 ALTER TABLE `download_description` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `faq` WRITE;
+/*!40000 ALTER TABLE `faq` DISABLE KEYS */;
+INSERT INTO `faq` VALUES (1,0,1,0,''),(2,0,1,0,''),(3,0,1,0,'');
+/*!40000 ALTER TABLE `faq` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `faq_to_store` WRITE;
+/*!40000 ALTER TABLE `faq_to_store` DISABLE KEYS */;
+INSERT INTO `faq_to_store` VALUES (1,0),(2,0),(3,0);
+/*!40000 ALTER TABLE `faq_to_store` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `faq_description` WRITE;
+/*!40000 ALTER TABLE `faq_description` DISABLE KEYS */;
+INSERT INTO `faq_description` VALUES (1,2,'Как скоро я получу диск, если я закажу курс сегодня?','','&lt;p&gt;\r\n	Если Вы выберите доставку почтой, то тогда это зависит от Вашего местоположения.Мы находимся в России в г. Москва и все заказы кроме Европы, шлем отсюда.&lt;/p&gt;\r\n&lt;p&gt;\r\n	По опыту можно сказать, что до крупных городов посылка идет 4-10 дней, до средних и маленьких 10-15 дней.&amp;nbsp;Если Вы заказываете из Европы, то для Вас сроки будет 5-7 рабочих дней, т.к. эти заказы высылаются из чешской столицы -Праги.&lt;/p&gt;\r\n&lt;p&gt;\r\n	Если Вы выберете способ доставки &quot;закачка по Интернет&quot;, тогда письмо со ссылками на закачку будет отправлено на ваш e-mail сразу же, как только поступит оплата.&lt;/p&gt;\r\n'),
+(1,1,'Как скоро я получу диск, если я закажу курс сегодня?','','&lt;p&gt;\r\n	Если Вы выберите доставку почтой, то тогда это зависит от Вашего местоположения.Мы находимся в России в г. Москва и все заказы кроме Европы, шлем отсюда.&lt;/p&gt;\r\n&lt;p&gt;\r\n	По опыту можно сказать, что до крупных городов посылка идет 4-10 дней, до средних и маленьких 10-15 дней.&amp;nbsp;Если Вы заказываете из Европы, то для Вас сроки будет 5-7 рабочих дней, т.к. эти заказы высылаются из чешской столицы -Праги.&lt;/p&gt;\r\n&lt;p&gt;\r\n	Если Вы выберете способ доставки &quot;закачка по Интернет&quot;, тогда письмо со ссылками на закачку будет отправлено на ваш e-mail сразу же, как только поступит оплата.&lt;/p&gt;\r\n'),
+(2,2,'Как можно оплатить курс?','','&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	Проще всего оплатить курс на почте, когда он к Вам придет.&lt;br /&gt;\r\n	Для этого Вам нужно выбрать способ оплаты &quot;Наложенный платеж&quot; и следовать по шагам. Но у этого способа есть недостаток - почта за свои услуги возьмет с Вас 8% от стоимости заказа, поэтому есть еще варианты заказать курс по предоплате.&lt;/p&gt;\r\n&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	Все представленные на сайте способы оплаты, кроме наложенного платежа, являются 100% предоплатой.&lt;/p&gt;\r\n&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	В этом случае Вы платите, стоимость указанную в корзине на этом сайте, а с почты забираете диск бесплатно&lt;/p&gt;\r\n&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	Если Вы хотите скачать курс, то выбирайте один из способов предоплаты, а в корзине способ доставки &quot;закачка по Интернет&quot;. При этом Вы сэкономите, так как не придется платить за доставку, заказ для Вас будет состоять только из стоимости диска(ов).&lt;/p&gt;\r\n'),
+(2,1,'Как можно оплатить курс?','','&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	Проще всего оплатить курс на почте, когда он к Вам придет.&lt;br /&gt;\r\n	Для этого Вам нужно выбрать способ оплаты &quot;Наложенный платеж&quot; и следовать по шагам. Но у этого способа есть недостаток - почта за свои услуги возьмет с Вас 8% от стоимости заказа, поэтому есть еще варианты заказать курс по предоплате.&lt;/p&gt;\r\n&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	Все представленные на сайте способы оплаты, кроме наложенного платежа, являются 100% предоплатой.&lt;/p&gt;\r\n&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	В этом случае Вы платите, стоимость указанную в корзине на этом сайте, а с почты забираете диск бесплатно&lt;/p&gt;\r\n&lt;p style=&quot;margin-left:8.6pt;&quot;&gt;\r\n	Если Вы хотите скачать курс, то выбирайте один из способов предоплаты, а в корзине способ доставки &quot;закачка по Интернет&quot;. При этом Вы сэкономите, так как не придется платить за доставку, заказ для Вас будет состоять только из стоимости диска(ов).&lt;/p&gt;\r\n'),
+(3,2,'А сколько стоит доставка?','','&lt;p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:5.35pt;margin-left:\r\n8.6pt;background:white&quot;&gt;\r\n	Доставка не включена в цену, указанную на сайте.&amp;nbsp;Стоимость ее зависит от способа оплаты и способа доставки курса, в процессе заказа в корзине ее сумма будет указана, исходя из выбранного способа оплаты и доставки.&lt;/p&gt;\r\n&lt;p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:5.35pt;margin-left:\r\n8.6pt;background:white&quot;&gt;\r\n	Самая большая стоимость доставки будет при оплате наложенным платежом.&amp;nbsp;&lt;/p&gt;\r\n&lt;p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:5.35pt;margin-left:\r\n8.6pt;background:white&quot;&gt;\r\n	При закачке курса по Интернету за доставку Вам платить не придется.&lt;/p&gt;\r\n'),
+(3,1,'А сколько стоит доставка?','','&lt;p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:5.35pt;margin-left:\r\n8.6pt;background:white&quot;&gt;\r\n	Доставка не включена в цену, указанную на сайте.&amp;nbsp;Стоимость ее зависит от способа оплаты и способа доставки курса, в процессе заказа в корзине ее сумма будет указана, исходя из выбранного способа оплаты и доставки.&lt;/p&gt;\r\n&lt;p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:5.35pt;margin-left:\r\n8.6pt;background:white&quot;&gt;\r\n	Самая большая стоимость доставки будет при оплате наложенным платежом.&amp;nbsp;&lt;/p&gt;\r\n&lt;p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:5.35pt;margin-left:\r\n8.6pt;background:white&quot;&gt;\r\n	При закачке курса по Интернету за доставку Вам платить не придется.&lt;/p&gt;\r\n');
+/*!40000 ALTER TABLE `faq_description` ENABLE KEYS */;
 UNLOCK TABLES;

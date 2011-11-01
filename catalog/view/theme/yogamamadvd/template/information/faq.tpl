@@ -11,7 +11,7 @@
     <div class="question-list">
     <?php foreach ($topics as $topic) { ?>
     <div><a class="off"><?php echo $topic['title']; ?></a>
-      <div><?php echo $topic['description']; ?><br/ >
+      <div><?php echo $topic['description']; ?>
         <?php if ($topic['children']) { ?>
         <a href="<?php echo $topic['href']; ?>"><?php echo $button_more . ' (' . $topic['children'] . ')' ?></a>
         <?php } ?>
