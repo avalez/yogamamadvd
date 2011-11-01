@@ -99,33 +99,34 @@
     // routes
 
     app.get('/checkout/shipment', function(context) {
+      context.title(i18n('text_order'));
       app.connected(function() {
         context.partial('catalog/view/theme/yogamamadvd/templates/checkout/shipment.html')
-        .render('catalog/view/theme/yogamamadvd/templates/account/register.html', {_shipment: 'download', _url: '#/checkout/download'}, function(html) {
+        .render('catalog/view/theme/yogamamadvd/templates/account/register.html', {_shipment: 'download', _url: 'index.php/checkout/download'}, function(html) {
           $('div#download-register').html(html);
-        }).render('catalog/view/theme/yogamamadvd/templates/account/login.html', {_type: 'download', _url: '#/checkout/shipment'}, function(html) {
+        }).render('catalog/view/theme/yogamamadvd/templates/account/login.html', {_type: 'download', _url: 'index.php/checkout/shipment'}, function(html) {
           $('div#download-login').html(html);
-        }).render('catalog/view/theme/yogamamadvd/templates/account/register.html', {_shipment: 'shipment', _url: '#/checkout/ship'}, function(html) {
+        }).render('catalog/view/theme/yogamamadvd/templates/account/register.html', {_shipment: 'shipment', _url: 'index.php/checkout/ship'}, function(html) {
           $('div#shipment-register').html(html);
-        }).render('catalog/view/theme/yogamamadvd/templates/account/login.html', {_type: 'shipment', _url: '#/checkout/ship'}, function(html) {
+        }).render('catalog/view/theme/yogamamadvd/templates/account/login.html', {_type: 'shipment', _url: 'index.php/checkout/ship'}, function(html) {
           $('div#shipment-login').html(html);
         })
       })
     });
     
-    app.any('#/checkout/download', function(context) {
+    app.any('index.php/checkout/download', function(context) {
       app.cart('shipment', 'download');
-      context.redirect('#/checkout/payment');
+      context.redirect(app.fullPath('index.php/checkout/payment'));
     });
     
-    app.any('#/checkout/ship', function(context) {
+    app.any('index.php/checkout/ship', function(context) {
       app.cart('shipment', 'ship');
-      context.redirect('#/checkout/payment');
+      context.redirect(app.fullPath('index.php/checkout/payment'));
     });
     
-    app.get('#/checkout/payment', function(context) {
+    app.get('index.php/checkout/payment', function(context) {
       if (!app.cart('shipment')) {
-        context.redirect('#/checkout/shipment');
+        context.redirect(app.fullPath('index.php/checkout/shipment'));
       } else {
         context.load('catalog/gateways.json', function(data) {
           var categories = ['ondelivery', 'internet', 'normal', 'visa_mastercard'];
@@ -134,15 +135,15 @@
       }
     });
     
-    app.post('#/checkout/payment', function(context) {
+    app.post('index.php/checkout/payment', function(context) {
       app.cart('payment', context.params.gateway);
       app.cart('_category', context.params._category);
-      context.redirect('#/checkout/product');
+      context.redirect(app.fullPath('index.php/checkout/product'));
     });
     
-    app.get('#/checkout/product', function(context) {
+    app.get('index.php/checkout/product', function(context) {
       if (!app.cart('payment')) {
-        context.redirect('#/checkout/payment');
+        context.redirect(app.fullPath('index.php/checkout/payment'));
       } else {
         app.loadProducts(context, function(products) {
           context.partial('catalog/view/theme/yogamamadvd/templates/checkout/product.html', {products: products});
@@ -150,18 +151,18 @@
       }
     });
 
-    app.post('#/checkout/product', function(context) {
+    app.post('index.php/checkout/product', function(context) {
       app.cart('items', {});
       app.cart('quantity', 0);
       app.cart('total', 0);
       app.updateCart(context, context.params.products, context.params, function() {
-        context.redirect('#/checkout/checkout');
+        context.redirect(app.fullPath('index.php/checkout/checkout'));
       })
     });
 
-    app.get('#/checkout/checkout', function(context) {
+    app.get('index.php/checkout/checkout', function(context) {
       if (!app.cart('items')) {
-        context.redirect('#/checkout/product');
+        context.redirect(app.fullPath('index.php/checkout/product'));
       } else {
         app.updateCart(context, null, null, function() {
           app.connected(function(user) {
@@ -170,7 +171,7 @@
             };
             $.when(deferred()).always(function(address) {
               // register form will appear only for 'ship' +  conected
-              var register = {_shipment: 'ship', _action: 'update', _url: '#/checkout/checkout', address: address};
+              var register = {_shipment: 'ship', _action: 'update', _url: 'index.php/checkout/checkout', address: address};
               app.loadProducts(context, function(products) {
                 context.load('catalog/gateways.json', function(gateways) {
                   context.partial('catalog/view/theme/yogamamadvd/templates/checkout/checkout.html',
@@ -186,12 +187,12 @@
       }
     });
     
-    app.post('#/checkout/checkout', function(context) {
+    app.post('index.php/checkout/checkout', function(context) {
       $.ajax({url:'index.php?route=checkout/checkoutx', type: 'get',
         success: function(json) {
           // redirect after post
           app.store.set('html', json.output);
-          context.redirect('#/checkout/confirm');
+          context.redirect(app.fullPath('index.php/checkout/confirm'));
         },
         error: function(jqXHR, textStatus) {
           $('div.checkout-warning').show().delay(3000).fadeOut('slow');            
@@ -199,9 +200,9 @@
       })
     });
 
-    app.get('#/checkout/confirm', function(context) {
+    app.get('index.php/checkout/confirm', function(context) {
       if (!app.store.get('html')) {
-        context.redirect('#/checkout/checkout');
+        context.redirect(app.fullPath('index.php/checkout/checkout'));
       } else {
         app.swap(app.store.get('html'));
       }

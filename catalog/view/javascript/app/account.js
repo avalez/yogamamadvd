@@ -4,30 +4,32 @@
 
   Sammy.AppAccount = function(app, method_alias) {
     app.get('/account/account', function(context) {
+      context.title(i18n('text_account'));
       app.connected(function(user) {
         if (!user) {
-          var url = escape(context.params._url || '#/account/account');
-          context.redirect('#/account/login?_url=' + url);
+          var url = escape(context.params._url || 'index.php/account/account');
+          context.redirect(app.fullPath('index.php/account/login?_url=' + url));
         } else {
-          window.location = "index.php?route=account/account";
+          app.runRoute('get', '/index.php', { route: 'account/account'});
+          //context.redirect(app.fullPath("index.php?route=account/account"));
           //context.partial('catalog/view/theme/yogamamadvd/templates/account/account.html');
         }
       })
     });
 
-    app.get('#/account/login', function(context) {
+    app.get('index.php/account/login', function(context) {
       context.partial('catalog/view/theme/yogamamadvd/templates/account/login.html', {_type: 'account', _url: context.params._url});
     });
 
-    app.post('#/account/login', function(context) {
+    app.post('index.php/account/login', function(context) {
       $.ajax({url:'index.php?route=account/loginx', data: context.params.toHash(), type: 'post',
         success: function(user) {
           app.store.set('user', user);
           var url = context.params._url;
           if (!url || url.match(/account/)) {
-            url =  '#/account/account';
+            url =  'index.php/account/account';
           }
-          context.redirect(url);
+          context.redirect(app.fullPath(url));
         },
         error: function(jqXHR, textStatus) {
           $('div.login-warning').show().delay(3000).fadeOut('slow');            
@@ -35,11 +37,11 @@
       });
     });
 
-    app.get('#/account/register', function(context) {
+    app.get('index.php/account/register', function(context) {
       context.partial('catalog/view/theme/yogamamadvd/templates/account/register.html', {_shipment: ''});
     });
     
-    app.post('#/account/register', function(context) {
+    app.post('index.php/account/register', function(context) {
       var url = 'index.php?route=account/registerx';
       if (context.params._action === 'update') {
         url = 'index.php?route=account/addressx';
@@ -50,9 +52,9 @@
           app.store.set('user', user);
           var url = context.params._url;
           if (!url || url.match(/account/)) {
-            url =  '#/account/account';
+            url =  'index.php/account/account';
           }
-          context.redirect(url);
+          context.redirect(app.fullPath(url));
         },
         error: function(jqXHR, textStatus) {
           $('div.register-warning').show().delay(3000).fadeOut('slow');            
@@ -60,16 +62,16 @@
       })
     });
 
-    app.get('#/account/logout', function(context) {
+    app.get('index.php/account/logout', function(context) {
       $.get('index.php?route=account/logoutx', function(user) {
           app.log('logged out');
       });
       app.store.set('user', null);
-      var url = context.params._url || '#/';
+      var url = context.params._url || '';
       if (url.match(/account/)) {
-        url = '#/';
+        url = '';
       }
-      this.redirect(url);
+      this.redirect(app.fullPath(url));
     });
     
     app.connected = function(callback) {

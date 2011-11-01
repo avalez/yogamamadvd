@@ -6,14 +6,14 @@
       <div class="content">
         <p><b>${i18n('text_register')}</b></p>
         <p>${i18n('text_register_account')}</p>
-        <a href="#/account/register" class="button"><span>${i18n('button_continue')}</span></a></div>
+        <a href="index.php/account/register" class="button"><span>${i18n('button_continue')}</span></a></div>
     </div>
     <div class="right">
 {{/if}}
 
 <h2>${i18n('text_returning_customer')}</h2>
 <div class="warning login-warning" style="display: none">${i18n('secure.error')}</div>
-<form action="#/account/login" method="post" enc_type="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${_type}">
+<form action="index.php/account/login" method="post" enc_type="application/x-www-form-urlencoded" accept-charset="utf-8" id="login${_type}">
   <input type="hidden" name="_url" value="${_url}"/>
   <input type="submit" style="display: none;">
   <div class="content" style="padding-top: 15px">

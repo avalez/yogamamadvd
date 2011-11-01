@@ -1,12 +1,12 @@
 <div id="nav">
   <ul>
-    <li class=""><a href="#/checkout/shipment">Выбор способа доставки</a></li>
+    <li class=""><a href="index.php/checkout/shipment">Выбор способа доставки</a></li>
 
-    <li class=""><a href="#/checkout/payment">Выбор способа оплаты</a></li>
+    <li class=""><a href="index.php/checkout/payment">Выбор способа оплаты</a></li>
 
-    <li class=""><a href="#/checkout/product">Выбор курса</a></li>
+    <li class=""><a href="index.php/checkout/product">Выбор курса</a></li>
 
-    <li class=""><a href="#/checkout/checkout">Заказ</a></li>
+    <li class=""><a href="index.php/checkout/checkout">Заказ</a></li>
   </ul>
 </div>
 
@@ -114,8 +114,8 @@
             </tr>
             {{else}}
             <tr>
-              {{var url = '#/checkout/checkout' }}
-              <td colspan="2">{{html i18n('text_welcome', '#/account/login?_url=' + escape(url), '#/account/register?_url=' + escape(url))}}</td>
+              {{var url = 'index.php/checkout/checkout' }}
+              <td colspan="2">{{html i18n('text_welcome', 'index.php/account/login?_url=' + escape(url), 'index.php/account/register?_url=' + escape(url))}}</td>
             </tr>
             {{/if}}
           {{/if}}
@@ -124,7 +124,7 @@
     </div>
 
     <div class="buttons">
-      <form action="#/checkout/checkout" method="post" enctype="multipart/form-data" id="checkout"></form>
+      <form action="index.php/checkout/checkout" method="post" enctype="multipart/form-data" id="checkout"></form>
       <a id="checkout-button" class="button"><span>Оформить заказ</span></a>
     </div>
   </div>
@@ -177,6 +177,8 @@ $('a#checkout-button').click(function(event) {
   {{else}}
   if (app.cart('shipment') != 'download') {
     $('#dialog').dialog('open')
+  } else {
+    $('#checkout').submit()
   }
   {{/if}}
 });

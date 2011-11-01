@@ -1,10 +1,10 @@
 <div id="nav">
   <ul>
-    <li class=""><a href="#/checkout/shipment">Выбор способа доставки</a></li>
+    <li class=""><a href="index.php/checkout/shipment">Выбор способа доставки</a></li>
 
-    <li class=""><a href="#/checkout/payment">Выбор способа оплаты</a></li>
+    <li class=""><a href="index.php/checkout/payment">Выбор способа оплаты</a></li>
 
-    <li class=""><a href="#/checkout/product">Выбор курса</a></li>
+    <li class=""><a href="index.php/checkout/product">Выбор курса</a></li>
 
     <li class="disabled">Заказ</li>
   </ul>
@@ -12,7 +12,7 @@
     
   <h2>Курс</h2>
 
-  <form action="#/checkout/product" method="post" enctype="multipart/form-data" id="cart">
+  <form action="index.php/checkout/product" method="post" enctype="multipart/form-data" id="cart">
 
   <p>Курс можно выбрать для всех или некоторых триместров:</p>
 
@@ -28,7 +28,7 @@
         <div>
           <div class="left">
             {{if product.thumb}}
-            <div class="image"><a href="#/product/${product.product_id}"><img src="${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.product_id}" /></a></div>
+            <div class="image"><a href="index.php/product/${product.product_id}"><img src="${product.thumb}" title="${product.name}" alt="${product.name}" id="image${product.product_id}" /></a></div>
             {{/if}}
             <div class="price">
             Цена:

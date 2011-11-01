@@ -1,6 +1,6 @@
 <div id="nav">
   <ul>
-    <li class="active"><a href="#/checkout/shipment">Выбор способа доставки</a></li>
+    <li class="active"><a href="index.php/checkout/shipment">Выбор способа доставки</a></li>
 
     <li class="disabled">Выбор способа оплаты</li>
 
@@ -27,7 +27,7 @@
       <div class="right" id="download-login">
       </div>
     {{else}}
-      <form action="#/checkout/download" method="post" enctype="multipart/form-data" id="download"></form>
+      <form action="index.php/checkout/download" method="post" enctype="multipart/form-data" id="download"></form>
       <div class="buttons">
         <a onclick="$('#download').submit();" class="button"><span>${i18n('button_continue')}</span></a>
       </div>
@@ -46,7 +46,7 @@
       <div class="right" id="shipment-login">
       </div>
     {{else}}
-      <form action="#/checkout/ship" method="post" enctype="multipart/form-data" id="ship"></form>
+      <form action="index.php/checkout/ship" method="post" enctype="multipart/form-data" id="ship"></form>
       <div class="buttons">
         <a onclick="$('#ship').submit();" class="button"><span>${i18n('button_continue')}</span></a>
       </div>

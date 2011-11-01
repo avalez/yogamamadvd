@@ -16,11 +16,11 @@ $(function () {
       //$('<link href="'+ link +'" rel="shortcut icon" type="image/x-icon" />').appendTo('head');
       
       // TODO: remove!
-      var url = escape(app.getLocation().split('?')[0]);
+      var url = escape(app.getLocation());
       if (app.connected()) {
-          $('#welcome').html(i18n('text_logged', '#/account/account', app.connected().firstname, '#/account/logout?_url=' + url));
+          $('#welcome').html(i18n('text_logged', 'index.php/account/account', app.connected().firstname, 'index.php/account/logout?_url=' + url));
       } else {
-          $('#welcome').html(i18n('text_welcome', '#/account/account?_url=' + url, '#/account/register?_url=' + url));
+          $('#welcome').html(i18n('text_welcome', 'index.php/account/account?_url=' + url, 'index.php/account/register?_url=' + url));
       }
     });
 
@@ -44,7 +44,7 @@ $(function () {
           var $el = $('#content');
           $el.html(''); // clean
           $(content).each(function(i, piece) {
-            if (piece.nodeName == 'DIV') {
+            if (piece.nodeName == 'DIV' && piece.id == 'content') {
               $el.append(piece.innerHTML); // div#content
             } else if (piece.nodeName == 'TITLE') {
               context.title(piece.innerHTML);
@@ -59,6 +59,17 @@ $(function () {
     });
     
   });
+  
+  app.fullPath = function(url) {
+    if (url.indexOf('/') != 0 /* relative path */) {
+      var location = this.getLocation();
+      var i = location.indexOf('index.php');
+      var base = location.substring(0, i);
+      return base + url;
+    } else {
+      return url;
+    }
+  };
 
   // run app, when i18n loaded
   i18nLoaded.always(function() {
