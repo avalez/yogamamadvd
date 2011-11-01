@@ -12,7 +12,7 @@ class ControllerInformationFaq extends Controller {
 		$this->data['breadcrumbs'] = array();
 
 		$this->data['breadcrumbs'][] = array(
-			'href'      => $this->url->link('common/home'),
+			'href'      => '#',
 			'text'      => $this->language->get('text_home'),
 			'separator' => FALSE
 		);
@@ -118,7 +118,7 @@ class ControllerInformationFaq extends Controller {
 
 	     	$this->data['button_continue'] = $this->language->get('button_continue');
 
-				$this->data['continue'] = $this->url->link('common/home');
+				$this->data['continue'] = '#';
 
     		$this->data['button_more'] = $this->language->get('button_more');
 

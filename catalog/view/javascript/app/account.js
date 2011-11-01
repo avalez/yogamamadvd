@@ -3,7 +3,7 @@
   Sammy = Sammy || {};
 
   Sammy.AppAccount = function(app, method_alias) {
-    app.get('#/account/account', function(context) {
+    app.get('/account/account', function(context) {
       app.connected(function(user) {
         if (!user) {
           var url = escape(context.params._url || '#/account/account');

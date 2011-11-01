@@ -25,6 +25,7 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
+
 <!--
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery-1.6.1.min.js"></script>
 <script type="text/javascript" src="catalog/view/javascript/jquery/ui/jquery-ui-1.8.9.custom.min.js"></script>
@@ -38,6 +39,35 @@
 <?php foreach ($scripts as $script) { ?>
 <script type="text/javascript" src="<?php echo $script; ?>"></script>
 <?php } ?>
+
+<script type="text/javascript" src="catalog/view/javascript/sammy.min/sammy.js" charset="utf-8"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.title.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.tmpl.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.storage.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/i18n.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/main.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/checkout.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/app/account.js"></script>
+
+<link rel="stylesheet" href="catalog/view/theme/yogamamadvd/stylesheet/customInput.css">
+<link rel="stylesheet" href="catalog/view/theme/yogamamadvd/stylesheet/tipTip.css">
+<script type="text/javascript" src="catalog/view/javascript/jquery/customInput.jquery.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/jquery/jquery.tipTip.minified.js"></script>
+
+<script type="text/javascript" src="catalog/view/javascript/jquery/jquery.json-2.3.min.js"></script>
+<script type="text/javascript">
+$(function() {
+  <?php if ($logged) { ?>
+    var user = <?php echo $user ?>;
+    app.store.set('user', user);
+  <?php } else { ?>
+    app.store.clear('user');
+  <?php } ?>
+  app.store.set('connected', true) // TODO: remove, see also account.js#connnected
+})
+</script>
 
 <!--[if IE 7]>
 <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/ie7.css" />
@@ -60,9 +90,9 @@ DD_belatedPNG.fix('#logo img');
         <div id="product"><img src="catalog/view/theme/yogamamadvd/image/product.png" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
         <div id="menu">
           <ul>
-            <li><a href="index.php?route=common/home"><?php echo $text_home; ?></a></li>
-            <li><a href="#/checkout/shipment"><?php echo $text_order; ?></a></li>
-            <li><a href="#/account/account"><?php echo $text_account; ?></a></li>
+            <li><a href="#"><?php echo $text_home; ?></a></li>
+            <li><a href="index.php/checkout/shipment"><?php echo $text_order; ?></a></li>
+            <li><a href="index.php/account/account"><?php echo $text_account; ?></a></li>
             <li><a href="index.php?route=information/faq"><?php echo $text_faq; ?></a></li>
           </ul>
         </div>

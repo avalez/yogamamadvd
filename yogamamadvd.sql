@@ -23,7 +23,8 @@ UPDATE `setting` SET `value` = 'azhdanov@gmail.com' WHERE `store_id` = 0 AND `gr
 UPDATE `setting` SET `value` = 'Rizska 1492/2' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_address';
 UPDATE `setting` SET `value` = 'Life Yoga Club' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_owner';
 UPDATE `setting` SET `value` = 'Йога для будущих мам' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_name';
-UPDATE `setting` SET `value` = 'a:1:{i:0;a:7:{s:9:"banner_id";s:1:"9";s:5:"width";s:3:"850";s:6:"height";s:3:"409";s:9:"layout_id";s:2:"13";s:8:"position";s:11:"content_top";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"1";}}' WHERE `store_id` = 0 AND `group` = 'slideshow' AND `key` = 'slideshow_module';
+UPDATE `setting` SET `value` = 'a:1:{i:0;a:7:{s:9:"banner_id";s:1:"9";s:5:"width";s:3:"850";s:6:"height";s:3:"409";s:9:"layout_id";s:1:"1";s:8:"position";s:11:"content_top";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"1";}}' WHERE `store_id` = 0 AND `group` = 'slideshow' AND `key` = 'slideshow_module';
+DELETE `setting` WHERE `store_id` = 0 AND `group` = 'featured' AND `key` = 'featured_module';
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -33,19 +34,6 @@ INSERT INTO `extension` VALUES (428,'payment', 'liqpay');
 INSERT INTO `extension` VALUES (429,'shipping', 'free');
 /*!40000 ALTER TABLE `extension` ENABLE KEYS */;
 UNLOCK TABLES;
-
-LOCK TABLES `layout` WRITE;
-/*!40000 ALTER TABLE `layout` DISABLE KEYS */;
-INSERT INTO `layout` VALUES (13,'Main');
-/*!40000 ALTER TABLE `layout` ENABLE KEYS */;
-UNLOCK TABLES;
-
-LOCK TABLES `layout_route` WRITE;
-/*!40000 ALTER TABLE `layout_route` DISABLE KEYS */;
-INSERT INTO `layout_route` VALUES (41,13,0,'common/main');
-/*!40000 ALTER TABLE `layout_route` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 LOCK TABLES `currency` WRITE;
 /*!40000 ALTER TABLE `currency` DISABLE KEYS */;

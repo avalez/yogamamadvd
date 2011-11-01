@@ -4,7 +4,9 @@ class ControllerCommonHome extends Controller {
 		$this->document->setTitle($this->config->get('config_title'));
 		$this->document->setDescription($this->config->get('config_meta_description'));
 
-		$this->document->addScript('catalog/view/javascript/sammy/sammy.js');
+        /*
+
+		$this->document->addScript('catalog/view/javascript/sammy.min/sammy.js');
 		$this->document->addScript('catalog/view/javascript/sammy.min/plugins/sammy.tmpl.js');
 		$this->document->addScript('catalog/view/javascript/sammy.min/plugins/sammy.storage.js');
 		$this->document->addScript('http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js');
@@ -21,9 +23,11 @@ class ControllerCommonHome extends Controller {
 		$this->document->addStyle('catalog/view/theme/' . $this->config->get('config_template') . '/stylesheet/tipTip.css');
 		$this->document->addStyle('catalog/view/theme/' . $this->config->get('config_template') . '/stylesheet/slideshow.css');
 
-		$this->data['heading_title'] = $this->config->get('config_title');
 		$this->data['logged'] = $this->customer->isLogged();
 		$this->data['user'] = json_encode(Resource::customerToUser($this->customer));
+        */
+
+        $this->data['heading_title'] = $this->config->get('config_title');
 
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/home.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/common/home.tpl';
@@ -32,6 +36,10 @@ class ControllerCommonHome extends Controller {
 		}
 		
 		$this->children = array(
+            'common/column_left',
+            'common/column_right',
+            'common/content_top',
+            'common/content_bottom',
 			'common/footer',
 			'common/header'
 		);

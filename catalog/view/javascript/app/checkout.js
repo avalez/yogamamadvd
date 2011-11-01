@@ -98,7 +98,7 @@
     
     // routes
 
-    app.get('#/checkout/shipment', function(context) {
+    app.get('/checkout/shipment', function(context) {
       app.connected(function() {
         context.partial('catalog/view/theme/yogamamadvd/templates/checkout/shipment.html')
         .render('catalog/view/theme/yogamamadvd/templates/account/register.html', {_shipment: 'download', _url: '#/checkout/download'}, function(html) {

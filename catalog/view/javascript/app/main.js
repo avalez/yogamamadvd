@@ -3,6 +3,7 @@ $(function () {
   // initialize
   app = Sammy('#content', function() {
     this.use('Tmpl', 'html');
+    this.use('Title');
     this.use('AppAccount');
     this.use('AppCheckout');
 
@@ -23,15 +24,37 @@ $(function () {
       }
     });
 
+    this.around(function(route) {
+        route();
+        if (!$('#content').data('already-loaded')) {
+            $('#content').data('already-loaded', true);
+        }
+    })
+
     this.get('#?/(index.php)?$', function(context) {
       //context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
-      if (!this.params.route || this.params.route == 'common/home') {
-        context.load('index.php?route=common/main').swap();
-      } else if (this.params.route && this.params.route == 'information/faq') {
-        var url = app.getLocation() + '&partial=true';
-        context.load(url).swap();
-      } else {
-        window.location.reload();
+
+      if ($('#content').data('already-loaded')) {
+
+        // TODO: app.getLocation() ?
+        var route = this.params.route || 'common/home';
+        var url = 'index.php?route=' + route + '&partial=true';
+        context.load(url).then(function(content) {
+          // strip inner div#content, and eval scripts and styles in order of appearance
+          var $el = $('#content');
+          $el.html(''); // clean
+          $(content).each(function(i, piece) {
+            if (piece.nodeName == 'DIV') {
+              $el.append(piece.innerHTML); // div#content
+            } else if (piece.nodeName == 'TITLE') {
+              context.title(piece.innerHTML);
+            } else {
+              // TODO: browser not supports inline scripts
+              $el.append(piece); // scripts/styles/links
+            }
+          })
+
+        })
       }
     });
     

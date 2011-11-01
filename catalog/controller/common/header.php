@@ -215,6 +215,9 @@ class ControllerCommonHeader extends Controller {
 			}
 		}
 				
+        $this->data['logged'] = $this->customer->isLogged();
+        $this->data['user'] = json_encode(Resource::customerToUser($this->customer));
+
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/header.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/common/header.tpl';
 		} else {
