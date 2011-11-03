@@ -37,7 +37,7 @@ class ControllerCheckoutCheckoutX extends Resource
       
     }
 
-    /**
+   /**
      * Update cart
      *
      * jsonCart
@@ -67,37 +67,50 @@ class ControllerCheckoutCheckoutX extends Resource
 
       if (!isset($this->session->data['shipping_method'])
           || $this->session->data['shipping_method']['code'] != $shipping . "." . $shipping) {
-				// Shipping cost, see checkout/shipping.php
-				$address_data = array(
-				  'country_id'     => 0,
-					'zone_id'        => 0
-				);
+		// Shipping cost, see checkout/shipping.php TODO if shipping to selected countries
+		$address_data = array(
+		  'country_id'     => 0,
+		  'zone_id'        => 0
+		);
 
-				$this->load->model('setting/extension');
+		$this->load->model('setting/extension');
 				
-				$results = $this->model_setting_extension->getExtensions('shipping');
+		$results = $this->model_setting_extension->getExtensions('shipping');
 				
-				foreach ($results as $result) {
-					$total_data[] = $result;
+        foreach ($results as $result) {
+          $total_data[] = $result;
 
-					if ($result['code'] == $shipping && $this->config->get($result['code'] . '_status')) {
-						$this->load->model('shipping/' . $result['code']);
-						
-						$quote = $this->{'model_shipping_' . $result['code']}->getQuote($address_data);
-						
-      			$this->session->data['shipping_method'] = $quote['quote'][$result['code']];
+          if ($result['code'] == $shipping && $this->config->get($result['code'] . '_status')) {
+              $this->load->model('shipping/' . $result['code']);
 
-            // TODO: from languages
-						$this->session->data['shipping_method']['title'] = 'Доставка'; 
-						
-						break;
-					}
-				}
-			}
+            $quote = $this->{'model_shipping_' . $result['code']}->getQuote($address_data);
 
-			$total_data = array();
-			$taxes = $this->cart->getTaxes();
-			$total = $this->getTotals($total_data, $taxes);
+            if ($quote) { // enabled
+
+              $this->session->data['shipping_method'] = $quote['quote'][$result['code']];
+
+              // TODO: from languages
+              $this->session->data['shipping_method']['title'] = 'Доставка';
+
+            } else {
+
+              unset($this->session->data['shipping_method']);
+
+            }
+
+            break;
+          }
+		}
+	  }
+
+      if (!isset($this->session->data['shipping_method'])) {
+        $this->error("invalid cart", Resource::BADREQUEST);
+        return;
+      }
+
+      $total_data = array();
+      $taxes = $this->cart->getTaxes();
+	  $total = $this->getTotals($total_data, $taxes);
 
       $payment = $cart->payment == 'post' ? 'cod' : $cart->payment;
       

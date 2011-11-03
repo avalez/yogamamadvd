@@ -29,35 +29,35 @@ class ControllerAccountRegisterX extends Resource
 
   		$this->load->model('account/customer');
 
-      if (isset($this->request->post['_shipment'])) {
+      if ($this->request->post['_shipment']) {
 
         if ($this->request->post['_shipment'] == 'download') {
 
-          $this->request->post['telephone'] = '';
+          $this->request->post['telephone'] = '+123456789';
 
           $this->request->post['fax'] = '';
 
         }
 
-			  $this->request->post['password'] = substr(md5(rand()), 0, 7);
+        $this->request->post['password'] = substr(md5(rand()), 0, 7);
 
-			  $this->request->post['confirm'] = $this->request->post['password'];
+        $this->request->post['confirm'] = $this->request->post['password'];
 
-		  }
+	  }
 
-    	if ($this->validate()) {
+      if ($this->validate()) {
 
-			unset($this->session->data['guest']);
-			
-			$this->model_account_customer->addCustomer($this->request->post);
+        unset($this->session->data['guest']);
 
-			$this->customer->login($this->request->post['email'], $this->request->post['password']);
-			
-			$this->renderJson($this->customerToUser($this->customer));
+        $this->model_account_customer->addCustomer($this->request->post);
+
+        $this->customer->login($this->request->post['email'], $this->request->post['password']);
+
+        $this->renderJson($this->customerToUser($this->customer));
 	  	  
-    	} else {
+      } else {
     	  $this->error("Validation Errors", Resource::BADREQUEST);
-    	} 
+      }
 
     }
     

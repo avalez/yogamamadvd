@@ -30,6 +30,7 @@
             app.cart('totals', totals)
           },
           error: function(jqXHR, textStatus) {
+            app.cart('totals', []);
             $('div.checkout-warning').show().delay(3000).fadeOut('slow')
           }
         }).always(callback)

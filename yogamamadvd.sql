@@ -1,5 +1,7 @@
 /*!40101 SET NAMES utf8 */;
 
+-- FIXME: language!!!
+
 ALTER TABLE `address` ADD `country` VARCHAR(128) COLLATE utf8_bin NOT NULL;
 ALTER TABLE `address` ADD `zone` VARCHAR(128) COLLATE utf8_bin NOT NULL;
 ALTER TABLE `faq_description` MODIFY `title` VARCHAR(256) COLLATE utf8_bin NOT NULL DEFAULT '';
@@ -25,16 +27,22 @@ UPDATE `setting` SET `value` = 'Rizska 1492/2' WHERE `store_id` = 0 AND `group` 
 UPDATE `setting` SET `value` = 'Life Yoga Club' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_owner';
 UPDATE `setting` SET `value` = 'Йога для будущих мам' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_name';
 UPDATE `setting` SET `value` = 'a:1:{i:0;a:7:{s:9:"banner_id";s:1:"9";s:5:"width";s:3:"850";s:6:"height";s:3:"409";s:9:"layout_id";s:1:"1";s:8:"position";s:11:"content_top";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"1";}}' WHERE `store_id` = 0 AND `group` = 'slideshow' AND `key` = 'slideshow_module';
-DELETE `setting` WHERE `store_id` = 0 AND `group` = 'featured' AND `key` = 'featured_module';
-DELETE `setting` WHERE `store_id` = 0 AND `group` = 'account' AND `key` = 'account_module';
-DELETE `setting` WHERE `store_id` = 0 AND `group` = 'affiliate' AND `key` = 'affiliate_module';
+DELETE FROM `setting` WHERE `store_id` = 0 AND `group` = 'featured' AND `key` = 'featured_module';
+DELETE FROM `setting` WHERE `store_id` = 0 AND `group` = 'carousel' AND `key` = 'carousel_module';
+DELETE FROM `setting` WHERE `store_id` = 0 AND `group` = 'account' AND `key` = 'account_module';
+DELETE FROM `setting` WHERE `store_id` = 0 AND `group` = 'affiliate' AND `key` = 'affiliate_module';
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `extension` WRITE;
 /*!40000 ALTER TABLE `extension` DISABLE KEYS */;
-INSERT INTO `extension` VALUES (428,'payment', 'liqpay');
-INSERT INTO `extension` VALUES (429,'shipping', 'free');
+-- INSERT INTO `extension` VALUES (428,'module', 'faq');
+INSERT INTO `extension` VALUES (429,'payment', 'liqpay');
+INSERT INTO `extension` VALUES (430,'shipping', 'free');
+DELETE FROM `extension` WHERE `type` = 'module' AND `code` = 'featured';
+DELETE FROM `extension` WHERE `type` = 'module' AND `code` = 'carousel';
+DELETE FROM `extension` WHERE `type` = 'module' AND `code` = 'account';
+DELETE FROM `extension` WHERE `type` = 'module' AND `code` = 'affiliate';
 /*!40000 ALTER TABLE `extension` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -43,7 +51,6 @@ LOCK TABLES `currency` WRITE;
 INSERT INTO `currency` VALUES (4,'Русский рубль','RUR','','руб.','0',1.00000000,1,'2011-10-12 00:57:26');
 /*!40000 ALTER TABLE `currency` ENABLE KEYS */;
 UNLOCK TABLES;
-
 
 LOCK TABLES `language` WRITE;
 /*!40000 ALTER TABLE `language` DISABLE KEYS */;
@@ -141,8 +148,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `download_description` WRITE;
 /*!40000 ALTER TABLE `download_description` DISABLE KEYS */;
-INSERT INTO `download_description` VALUES (1,1,'DVD1.AVI');
-INSERT INTO `download_description` VALUES (2,1,'DVD2.AVI',);
+-- INSERT INTO `download_description` VALUES (1,1,'DVD1.AVI');
+INSERT INTO `download_description` VALUES (2,1,'DVD2.AVI');
 INSERT INTO `download_description` VALUES (2,2,'DVD2.AVI');
 INSERT INTO `download_description` VALUES (3,1,'DVD3.AVI');
 INSERT INTO `download_description` VALUES (3,2,'DVD3.AVI');
@@ -151,7 +158,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `faq` WRITE;
 /*!40000 ALTER TABLE `faq` DISABLE KEYS */;
-INSERT INTO `faq` VALUES (1,0,1,0,''),(2,0,1,0,''),(3,0,1,0,'');
+INSERT INTO `faq` VALUES (1,0,1,0),(2,0,1,0),(3,0,1,0);
 /*!40000 ALTER TABLE `faq` ENABLE KEYS */;
 UNLOCK TABLES;
 

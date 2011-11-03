@@ -76,9 +76,9 @@
             <td>Способ доставки:</td>
             <td><select id="shipment" class="box">
               {{each ['download', 'ship']}}
-              {{if $value == 'download' || !address || address.iso_code_2 == 'RU'}}
+              {* if $value == 'download' || !address || address.iso_code_2 == 'RU' *}
                 <option value="${$value}" {{if app.cart('shipment') == $value}}selected="true"{{/if}}>${i18n('shipment_' + $value)}</option>
-              {{/if}}
+              {* /if *}
               {{/each}}
             </select>
             </td>
