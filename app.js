@@ -14,8 +14,8 @@ ddoc =
   ;
 
 ddoc.views = {
-  "foo" : {
-    "map" : "function(doc){ emit(doc.name)}"
+  foo : {
+    map : function(doc){ if (doc.type) emit('doc', doc)}
   }
 };
 
