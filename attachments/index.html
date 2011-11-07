@@ -1,91 +1,100 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="keywords" content="" />
-    <meta name="description" content="Li is a real-time collaborative todo list." />
+    <meta name="keywords" content=""/>
+    <meta name="description" content="Li is a real-time collaborative todo list."/>
 
-    <link rel="shortcut icon" type="image/gif" href="favicon.gif" />
+    <link rel="shortcut icon" type="image/gif" href="favicon.gif"/>
 
     <title>Li</title>
-    <link href="layout.css" rel="stylesheet" type="text/css" />
+    <link href="layout.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css"/>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     <script type="text/javascript" src="knockout-1.2.1.js"></script>
     <script type="text/javascript" src="site.js"></script>
 
-  </head>
+</head>
 
-  <body>
-    <header style="display:none">
-      <a id="lock" href="#">
+<body>
+<header>
+    <a id="lock" href="#">
         <span class="locked-hint">unlock this room</span>
         <span class="unlocked-hint">lock this room</span>
+
         <div></div>
-      </a>
-    </header>
+    </a>
+</header>
 
-    <div id="page" style="display:block">
-      <input id="title" type="text" value="Test"></input>
-      <div id="new-wrapper">
-        <input id="new" type="text" maxlength="256" name="" value="" data-bind="addOnEnter: ''"/>
+<div id="page" style="display:block">
+    <input id="title" type="text" data-bind="value: title, editing: editingTitle"/>
+
+    <div id="new-wrapper">
+        <input id="new" type="text" maxlength="256" data-bind="value: newItem, editing: editingNewItem"/>
         <ul class="tokens"></ul>
-      </div>
-      <ul id="list" data-bind='template: { name: "todo-template", foreach: rows }'></ul>
     </div>
+    <ul id="list" data-bind='template: {name: "todo-template", foreach: rows}'></ul>
+</div>
 
-    <div id="not-found" style="display:none">
-      <h1>There is nothing at this location.</h1>
-      <p><a href="#" id="create">Would you like me to create a todo list here?</a></p>
-    </div>
+<div id="not-found" style="display:none">
+    <h1>There is nothing at this location.</h1>
 
-    <div id="password-protect" class="overlay" style="display:none">
-      <div class="password">
+    <p><a href="#" id="create">Would you like me to create a todo list here?</a></p>
+</div>
+
+<div id="password-protect" class="overlay" style="display:none">
+    <div class="password">
         <label>What password would you like to use?</label>
-        <input type="password" name="" value="" />
+        <input type="password" name="" value=""/>
         <a href="#" class="close" data-action="close">cancel</a>
         <span></span>
-      </div>
     </div>
+</div>
 
-    <div id="password-authenticate" class="overlay" style="display:none">
-      <div class="password">
+<div id="password-authenticate" class="overlay" style="display:none">
+    <div class="password">
         <label>Password?</label>
-        <input type="password" name="" value="" />
-      </div>
+        <input type="password" name="" value=""/>
     </div>
+</div>
 
-    <footer>
-      <p>li.iriscouch.com &middot; <a href="#" data-action="about">about</a> &middot; <a href="http://code.google.com/p/yogamamadvd/source/browse/#svn%2Fbranches%2Fcouchapp">source</a></p>
-      <div id="about">
-        <p>
-          Hi there, my name is Li. I am a real-time, collaborative todo LIst.
-        </p>
-        <p>
-          I'm created by <a href="azhdanov@gmail.com">Andriy Zhdanov</a> from <a href="http://thingler.com">Thingler real-time,
-          collaborative Todo List</a> as a pure <a href="http://couchapp.org">Couch Application</a>.
-          I'm powered by<a href="http://couchdb.apache.org">CouchDB</a> and was built entirely in JavaScript,
-          using <a href="http://knockoutjs.com/">Knockout</a>.
-          My <a href="http://code.google.com/p/yogamamadvd/source/browse/#svn%2Fbranches%2Fcouchapp">code</a> is available and open-source&mdash;feel free to browse.
-        </p>
-      </div>
-      <p>Copyright &copy; 2011 <a href="mailto:azhdanov@gmail.com">Andriy Zhdanov</a></p>
-    </footer>
+<footer>
+    <p>li.iriscouch.com &middot; <a href="#" data-action="about"
+                                    data-bind="click: function() { about(!about()) }">about</a> &middot; <a
+            href="http://code.google.com/p/yogamamadvd/source/browse/#svn%2Fbranches%2Fcouchapp">source</a></p>
 
-    <script type="text/html" id="todo-template">
-      <li data-bind="css: {completed:completed}">
-        <input type="checkbox" data-bind="checked: completed" />
-        <input type="text" style="display:none" />
-        <label data-bind="text: name"></label>
+    <div id="about" data-bind="visible: about">
+        <p>
+            Hi there, my name is Li. I am a real-time, collaborative todo LIst.
+        </p>
+
+        <p>
+            I'm created from <a href="http://thingler.com">Thingler real-time, collaborative Todo List</a>
+            as a pure <a href="http://couchapp.org">Couch Application</a> by <a href="azhdanov@gmail.com">Andriy
+            Zhdanov</a>.
+            I'm powered by <a href="http://couchdb.apache.org">CouchDB</a> and was built entirely in JavaScript,
+            using <a href="http://knockoutjs.com/">Knockout</a>.
+            My <a href="http://code.google.com/p/yogamamadvd/source/browse/#svn%2Fbranches%2Fcouchapp">code</a> is
+            available and open-source&mdash;feel free to browse.
+        </p>
+    </div>
+    <p>Copyright &copy; 2011 <a href="mailto:azhdanov@gmail.com">Andriy Zhdanov</a></p>
+</footer>
+
+<script type="text/html" id="todo-template">
+    <li data-bind="css: {completed:completed, editing:editing}">
+        <input type="checkbox" data-bind="checked: completed"/>
+        <input type="text" data-bind="value: name, visible: editing(), editing: editing"/>
+        <label data-bind="text: name, visible: !editing()"></label>
         <ul class="tokens"></ul>
         <div class="actions">
-          <a href="#" data-action="edit">&#x270E;</a>
-          <a href="#" data-action="remove">&#x2717;</a>
+            <a href="#" data-action="edit" data-bind="click: function() { editing(true) }">&#x270E;</a>
+            <a href="#" data-action="remove" data-bind="click: function() { viewModel.delete($data) }">&#x2717;</a>
         </div>
         <ul class="tags"></ul>
-      </li>
-    </script>
-  </body>
+    </li>
+</script>
+</body>
 </html>
