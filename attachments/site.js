@@ -46,51 +46,87 @@ var param = function( a ) {
 }
 
 var app = {baseURL: /* util.getBaseURL(document.location.pathname) */ 'http://li.iriscouch.com/cats/_design/app/_rewrite'};
-app.index = function () {
-  request({url: app.baseURL + '/_view/foo'}, function(error, data) {
-    app.s.swap($('script#test').tmpl(data));
-    $(data.rows).each(function(i, row) {
-        $('input#' + row.id).data('doc', row.value);
-    })
-  })
+
+var cache = [];
+
+app.uuid = function (callback) {
+    if (cache.length > 0) {
+        callback(cache.pop());
+    } else {
+        request({url: app.baseURL + '/../../../../_uuids?count=2'}, function(error, data) {
+            Array.prototype.push.apply(cache, data.uuids);
+            callback(cache.pop());
+        });
+    }
 };
 
-app.update = function (item) {
-    var doc = $(item).data('doc');
-    doc.name = item.value;
-    request({type: 'PUT', url: app.baseURL + '/api/' + item.id, data: doc}, function(error, data) {
-    })
-}
-
-/*
-$(function () {
-  app.s = $.sammy('body', function () {
-    // Index of all databases
-    this.get('', app.index);
-    this.get("#/", app.index);
-  })
-  app.s.run();
-});
-*/
+ko.bindingHandlers.addOnEnter = {
+    init: function(element, valueAccessor) {
+        $(element).keypress(function(event) {
+          if ( event.which == 13 ) {
+             event.preventDefault();
+             var doc = {
+               name: event.target.value,
+               type: 'todo',
+               completed: false
+             };
+             app.uuid(function(uuid) {
+               doc._id = uuid;
+               save(ko.toJS(doc), function(error, data) {
+                 doc._rev = data.rev;
+               })             
+             })
+           }
+        })
+    }
+};
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {};
 
-var save = function (row) {
-  request({type: 'PUT', url: app.baseURL + '/api/' + row._id, data: row}, function(error, data) {
-  })
+var save = function (doc, callback) {
+  request({type: 'PUT', url: app.baseURL + '/api/' + doc._id, data: doc}, callback)
+};
+
+var create = function() {
+  
+}
+
+var observable = function(doc) {
+  var $save = function() {
+    save(ko.toJS(doc), function(error, data) {
+      doc._rev = data.rev;
+    })
+  };
+  doc.name = ko.observable(doc.name);
+  doc.name.subscribe($save);
+  doc.completed = ko.observable(doc.completed);
+  doc.completed.subscribe($save);
+  return doc;
 };
 
 request({url: app.baseURL + '/_view/foo'}, function(error, data) {
-  viewModel.rows = ko.observableArray(); //ko.observableArray(data.rows);
+  viewModel.rows = ko.observableArray();
   $(data.rows).each(function(i, row) {
-    var o = ko.observable(row.value);
-    viewModel.rows.push(o);
-    o.subscribe(function() {
-        alert(this)});
+    viewModel.rows.push(observable(row.value));
   })
 
   viewModel.rows.subscribe(save);
 
   ko.applyBindings(viewModel);
+
+
+  var input = document.getElementById('new');
+  var title = document.getElementById('title');
+  var list = document.getElementById('list');
+  var about = document.getElementById('about');
+  var create = document.getElementById('create');
+  var header = document.querySelector('header');
+  var footer = document.querySelector('footer');
+  var hash = window.location.hash;
+
+  header.style.display = 'block';
+  footer.style.visibility = 'visible'
 });
+
+

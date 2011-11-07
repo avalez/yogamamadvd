@@ -3,29 +3,89 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="shortcut icon" type="image/png" href="favicon.png" />
-    
-    <title></title>
+    <meta name="description" content="Li is a real-time collaborative todo list." />
+
+    <link rel="shortcut icon" type="image/gif" href="favicon.gif" />
+
+    <title>Li</title>
     <link href="layout.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="sammy/sammy.js"></script>
+    <script type="text/javascript" src="knockout-1.2.1.js"></script>
     <script type="text/javascript" src="site.js"></script>
-    
-    <script type="text/template" id="test">
-      {{each(i, row) rows}}
-        <input id="${row.id}" name="item" value="${row.value.name}" onchange="app.update(this)"/>
-      {{/each}}
-    </script>
+
   </head>
-  
+
   <body>
-    
+    <header style="display:none">
+      <a id="lock" href="#">
+        <span class="locked-hint">unlock this room</span>
+        <span class="unlocked-hint">lock this room</span>
+        <div></div>
+      </a>
+    </header>
+
+    <div id="page" style="display:block">
+      <input id="title" type="text" value="Test"></input>
+      <div id="new-wrapper">
+        <input id="new" type="text" maxlength="256" name="" value="" data-bind="addOnEnter: ''"/>
+        <ul class="tokens"></ul>
+      </div>
+      <ul id="list" data-bind='template: { name: "todo-template", foreach: rows }'></ul>
+    </div>
+
+    <div id="not-found" style="display:none">
+      <h1>There is nothing at this location.</h1>
+      <p><a href="#" id="create">Would you like me to create a todo list here?</a></p>
+    </div>
+
+    <div id="password-protect" class="overlay" style="display:none">
+      <div class="password">
+        <label>What password would you like to use?</label>
+        <input type="password" name="" value="" />
+        <a href="#" class="close" data-action="close">cancel</a>
+        <span></span>
+      </div>
+    </div>
+
+    <div id="password-authenticate" class="overlay" style="display:none">
+      <div class="password">
+        <label>Password?</label>
+        <input type="password" name="" value="" />
+      </div>
+    </div>
+
+    <footer>
+      <p>li.iriscouch.com &middot; <a href="#" data-action="about">about</a> &middot; <a href="http://code.google.com/p/yogamamadvd/source/browse/#svn%2Fbranches%2Fcouchapp">source</a></p>
+      <div id="about">
+        <p>
+          Hi there, my name is Li. I am a real-time, collaborative todo LIst.
+        </p>
+        <p>
+          I'm created by <a href="azhdanov@gmail.com">Andriy Zhdanov</a> from <a href="http://thingler.com">Thingler real-time,
+          collaborative Todo List</a> as a pure <a href="http://couchapp.org">Couch Application</a>.
+          I'm powered by<a href="http://couchdb.apache.org">CouchDB</a> and was built entirely in JavaScript,
+          using <a href="http://knockoutjs.com/">Knockout</a>.
+          My <a href="http://code.google.com/p/yogamamadvd/source/browse/#svn%2Fbranches%2Fcouchapp">code</a> is available and open-source&mdash;feel free to browse.
+        </p>
+      </div>
+      <p>Copyright &copy; 2011 <a href="mailto:azhdanov@gmail.com">Andriy Zhdanov</a></p>
+    </footer>
+
+    <script type="text/html" id="todo-template">
+      <li data-bind="css: {completed:completed}">
+        <input type="checkbox" data-bind="checked: completed" />
+        <input type="text" style="display:none" />
+        <label data-bind="text: name"></label>
+        <ul class="tokens"></ul>
+        <div class="actions">
+          <a href="#" data-action="edit">&#x270E;</a>
+          <a href="#" data-action="remove">&#x2717;</a>
+        </div>
+        <ul class="tags"></ul>
+      </li>
+    </script>
   </body>
 </html>
