@@ -57,7 +57,7 @@ var param = function(a) {
     }
 }
 
-var app = {baseURL: /* util.getBaseURL(document.location.pathname) */ 'http://li.iriscouch.com/cats/_design/app/_rewrite'};
+var app = {baseURL: document.location};
 
 var cache = [];
 
@@ -65,7 +65,7 @@ app.uuid = function (callback) {
     if (cache.length > 0) {
         callback(cache.pop());
     } else {
-        request({url: app.baseURL + '/../../../../_uuids?count=2'}, function(error, data) {
+        request({url: app.baseURL + '_uuids?count=2'}, function(error, data) {
             Array.prototype.push.apply(cache, data.uuids);
             callback(cache.pop());
         });
@@ -137,11 +137,11 @@ viewModel.newItem.subscribe(function(newValue) {
 });
 
 viewModel.save = function (doc, callback) {
-    request({type: 'PUT', url: app.baseURL + '/api/' + doc._id, data: doc}, callback)
+    request({type: 'PUT', url: app.baseURL + 'api/' + doc._id, data: doc}, callback)
 };
 
 viewModel.delete = function(doc) {
-    request({type: 'DELETE', url: app.baseURL + '/api/' + doc._id + '?rev=' + doc._rev}, function(error, data) {
+    request({type: 'DELETE', url: app.baseURL + 'api/' + doc._id + '?rev=' + doc._rev}, function(error, data) {
         viewModel.rows.remove(doc);
     })
 }
@@ -160,7 +160,7 @@ var observable = function(doc) {
     return doc;
 };
 
-request({url: app.baseURL + '/_view/foo'}, function(error, data) {
+request({url: app.baseURL + '_view/foo'}, function(error, data) {
     viewModel.rows = ko.observableArray();
     $(data.rows).each(function(i, row) {
         viewModel.rows.push(observable(row.value));
