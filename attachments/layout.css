@@ -43,6 +43,7 @@ body > footer p:first-child:hover a:hover, body > footer p:first-child:hover a a
 body > footer a {
     border-bottom: 1px solid #EEEEEE;
     color: #DDDDDD;
+    cursor: pointer;
 }
 body > footer a:hover {
     border-bottom: 1px solid #F9EEEC;

@@ -13,6 +13,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css"/>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script language="javascript" type="text/javascript" src="sammy/sammy.js"></script>
     <script type="text/javascript" src="knockout-1.2.1.js"></script>
     <script type="text/javascript" src="site.js"></script>
 
@@ -38,7 +39,7 @@
     <ul id="list" data-bind='template: {name: "todo-template", foreach: rows}'></ul>
 </div>
 
-<div id="not-found" style="display:none">
+<div id="not-found" style="display: none" data-bind="visible: roomNotAvailable">
     <h1>There is nothing at this location.</h1>
 
     <p><a href="#" id="create">Would you like me to create a todo list here?</a></p>
@@ -61,7 +62,7 @@
 </div>
 
 <footer>
-    <p>li.iriscouch.com &middot; <a href="#" data-action="about"
+    <p>li.iriscouch.com &middot; <a data-action="about"
                                     data-bind="click: function() { about(!about()) }">about</a> &middot; <a
             href="http://code.google.com/p/yogamamadvd/source/browse/#svn%2Fbranches%2Fcouchapp">source</a></p>
 
@@ -90,8 +91,8 @@
         <label data-bind="text: name, visible: !editing()"></label>
         <ul class="tokens"></ul>
         <div class="actions">
-            <a href="#" data-action="edit" data-bind="click: function() { editing(true) }">&#x270E;</a>
-            <a href="#" data-action="remove" data-bind="click: function() { viewModel.delete($data) }">&#x2717;</a>
+            <a data-action="edit" data-bind="click: function() { editing(true) }">&#x270E;</a>
+            <a data-action="remove" data-bind="click: function() { viewModel.delete($data) }">&#x2717;</a>
         </div>
         <ul class="tags"></ul>
     </li>

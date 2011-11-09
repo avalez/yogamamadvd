@@ -6,6 +6,7 @@ ddoc =
   { _id:'_design/app'
   , rewrites : 
     [ {from:"/", to:'index.html'}
+    , {from:"/#/*", to:'index.html'}
     , {from:"/api", to:'../../'}
     , {from:"/api/*", to:'../../*'}
 //    , {from:"_uuids", to:'../../../_uuids'}
@@ -15,8 +16,11 @@ ddoc =
   ;
 
 ddoc.views = {
-  foo : {
-    map : function(doc){ if (doc.type) emit('doc', doc)}
+  todo : {
+    map : function(doc){ if (doc.type == 'todo') emit(doc.room_id, doc)}
+  },
+  room : {
+    map : function(doc){ if (doc.type == 'room') emit(doc._id, doc)}
   }
 };
 
