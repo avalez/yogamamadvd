@@ -109,14 +109,19 @@ ko.bindingHandlers.editing = {
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
-    title: ko.observable('Test'),
+    title: ko.observable(),
     editingTitle: ko.observable(false),
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
-    about: ko.observable(false),
-    rows: ko.observableArray(),
-    roomNotAvailable: ko.observable(false)
+    rows: ko.observableArray()
 };
+viewModel.title.subscribe(function(newValue) {
+    if (typeof this.room != 'undefined') {
+        this.room.name = newValue;
+        viewModel.save(this.room, function() {
+        })
+    }
+}, viewModel);
 
 viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
@@ -137,6 +142,25 @@ viewModel.newItem.subscribe(function(newValue) {
         })
     })
 });
+
+viewModel.create = function(callback) {
+    app.uuid(function(uuid) {
+        var doc = {
+            _id: uuid,
+            type: 'room',
+            name: 'Li'
+        };
+        viewModel.save(doc, function(error, data) {
+            doc._rev = data.rev;
+            viewModel.room = doc;
+            viewModel.rows.splice(0, viewModel.rows().length);
+            window.location.hash = '#/' + doc._id;
+            if (typeof callback == 'function') {
+                callback();
+            }
+        })
+    })
+}
 
 viewModel.save = function (doc, callback) {
     request({type: 'PUT', url: app.baseURL + 'api/' + doc._id, data: doc}, callback)
@@ -159,57 +183,63 @@ var observable = function(doc) {
     doc.completed = ko.observable(doc.completed);
     doc.completed.subscribe($save);
     doc.editing = ko.observable(false);
+    doc.remove = function() { viewModel.delete(this) };
     return doc;
 };
 
-app.init = function(context) {
-  app.uuid(function(uuid) {
-    var doc = {
-      _id: uuid,
-      type: 'room',
-      name: 'Test' 
-    };
-    viewModel.save(doc, function(error, data) {
-      doc._rev = data.rev;
-      viewModel.room = doc;
-      context.redirect('#/' + doc._id);
-    })
-  })
-  
+var run = function() {
+    ko.applyBindings(viewModel);
+    $('footer').show();
 }
 
-app.index = function() {
-  var url = app.s.getLocation();
-  var room_id = url.substring(url.lastIndexOf('/') + 1);
-  if (typeof viewModel.room == 'undefined' || viewModel.room._id != room_id) { // returning user
-    request({url: app.baseURL + '_view/room?' + param({key: room_id})}, function(error, data) {
-      if (data.rows.length) {
-        viewModel.roomNotAvailable(false);
-        viewModel.room = data.rows[0].value;
-        viewModel.title(viewModel.room.name); 
-        request({url: app.baseURL + '_view/todo?' + param({key: viewModel.room._id})}, function(error, data) {
-          $(data.rows).each(function(i, row) {
-            viewModel.rows.push(observable(row.value));
-          })
+var load = function(callback) {
+    var room_id = window.location.hash.substring(window.location.hash.lastIndexOf('/') + 1);
+    if (typeof viewModel.room == 'undefined' || viewModel.room._id != room_id) {
+        request({url: app.baseURL + '_view/room?' + param({key: room_id})}, function(error, data) {
+            if (data.rows.length) {
+                $('div#not-found').hide();
+                var $doc = data.rows[0].value;
+                viewModel.title($doc.name); // set title first to avoid save
+                viewModel.room = $doc;
+                request({url: app.baseURL + '_view/todo?' + param({key: viewModel.room._id})}, function(error, data) {
+                    $(data.rows).each(function(i, row) {
+                        viewModel.rows.push(observable(row.value));
+                    })
+                    callback();
+                })
+            } else {
+                $('div#not-found').show();
+                delete viewModel['room'];
+                viewModel.rows.splice(0, viewModel.rows().length);
+                callback();
+            }
         })
-      } else {
-        viewModel.roomNotAvailable(true);
-        delete viewModel['room'];
-        viewModel.rows.splice(0, viewModel.rows().length);
-      }
-    });  
-  }
-  ko.applyBindings(viewModel);
+    }
+}
 
-  $('footer').show();
-};
+if (typeof $.sammy == 'function') {
 
-$(function () { 
-  app.s = $.sammy(function () {
-    // Index of all databases
-    this.get('#?/', app.init);
-    this.get(/#\/[\w\d]+$/, app.index);
-  })
-  app.s.run();
-});
+    $(function () {
+        app.s = $.sammy(function () {
+            // Index of all databases
+            this.get('#?/', function() {
+                viewModel.create(function() {
+                })
+            });
+            this.get(/#\/[\w\d]+$/, function() {
+                load(function() {
+                })
+            })
+        })
+        app.s.run();
+        run();
+    });
+
+} else {
+    if (window.location.hash) {
+        load(run);
+    } else {
+        viewModel.create(run);
+    }
+}
 
