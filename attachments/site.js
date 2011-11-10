@@ -111,10 +111,12 @@ ko.bindingHandlers.editing = {
 var viewModel = {
     title: ko.observable(),
     editingTitle: ko.observable(false),
+    completed: ko.observable(false),
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
     children: ko.observableArray()
 };
+
 viewModel.title.subscribe(function(newValue) {
     if (typeof this.parent != 'undefined') {
         this.parent.name = newValue;
@@ -122,7 +124,14 @@ viewModel.title.subscribe(function(newValue) {
           viewModel.parent._rev = data.rev;
         })
     }
-}, viewModel);
+});
+
+viewModel.completed.subscribe(function(newValue) {
+    viewModel.parent.completed = newValue;
+    viewModel.save(viewModel.parent, function(error, data) {
+      viewModel.parent._rev = data.rev;
+    })
+});
 
 viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
@@ -139,6 +148,7 @@ viewModel.newItem.subscribe(function(newValue) {
             doc._rev = data.rev;
             viewModel.children.push(observable(doc));
             viewModel.newItem(''); // clear
+            viewModel.complete(true);
         })
     })
 });
@@ -154,6 +164,7 @@ viewModel.create = function(callback) {
             _id: uuid,
             parent_id: 'root',
             name: 'Li',
+            completed: false
         };
         viewModel.save(doc, function(error, data) {
             doc._rev = data.rev;
@@ -175,12 +186,32 @@ viewModel.save = function (doc, callback) {
 viewModel.delete = function(doc) {
     request({type: 'DELETE', url: app.baseURL + 'api/' + doc._id + '?rev=' + doc._rev}, function(error, data) {
         viewModel.children.remove(doc);
+        viewModel.complete();
     })
     request({url: app.baseURL + '_view/children?' + param({key: doc._id})}, function(error, data) {
         $(data.rows).each(function(i, row) {
             viewModel.delete(row.value);
         })
     })
+}
+
+viewModel.complete = function(doc, newValue) {
+    if (newValue) { // complete children
+        request({url: app.baseURL + '_view/children?' + param({key: doc._id})}, function(error, data) {
+            $(data.rows).each(function(i, row) {
+                if (!row.value.completed) {
+                    row.value.completed = true;
+                    viewModel.save(row.value, function() {
+                    });
+                }
+            })
+        })
+    }
+    var completed = true;
+    for (var i = 0; i < viewModel.children().length && completed; i++) {
+      completed = viewModel.children()[i].completed();
+    }
+    viewModel.completed(completed);
 }
 
 var observable = function(doc) {
@@ -193,6 +224,9 @@ var observable = function(doc) {
     doc.name.subscribe($save);
     doc.completed = ko.observable(doc.completed);
     doc.completed.subscribe($save);
+    doc.completed.subscribe(function(newValue) {
+        viewModel.complete(doc, newValue)
+    });
     doc.editing = ko.observable(false);
     doc.remove = function() { viewModel.delete(this) };
     return doc;
@@ -214,9 +248,12 @@ var load = function(callback) {
                 viewModel.title($doc.name); // set title first to avoid save
                 viewModel.parent = $doc;
                 request({url: app.baseURL + '_view/children?' + param({key: parent_id})}, function(error, data) {
+                    var completed = data.rows.length > 0;
                     $(data.rows).each(function(i, row) {
+                        completed = completed && (row.value.completed || false);
                         viewModel.children.push(observable(row.value));
                     })
+                    viewModel.completed(completed);
                     callback();
                 })
             } else {
@@ -234,8 +271,9 @@ if (typeof $.sammy == 'function') {
         app.s = $.sammy(function () {
             // Index of all databases
             this.get('#?/', function() {
-                viewModel.create(function() {
-                })
+                this.redirect("#/root")
+                //viewModel.create(function() {
+                //})
             });
             this.get(/#\/[\w\d]+$/, function() {
                 load(function() {

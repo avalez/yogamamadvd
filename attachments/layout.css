@@ -245,7 +245,7 @@ input[type="checkbox"] {
 #page #list > li:last-child {
     border-bottom: 0 none;
 }
-#page .completed label, #page .completed label a {
+#page .completed a, #page .completed label a {
     color: #CCCCCC !important;
     text-decoration: line-through;
 }
