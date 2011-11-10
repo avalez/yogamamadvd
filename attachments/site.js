@@ -234,7 +234,7 @@ var observable = function(doc) {
 var run = function() {
     ko.applyBindings(viewModel);
     $('footer').show();
-    $.address.change(function() {
+    $(window).hashchange(function() {
         load(function() {
         })
     })
@@ -254,7 +254,7 @@ var load = function(callback) {
                 var $doc = data;
                 viewModel.title($doc.name); // set title first to avoid save
                 viewModel.completed($doc.completed);
-                $.address.title($doc.name);
+                document.title = $doc.name;
                 viewModel.parent = $doc;
                 request({url: app.baseURL + '_view/children?' + param({key: parent_id})}, function(error, data) {
                     viewModel.children.splice(0, viewModel.children().length); // show only last loaded items
