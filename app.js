@@ -16,11 +16,8 @@ ddoc =
   ;
 
 ddoc.views = {
-  todo : {
-    map : function(doc){ if (doc.type == 'todo') emit(doc.room_id, doc)}
-  },
-  room : {
-    map : function(doc){ if (doc.type == 'room') emit(doc._id, doc)}
+  children : {
+    map : function(doc){ emit(doc.parent_id, doc)}
   }
 };
 

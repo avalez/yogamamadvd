@@ -36,7 +36,7 @@
         <input id="new" type="text" maxlength="256" data-bind="value: newItem, editing: editingNewItem"/>
         <ul class="tokens"></ul>
     </div>
-    <ul id="list" data-bind='template: {name: "todo-template", foreach: rows}'></ul>
+    <ul id="list" data-bind='template: {name: "todo-template", foreach: children}'></ul>
 </div>
 
 <div id="not-found" style="display: none">
@@ -88,7 +88,7 @@
     <li data-bind="css: {completed:completed, editing:editing}">
         <input type="checkbox" data-bind="checked: completed"/>
         <input type="text" data-bind="value: name, visible: editing(), editing: editing"/>
-        <label data-bind="text: name, visible: !editing()"></label>
+        <a data-bind="text: name, visible: !editing(), attr: {href: '#/' + _id} "/>
         <ul class="tokens"></ul>
         <div class="actions">
             <a data-action="edit" data-bind="click: function() { editing(true) }">&#x270E;</a>

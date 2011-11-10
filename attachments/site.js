@@ -113,12 +113,13 @@ var viewModel = {
     editingTitle: ko.observable(false),
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
-    rows: ko.observableArray()
+    children: ko.observableArray()
 };
 viewModel.title.subscribe(function(newValue) {
-    if (typeof this.room != 'undefined') {
-        this.room.name = newValue;
-        viewModel.save(this.room, function() {
+    if (typeof this.parent != 'undefined') {
+        this.parent.name = newValue;
+        viewModel.save(viewModel.parent, function(error, data) {
+          viewModel.parent._rev = data.rev;
         })
     }
 }, viewModel);
@@ -128,32 +129,37 @@ viewModel.newItem.subscribe(function(newValue) {
         return;
     }
     var doc = {
-        room_id: viewModel.room._id,
+        parent_id: viewModel.parent._id,
         name: newValue,
-        type: 'todo',
         completed: false
     };
     app.uuid(function(uuid) {
         doc._id = uuid;
         viewModel.save(ko.toJS(doc), function(error, data) {
             doc._rev = data.rev;
-            viewModel.rows.push(observable(doc));
+            viewModel.children.push(observable(doc));
             viewModel.newItem(''); // clear
         })
     })
 });
 
+viewModel.reset = function() {
+  delete viewModel['parent']; // avoid save
+  viewModel.children.splice(0, viewModel.children().length);
+}
+
 viewModel.create = function(callback) {
     app.uuid(function(uuid) {
         var doc = {
             _id: uuid,
-            type: 'room',
-            name: 'Li'
+            parent_id: 'root',
+            name: 'Li',
         };
         viewModel.save(doc, function(error, data) {
             doc._rev = data.rev;
-            viewModel.room = doc;
-            viewModel.rows.splice(0, viewModel.rows().length);
+            viewModel.reset();
+            viewModel.title(doc.name); // set title first to avoid save
+            viewModel.parent = doc;
             window.location.hash = '#/' + doc._id;
             if (typeof callback == 'function') {
                 callback();
@@ -168,7 +174,12 @@ viewModel.save = function (doc, callback) {
 
 viewModel.delete = function(doc) {
     request({type: 'DELETE', url: app.baseURL + 'api/' + doc._id + '?rev=' + doc._rev}, function(error, data) {
-        viewModel.rows.remove(doc);
+        viewModel.children.remove(doc);
+    })
+    request({url: app.baseURL + '_view/children?' + param({key: doc._id})}, function(error, data) {
+        $(data.rows).each(function(i, row) {
+            viewModel.delete(row.value);
+        })
     })
 }
 
@@ -193,24 +204,24 @@ var run = function() {
 }
 
 var load = function(callback) {
-    var room_id = window.location.hash.substring(window.location.hash.lastIndexOf('/') + 1);
-    if (typeof viewModel.room == 'undefined' || viewModel.room._id != room_id) {
-        request({url: app.baseURL + '_view/room?' + param({key: room_id})}, function(error, data) {
-            if (data.rows.length) {
+    var parent_id = window.location.hash.substring(window.location.hash.lastIndexOf('/') + 1);
+    if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
+        request({url: app.baseURL + 'api/' + parent_id}, function(error, data) {
+            if (!error) {
                 $('div#not-found').hide();
-                var $doc = data.rows[0].value;
+                var $doc = data;
+                viewModel.reset();
                 viewModel.title($doc.name); // set title first to avoid save
-                viewModel.room = $doc;
-                request({url: app.baseURL + '_view/todo?' + param({key: viewModel.room._id})}, function(error, data) {
+                viewModel.parent = $doc;
+                request({url: app.baseURL + '_view/children?' + param({key: parent_id})}, function(error, data) {
                     $(data.rows).each(function(i, row) {
-                        viewModel.rows.push(observable(row.value));
+                        viewModel.children.push(observable(row.value));
                     })
                     callback();
                 })
             } else {
                 $('div#not-found').show();
-                delete viewModel['room'];
-                viewModel.rows.splice(0, viewModel.rows().length);
+                viewModel.reset();
                 callback();
             }
         })
