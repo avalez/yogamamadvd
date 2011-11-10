@@ -118,8 +118,8 @@ var viewModel = {
 };
 
 viewModel.title.subscribe(function(newValue) {
-    if (typeof this.parent != 'undefined') {
-        this.parent.name = newValue;
+    if (typeof viewModel.parent != 'undefined') {
+        viewModel.parent.name = newValue;
         viewModel.save(viewModel.parent, function(error, data) {
           viewModel.parent._rev = data.rev;
         })
@@ -127,29 +127,22 @@ viewModel.title.subscribe(function(newValue) {
 });
 
 viewModel.completed.subscribe(function(newValue) {
-    viewModel.parent.completed = newValue;
-    viewModel.save(viewModel.parent, function(error, data) {
-      viewModel.parent._rev = data.rev;
-    })
+    if (typeof viewModel.parent != 'undefined') {
+        viewModel.parent.completed = newValue;
+        viewModel.save(viewModel.parent, function(error, data) {
+          viewModel.parent._rev = data.rev;
+        })
+    }
 });
 
 viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
         return;
     }
-    var doc = {
-        parent_id: viewModel.parent._id,
-        name: newValue,
-        completed: false
-    };
-    app.uuid(function(uuid) {
-        doc._id = uuid;
-        viewModel.save(ko.toJS(doc), function(error, data) {
-            doc._rev = data.rev;
-            viewModel.children.push(observable(doc));
-            viewModel.newItem(''); // clear
-            viewModel.complete(true);
-        })
+    viewModel.realCreate(viewModel.parent._id, newValue, function(doc) {
+        viewModel.children.push(observable(doc));
+        viewModel.newItem(''); // clear
+        viewModel.complete();
     })
 });
 
@@ -159,22 +152,28 @@ viewModel.reset = function() {
 }
 
 viewModel.create = function(callback) {
+    viewModel.realCreate('root', 'Li', function(doc) {
+        viewModel.reset();
+        viewModel.title(doc.name); // set title first to avoid save
+        viewModel.parent = doc;
+        window.location.hash = '#/' + doc._id;
+        if (typeof callback == 'function') {
+            callback();
+        }
+    })
+}
+
+viewModel.realCreate = function(parent_id, name, callback) {
     app.uuid(function(uuid) {
         var doc = {
             _id: uuid,
-            parent_id: 'root',
-            name: 'Li',
+            parent_id: parent_id,
+            name: name,
             completed: false
         };
         viewModel.save(doc, function(error, data) {
             doc._rev = data.rev;
-            viewModel.reset();
-            viewModel.title(doc.name); // set title first to avoid save
-            viewModel.parent = doc;
-            window.location.hash = '#/' + doc._id;
-            if (typeof callback == 'function') {
-                callback();
-            }
+            callback(doc)
         })
     })
 }
@@ -235,20 +234,31 @@ var observable = function(doc) {
 var run = function() {
     ko.applyBindings(viewModel);
     $('footer').show();
+    $.address.change(function() {
+        load(function() {
+        })
+    })
 }
 
 var load = function(callback) {
-    var parent_id = window.location.hash.substring(window.location.hash.lastIndexOf('/') + 1);
+    var parent_id = window.location.hash.substring(2) // strip '#/'
+    if (!parent_id) {
+        window.location.hash = '#/root';
+        return;
+    }
     if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
+        viewModel.reset();
         request({url: app.baseURL + 'api/' + parent_id}, function(error, data) {
             if (!error) {
                 $('div#not-found').hide();
                 var $doc = data;
-                viewModel.reset();
                 viewModel.title($doc.name); // set title first to avoid save
+                viewModel.completed($doc.completed);
+                $.address.title($doc.name);
                 viewModel.parent = $doc;
                 request({url: app.baseURL + '_view/children?' + param({key: parent_id})}, function(error, data) {
-                    var completed = data.rows.length > 0;
+                    viewModel.children.splice(0, viewModel.children().length); // show only last loaded items
+                    var completed = viewModel.completed() || data.rows.length > 0;
                     $(data.rows).each(function(i, row) {
                         completed = completed && (row.value.completed || false);
                         viewModel.children.push(observable(row.value));
@@ -258,7 +268,6 @@ var load = function(callback) {
                 })
             } else {
                 $('div#not-found').show();
-                viewModel.reset();
                 callback();
             }
         })
@@ -285,10 +294,9 @@ if (typeof $.sammy == 'function') {
     });
 
 } else {
-    if (window.location.hash) {
-        load(run);
-    } else {
-        viewModel.create(run);
+    if (!window.location.hash) {
+        window.location.hash = '#/root'
     }
+    load(run);
 }
 
