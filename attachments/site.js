@@ -29,31 +29,14 @@ var param = function(a) {
         });
     } else {
         for (var prefix in a) {
-            buildParams(prefix, a[prefix]);
+            add(prefix, a[prefix]);
         }
     }
     return s.join("&");
-    function buildParams(prefix, obj) {
-        if (jQuery.isArray(obj)) {
-            jQuery.each(obj, function(i, v) {
-                if (/\[\]$/.test(prefix)) {
-                    add(prefix, v);
-                } else {
-                    buildParams(prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "") + "]", v)
-                }
-            });
-        } else if (obj != null && typeof obj === "object") {
-            jQuery.each(obj, function(k, v) {
-                buildParams(prefix + "[" + k + "]", v);
-            });
-        } else {
-            add(prefix, obj);
-        }
-    }
 
     function add(key, value) {
         value = jQuery.isFunction(value) ? value() : value;
-        s[ s.length ] = encodeURIComponent(key) + '="' + encodeURIComponent(value) + '"';
+        s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(value)) + '';
     }
 }
 
@@ -248,24 +231,21 @@ var load = function(callback) {
     }
     if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
         viewModel.reset();
-        request({url: app.baseURL + 'api/' + parent_id}, function(error, data) {
-            if (!error) {
+        request({url: app.baseURL + '_view/items?' + param({startkey: [parent_id], endkey: [parent_id, 2]})}, function(error, data) {
+            if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
-                var $doc = data;
+                var $doc = data.rows.shift().value;
                 viewModel.title($doc.name); // set title first to avoid save
                 viewModel.completed($doc.completed);
                 document.title = $doc.name;
                 viewModel.parent = $doc;
-                request({url: app.baseURL + '_view/children?' + param({key: parent_id})}, function(error, data) {
-                    viewModel.children.splice(0, viewModel.children().length); // show only last loaded items
-                    var completed = viewModel.completed() || data.rows.length > 0;
-                    $(data.rows).each(function(i, row) {
-                        completed = completed && (row.value.completed || false);
-                        viewModel.children.push(observable(row.value));
-                    })
-                    viewModel.completed(completed);
-                    callback();
+                var completed = viewModel.completed() || data.rows.length > 0;
+                $(data.rows).each(function(i, row) {
+                    completed = completed && (row.value.completed || false);
+                    viewModel.children.push(observable(row.value));
                 })
+                viewModel.completed(completed);
+                callback();
             } else {
                 $('div#not-found').show();
                 callback();
