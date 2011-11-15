@@ -40,7 +40,7 @@ var param = function(a) {
     }
 }
 
-var app = {baseURL: window.location.pathname};
+var app = {baseURL: window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1)};
 
 var cache = [];
 
@@ -162,11 +162,11 @@ viewModel.realCreate = function(parent_id, name, callback) {
 }
 
 viewModel.save = function (doc, callback) {
-    request({type: 'PUT', url: app.baseURL + 'api/' + doc._id, data: doc}, callback)
+    request({type: 'PUT', url: app.baseURL + '../..' + doc._id, data: doc}, callback)
 };
 
 viewModel.delete = function(doc) {
-    request({type: 'DELETE', url: app.baseURL + 'api/' + doc._id + '?rev=' + doc._rev}, function(error, data) {
+    request({type: 'DELETE', url: app.baseURL + '../..' + doc._id + '?rev=' + doc._rev}, function(error, data) {
         viewModel.children.remove(doc);
         viewModel.complete();
     })
