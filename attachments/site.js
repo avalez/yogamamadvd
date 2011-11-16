@@ -48,12 +48,12 @@ app.uuid = function (callback) {
     if (cache.length > 0) {
         callback(cache.pop());
     } else {
-        request({url: app.baseURL + '_uuids?count=2'}, function(error, data) {
+        request({url: app.baseURL + '../../../_uuids?count=2'}, function(error, data) {
             Array.prototype.push.apply(cache, data.uuids);
             callback(cache.pop());
         });
     }
-};
+}
 
 ko.bindingHandlers.editing = {
     init: function(element, valueAccessor, allBindingsAccessor) {
@@ -88,7 +88,7 @@ ko.bindingHandlers.editing = {
             element.blur();
         }
     }
-};
+}
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
@@ -98,7 +98,7 @@ var viewModel = {
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
     children: ko.observableArray()
-};
+}
 
 viewModel.title.subscribe(function(newValue) {
     if (typeof viewModel.parent != 'undefined') {
@@ -162,17 +162,17 @@ viewModel.realCreate = function(parent_id, name, callback) {
 }
 
 viewModel.save = function (doc, callback) {
-    request({type: 'PUT', url: app.baseURL + '../..' + doc._id, data: doc}, callback)
-};
+    request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, callback)
+}
 
-viewModel.delete = function(doc) {
-    request({type: 'DELETE', url: app.baseURL + '../..' + doc._id + '?rev=' + doc._rev}, function(error, data) {
+viewModel.remove = function(doc) {
+    request({type: 'DELETE', url: app.baseURL + '../../' + doc._id + '?rev=' + doc._rev}, function(error, data) {
         viewModel.children.remove(doc);
         viewModel.complete();
     })
     request({url: app.baseURL + '_view/children?' + param({key: doc._id})}, function(error, data) {
         $(data.rows).each(function(i, row) {
-            viewModel.delete(row.value);
+            viewModel.remove(row.value);
         })
     })
 }
@@ -210,9 +210,9 @@ var observable = function(doc) {
         viewModel.complete(doc, newValue)
     });
     doc.editing = ko.observable(false);
-    doc.remove = function() { viewModel.delete(this) };
+    doc.remove = function() { viewModel.remove(this) };
     return doc;
-};
+}
 
 var run = function() {
     ko.applyBindings(viewModel);
