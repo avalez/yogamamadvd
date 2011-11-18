@@ -36,11 +36,16 @@ var param = function(a) {
 
     function add(key, value) {
         value = jQuery.isFunction(value) ? value() : value;
-        s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(value)) + '';
+        if ($.inArray(key, ["key", "startkey", "endkey"]) >= 0) {
+          value = JSON.stringify(value);
+        }
+        s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
     }
 }
 
-var app = {baseURL: window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1)};
+var app = {baseURL: document.location.pathname.match(/.+\//)[0]};
+
+var myChanges = [];
 
 var cache = [];
 
@@ -53,6 +58,92 @@ app.uuid = function (callback) {
             callback(cache.pop());
         });
     }
+}
+
+/**
+ * @namespace
+ * $.couch.db.changes provides an API for subscribing to the changes
+ * feed
+ * <pre><code>var $changes = $.couch.db("mydatabase").changes();
+ *$changes.onChange = function (data) {
+ *    ... process data ...
+ * }
+ * $changes.stop();
+ * </code></pre>
+ */
+app.changes = function(since, options) {
+
+  options = options || {};
+  // set up the promise object within a closure for this handler
+  var timeout = 100, active = true,
+    listeners = [],
+    promise = /** @lends $.couch.db.changes */ {
+      /**
+       * Add a listener callback
+       * @see <a href="http://techzone.couchbase.com/sites/default/
+       * files/uploads/all/documentation/couchbase-api-db.html#couch
+       * base-api-db_db-changes_get">docs for /db/_changes</a>
+       * @param {Function} fun Callback function to run when
+       * notified of changes.
+       */
+    onChange : function(fun) {
+      listeners.push(fun);
+    },
+      /**
+       * Stop subscribing to the changes feed
+       */
+    stop : function() {
+      active = false;
+    }
+  };
+  // call each listener when there is a change
+  function triggerListeners(resp) {
+    $.each(listeners, function() {
+      this(resp);
+    });
+  };
+  // when there is a change, call any listeners, then check for
+  // another change
+  options.success = function(error, resp) {
+    if (error) {
+      options.error();
+    } else {
+      timeout = 100;
+      if (active) {
+        since = resp.last_seq;
+        triggerListeners(resp);
+        getChangesSince();
+      };
+    };
+  };
+  options.error = function() {
+    if (active) {
+      setTimeout(getChangesSince, timeout);
+      timeout = timeout * 2;
+    }
+  };
+  // actually make the changes request
+  function getChangesSince() {
+    var opts = {
+      heartbeat : 10 * 1000,
+      feed : "longpoll",
+      since : since
+    }
+    request(
+      {url: app.baseURL + "../../_changes?" + param(opts)},
+      options.success
+    );
+  }
+  // start the first request
+  if (since) {
+    getChangesSince();
+  } else {
+    request({url: app.baseURL + '../../'}, function(error, info) {
+      since = info.update_seq;
+      getChangesSince();
+    });
+  }
+  return promise;
 }
 
 ko.bindingHandlers.editing = {
@@ -98,6 +189,7 @@ var viewModel = {
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
     children: ko.observableArray()
+    // parent - this document
 }
 
 viewModel.title.subscribe(function(newValue) {
@@ -125,7 +217,6 @@ viewModel.newItem.subscribe(function(newValue) {
     viewModel.realCreate(viewModel.parent._id, newValue, function(doc) {
         viewModel.children.push(observable(doc));
         viewModel.newItem(''); // clear
-        viewModel.complete();
     })
 });
 
@@ -146,6 +237,10 @@ viewModel.create = function(callback) {
     })
 }
 
+viewModel.read = function(doc_id, callback) {
+  request({type: 'GET', url: app.baseURL + '../../' + doc_id}, callback);
+}
+
 viewModel.realCreate = function(parent_id, name, callback) {
     app.uuid(function(uuid) {
         var doc = {
@@ -162,13 +257,28 @@ viewModel.realCreate = function(parent_id, name, callback) {
 }
 
 viewModel.save = function (doc, callback) {
-    request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, callback)
+    request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
+      if (!error) {
+        myChanges.push(data.id);
+        /*
+        changes = myChanges[data.id] || [];
+        changes.push(data.rev);
+        myChanges[data.id] = changes;
+        */
+      }
+      callback(error, data);
+    })
 }
 
 viewModel.remove = function(doc) {
     request({type: 'DELETE', url: app.baseURL + '../../' + doc._id + '?rev=' + doc._rev}, function(error, data) {
+      myChanges.push(data.id);
+      /*
+        changes = myChanges[data.id] || [];
+        changes.push(data.rev);
+        myChanges[data.id] = changes;
+      */
         viewModel.children.remove(doc);
-        viewModel.complete();
     })
     request({url: app.baseURL + '_view/children?' + param({key: doc._id})}, function(error, data) {
         $(data.rows).each(function(i, row) {
@@ -190,17 +300,20 @@ viewModel.complete = function(doc, newValue) {
         })
     }
     var completed = true;
-    for (var i = 0; i < viewModel.children().length && completed; i++) {
-      completed = viewModel.children()[i].completed();
+    var children = viewModel.children();
+    for (var i = 0, length = children.length; i < length && completed; i++) {
+      completed = children[i].completed();
     }
     viewModel.completed(completed);
 }
 
 var observable = function(doc) {
     var $save = function() {
+      if (!doc.syncing) {
         viewModel.save(ko.toJS(doc), function(error, data) {
             doc._rev = data.rev;
         })
+      }
     };
     doc.name = ko.observable(doc.name);
     doc.name.subscribe($save);
@@ -214,9 +327,97 @@ var observable = function(doc) {
     return doc;
 }
 
+// check if change has any modification from outside,
+// return false if not our change, true otherwize
+function inChanges(change) {
+  var myChange = myChanges[change.id];
+  if (myChange) {
+  	for (var i = 0, length = change.changes.length; i < length; i++ ) {
+  	  var index = myChange.indexOf(change.changes[i].rev);
+  	  console.log('index:', index);
+  	  if (index == -1) {
+  	    // clean up
+  		  delete myChanges[change.id];
+  		  // not our chnage
+  			return false;
+  	  } else {
+  	    // clean up
+  	    myChange.splice(index, 1);
+  		}
+		}
+		// all change.revisions are ours
+		if (myChange.length = 0) { // clean up
+		  delete myChanges[change.id];
+		}
+		return true;
+	}
+  // not our change
+  delete myChanges[change.id];
+	return false;
+}
+
+/*
+ * Handles any incoming real time changes from CouchDB, this will either
+ * trigger a full page load if the design doc has changed, or update
+ * the current list of tasks if needed
+ */
+function handleChanges() {
+
+  $changes = app.changes();
+  $changes.onChange(function(changes) {
+
+    var doRefresh = false;
+
+    $.each(changes.results, function(_, change) {
+
+      // Full refresh if design doc changes
+      doRefresh = doRefresh || /^_design/.test(change.id);
+
+      // Otherwise check for changes that we didnt cause
+      var changeIndex = $.inArray(change.id, myChanges);
+      if (changeIndex == -1) {
+        var index = -1, row;
+        for (var i = 0, length = viewModel.children().length; i < length && index == -1; i++) {
+          row = viewModel.children()[i];
+          if (row._id == change.id) {
+            index = i;
+          }
+        }
+        if (change.deleted) {
+          viewModel.children.splice(index, 1); // safe if index == -1
+        } else {
+          viewModel.read(change.id, function(error, doc) {
+            if (index != -1)  {
+              row.syncing = true;
+              // row initialized above
+              row.completed(doc.completed);
+              row.name(doc.name);
+              row.syncing = false;
+            } else if (doc.parent_id = viewModel.parent._id) {
+              viewModel.children.push(observable(doc));
+            }
+          })
+        }
+      
+      } else {
+        myChanges.splice(changeIndex, 1);
+        
+      }
+      
+
+    });
+
+    if (doRefresh) {
+      document.location.reload();
+    }
+
+  });
+}
+
 var run = function() {
     ko.applyBindings(viewModel);
     $('footer').show();
+    handleChanges();
     $(window).hashchange(function() {
         load(function() {
         })
@@ -224,11 +425,7 @@ var run = function() {
 }
 
 var load = function(callback) {
-    var parent_id = window.location.hash.substring(2) // strip '#/'
-    if (!parent_id) {
-        window.location.hash = '#/root';
-        return;
-    }
+    var parent_id = window.location.hash.substring(2) || 'root'; // strip '#/'
     if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
         viewModel.reset();
         request({url: app.baseURL + '_view/items?' + param({startkey: [parent_id], endkey: [parent_id, 2]})}, function(error, data) {
@@ -245,6 +442,9 @@ var load = function(callback) {
                     viewModel.children.push(observable(row.value));
                 })
                 viewModel.completed(completed);
+                viewModel.children.subscribe(function(newValue) {
+                  viewModel.complete();
+                })
                 callback();
             } else {
                 $('div#not-found').show();
@@ -274,9 +474,6 @@ if (typeof $.sammy == 'function') {
     });
 
 } else {
-    if (!window.location.hash) {
-        window.location.hash = '#/root'
-    }
     load(run);
 }
 
