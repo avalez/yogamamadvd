@@ -15,10 +15,6 @@ var request = function (options, callback) {
     $.ajax(options)
 }
 
-$.expr[":"].exactly = function(obj, index, meta, stack) {
-    return ($(obj).text() == meta[3])
-}
-
 var param = function(a) {
     // Query param builder from jQuery, had to copy out to remove conversion of spaces to +
     // This is important when converting datastructures to querystrings to send to CouchDB.
@@ -111,8 +107,10 @@ app.changes = function(since, options) {
       timeout = 100;
       if (active) {
         since = resp.last_seq;
-        triggerListeners(resp);
-        getChangesSince();
+        setTimeout(function() {
+          triggerListeners(resp);
+          getChangesSince();
+        }, timeout);
       };
     };
   };
@@ -183,32 +181,11 @@ ko.bindingHandlers.editing = {
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
-    title: ko.observable(),
-    editingTitle: ko.observable(false),
-    completed: ko.observable(false),
+    // parent - this document
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
     children: ko.observableArray()
-    // parent - this document
 }
-
-viewModel.title.subscribe(function(newValue) {
-    if (typeof viewModel.parent != 'undefined') {
-        viewModel.parent.name = newValue;
-        viewModel.save(viewModel.parent, function(error, data) {
-          viewModel.parent._rev = data.rev;
-        })
-    }
-});
-
-viewModel.completed.subscribe(function(newValue) {
-    if (typeof viewModel.parent != 'undefined') {
-        viewModel.parent.completed = newValue;
-        viewModel.save(viewModel.parent, function(error, data) {
-          viewModel.parent._rev = data.rev;
-        })
-    }
-});
 
 viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
@@ -265,6 +242,8 @@ viewModel.save = function (doc, callback) {
         changes.push(data.rev);
         myChanges[data.id] = changes;
         */
+      } else if (data.error == 'conflict') {
+        doc.load();
       }
       callback(error, data);
     })
@@ -304,8 +283,9 @@ viewModel.complete = function(doc, newValue) {
     for (var i = 0, length = children.length; i < length && completed; i++) {
       completed = children[i].completed();
     }
-    viewModel.completed(completed);
+    this.parent.completed(completed);
 }
+
 
 var observable = function(doc) {
     var $save = function() {
@@ -320,10 +300,21 @@ var observable = function(doc) {
     doc.completed = ko.observable(doc.completed);
     doc.completed.subscribe($save);
     doc.completed.subscribe(function(newValue) {
+      if (!doc.syncing) {
         viewModel.complete(doc, newValue)
+      }
     });
     doc.editing = ko.observable(false);
     doc.remove = function() { viewModel.remove(this) };
+    doc.load = function() { viewModel.read(this._id, function(error, data) {
+      doc._rev = data._rev;
+      doc.syncing = true;
+      // row initialized above
+      doc.completed(data.completed);
+      doc.name(data.name);
+      doc.syncing = false;
+    }) };
+    
     return doc;
 }
 
@@ -385,18 +376,19 @@ function handleChanges() {
         }
         if (change.deleted) {
           viewModel.children.splice(index, 1); // safe if index == -1
+          // TODO: if change.id == viewModel.parent._id
         } else {
-          viewModel.read(change.id, function(error, doc) {
             if (index != -1)  {
-              row.syncing = true;
-              // row initialized above
-              row.completed(doc.completed);
-              row.name(doc.name);
-              row.syncing = false;
-            } else if (doc.parent_id = viewModel.parent._id) {
-              viewModel.children.push(observable(doc));
+              row.load();
+            } else if (change.id == viewModel.parent._id) {
+              viewModel.parent.load();
+            } else {
+              viewModel.read(change.id, function(error, doc) {
+                if (doc.parent_id == viewModel.parent._id) {
+                  viewModel.children.push(observable(doc));
+                }
+              })
             }
-          })
         }
       
       } else {
@@ -432,16 +424,17 @@ var load = function(callback) {
             if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
                 var $doc = data.rows.shift().value;
-                viewModel.title($doc.name); // set title first to avoid save
-                viewModel.completed($doc.completed);
                 document.title = $doc.name;
-                viewModel.parent = $doc;
-                var completed = viewModel.completed() || data.rows.length > 0;
+                viewModel.parent = observable($doc);
+                viewModel.parent.name.subscribe(function(newValue) {
+                  document.title = newValue;
+                });
+                //var completed = viewModel.completed() || data.rows.length > 0;
                 $(data.rows).each(function(i, row) {
-                    completed = completed && (row.value.completed || false);
+                    //completed = completed && (row.value.completed || false);
                     viewModel.children.push(observable(row.value));
                 })
-                viewModel.completed(completed);
+                //viewModel.completed(completed);
                 viewModel.children.subscribe(function(newValue) {
                   viewModel.complete();
                 })

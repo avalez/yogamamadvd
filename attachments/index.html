@@ -27,7 +27,7 @@
 </header>
 
 <div id="page" style="display:block">
-    <input id="title" type="text" data-bind="value: title, editing: editingTitle"/>
+    <input id="title" type="text" data-bind="value: parent.name, editing: parent.editing"/>
 
     <div id="new-wrapper">
         <input id="new" type="text" maxlength="256" data-bind="value: newItem, editing: editingNewItem"/>
