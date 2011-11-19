@@ -39,7 +39,7 @@
 <div id="not-found" style="display: none">
     <h1>There is nothing at this location.</h1>
 
-    <p><a id="create" data-bind="click: function() {create('root', 'Li', function() { $('div#not-found').hide() })}">Would you like me to create a LIst here?</a></p>
+    <p><a id="create" data-bind="click: function() {create('root', 'Li', function(error, doc) { $('div#not-found').hide(); window.location.hash = '#/' + doc._id })}">Would you like me to create a LIst here?</a></p>
 </div>
 
 <div id="password-protect" class="overlay" style="display:none">

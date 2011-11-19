@@ -39,6 +39,8 @@ var param = function(a) {
     }
 }
 
+function nil() {}
+
 var app = {baseURL: document.location.pathname.match(/.+\//)[0]};
 
 var cache = [];
@@ -61,7 +63,9 @@ app.view = function (view_id, params, callback) {
 app.create = function(doc, callback) {
   app.uuid(function(uuid) {
     doc._id = uuid;
-    app.update(doc, callback)
+    app.update(doc, function(error, data) {
+      callback(error, doc);
+    })
   });
 }
 
@@ -72,7 +76,7 @@ app.read = function(doc_id, callback) {
 app.update = function(doc, callback) {
   request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
     doc._rev = data.rev;
-    callback(error, doc);
+    callback(error, data);
   })
 }
 
@@ -211,11 +215,15 @@ var myChanges = [];
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
-    // parent - this document
+    parent: observable({name: '', completed: false}),
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
     children: ko.observableArray()
 }
+
+viewModel.parent.name.subscribe(function(newValue) {
+  document.title = newValue;
+});
 
 viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
@@ -227,8 +235,17 @@ viewModel.newItem.subscribe(function(newValue) {
     })
 });
 
+viewModel.children.subscribe(function(newValue) {
+  if (!viewModel.parent.syncing) {
+    viewModel.complete();
+  }
+})
+
 viewModel.reset = function() {
-  delete viewModel['parent']; // avoid save
+  delete viewModel.parent['_id'];
+  viewModel.parent.syncing = true;
+  viewModel.parent.name('');
+  delete viewModel.parent['syncing'];
   viewModel.children.splice(0, viewModel.children().length);
 }
 
@@ -238,15 +255,32 @@ viewModel.create = function(parent_id, name, callback) {
       name: name,
       completed: false
   };
-  app.create(doc, callback);
+  app.create(doc, function(error, doc) {
+    if (!error) {
+      myChanges.push(doc._id);
+      /*
+      changes = myChanges[data.id] || [];
+      changes.push(data.rev);
+      myChanges[data.id] = changes;
+      */
+    
+      callback(error, doc);
+    }
+  });
+}
+
+viewModel.read = function(doc_id, callback) {
+  app.read(doc_id, function(error, data) {
+    callback(data);
+  })
 }
 
 viewModel.save = function (doc, callback) {
     var doc_to_save = ko.toJS(doc);
     delete doc_to_save['editing'];
-    delete doc_to_save['syncing'];
     app.update(doc_to_save, function(error, data) {
       if (!error) {
+        doc._rev = data.rev;
         myChanges.push(data.id);
         /*
         changes = myChanges[data.id] || [];
@@ -268,28 +302,27 @@ viewModel.remove = function(doc) {
         changes.push(data.rev);
         myChanges[data.id] = changes;
       */
-        viewModel.children.remove(doc); // FIXME: move to observable
     })
+    // cascade
     app.view('children', {key: doc._id}, function(error, data) {
         $(data.rows).each(function(i, row) {
-            viewModel.remove(row.value);
+            viewModel.remove(row.value); // recurse
         })
     })
 }
 
 viewModel.complete = function(doc, newValue) {
     if (newValue) { // complete children
-        request({url: app.baseURL + '_view/children?' + param({key: doc._id})}, function(error, data) {
+        app.view('children', {key: doc._id}, function(error, data) {
             $(data.rows).each(function(i, row) {
                 if (!row.value.completed) {
                     row.value.completed = true;
-                    viewModel.save(row.value, function() {
-                    });
+                    viewModel.save(row.value, nil);
                 }
             })
         })
     }
-    if (viewModel.parent) {
+    if (viewModel.parent._id) {
       var completed = true;
       var children = viewModel.children();
       for (var i = 0, length = children.length; i < length && completed; i++) {
@@ -299,14 +332,12 @@ viewModel.complete = function(doc, newValue) {
     }
 }
 
-var observable = function(doc) {
+function observable(doc) {
     var $save = function() {
       if (!doc.syncing) {
-        viewModel.save(ko.toJS(doc), function(error, data) {
-            doc._rev = data.rev;
-        })
+        viewModel.save(doc, nil);
       }
-    };
+    }
     doc.name = ko.observable(doc.name);
     doc.name.subscribe($save);
     doc.completed = ko.observable(doc.completed);
@@ -317,15 +348,25 @@ var observable = function(doc) {
       }
     });
     doc.editing = ko.observable(false);
-    doc.remove = function() { viewModel.remove(this) };
-    doc.load = function() { app.read(this._id, function(error, data) {
+    doc.remove = function() {
+      viewModel.remove(doc);
+      viewModel.children.remove(doc);
+    }
+    doc.load = function() { 
+      viewModel.read(this._id, doc.set);
+    }
+    doc.set = function(data) {
+      doc._id = data._id;
       doc._rev = data._rev;
+      doc.parent_id = data.parent_id;
       doc.syncing = true;
-      // row initialized above
+      if (typeof this.completed != 'function') {
+        0 == 0;
+      }
       doc.completed(data.completed);
       doc.name(data.name);
-      doc.syncing = false;
-    }) };
+      delete doc['syncing'];      
+    }
     
     return doc;
 }
@@ -397,7 +438,9 @@ function handleChanges() {
             } else {
               app.read(change.id, function(error, doc) {
                 if (doc.parent_id == viewModel.parent._id) {
+                  viewModel.parent.syncing = true;
                   viewModel.children.push(observable(doc));
+                  delete viewModel.parent['syncing'];
                 }
               })
             }
@@ -435,21 +478,15 @@ var load = function(callback) {
         app.view('items', {startkey: [parent_id], endkey: [parent_id, 2]}, function(error, data) {
             if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
-                var $doc = data.rows.shift().value;
-                document.title = $doc.name;
-                viewModel.parent = observable($doc);
-                viewModel.parent.name.subscribe(function(newValue) {
-                  document.title = newValue;
-                });
+                viewModel.parent.set(data.rows.shift().value);
+                viewModel.parent.syncing = true;
                 //var completed = viewModel.completed() || data.rows.length > 0;
                 $(data.rows).each(function(i, row) {
                     //completed = completed && (row.value.completed || false);
                     viewModel.children.push(observable(row.value));
                 })
+                delete viewModel.parent['syncing'];
                 //viewModel.completed(completed);
-                viewModel.children.subscribe(function(newValue) {
-                  viewModel.complete();
-                })
                 callback();
             } else {
                 $('div#not-found').show();
