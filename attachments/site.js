@@ -41,8 +41,6 @@ var param = function(a) {
 
 var app = {baseURL: document.location.pathname.match(/.+\//)[0]};
 
-var myChanges = [];
-
 var cache = [];
 
 app.uuid = function (callback) {
@@ -54,6 +52,32 @@ app.uuid = function (callback) {
             callback(cache.pop());
         });
     }
+}
+
+app.view = function (view_id, params, callback) {
+  request({url: app.baseURL + '_view/' + view_id + '?' + param(params)}, callback);
+}
+
+app.create = function(doc, callback) {
+  app.uuid(function(uuid) {
+    doc._id = uuid;
+    app.update(doc, callback)
+  });
+}
+
+app.read = function(doc_id, callback) {
+  request({type: 'GET', url: app.baseURL + '../../' + doc_id}, callback);
+}
+
+app.update = function(doc, callback) {
+  request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
+    doc._rev = data.rev;
+    callback(error, doc);
+  })
+}
+
+app.remove = function(doc, callback) {
+  request({type: 'DELETE', url: app.baseURL + '../../' + doc._id + '?rev=' + doc._rev}, callback);
 }
 
 /**
@@ -144,6 +168,8 @@ app.changes = function(since, options) {
   return promise;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 ko.bindingHandlers.editing = {
     init: function(element, valueAccessor, allBindingsAccessor) {
         $(element).focus(function() {
@@ -179,6 +205,10 @@ ko.bindingHandlers.editing = {
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+var myChanges = [];
+
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
     // parent - this document
@@ -191,7 +221,7 @@ viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
         return;
     }
-    viewModel.realCreate(viewModel.parent._id, newValue, function(doc) {
+    viewModel.create(viewModel.parent._id, newValue, function(error, doc) {
         viewModel.children.push(observable(doc));
         viewModel.newItem(''); // clear
     })
@@ -202,39 +232,20 @@ viewModel.reset = function() {
   viewModel.children.splice(0, viewModel.children().length);
 }
 
-viewModel.create = function(callback) {
-    viewModel.realCreate('root', 'Li', function(doc) {
-        viewModel.reset();
-        viewModel.title(doc.name); // set title first to avoid save
-        viewModel.parent = doc;
-        window.location.hash = '#/' + doc._id;
-        if (typeof callback == 'function') {
-            callback();
-        }
-    })
-}
-
-viewModel.read = function(doc_id, callback) {
-  request({type: 'GET', url: app.baseURL + '../../' + doc_id}, callback);
-}
-
-viewModel.realCreate = function(parent_id, name, callback) {
-    app.uuid(function(uuid) {
-        var doc = {
-            _id: uuid,
-            parent_id: parent_id,
-            name: name,
-            completed: false
-        };
-        viewModel.save(doc, function(error, data) {
-            doc._rev = data.rev;
-            callback(doc)
-        })
-    })
+viewModel.create = function(parent_id, name, callback) {
+  var doc = {
+      parent_id: parent_id,
+      name: name,
+      completed: false
+  };
+  app.create(doc, callback);
 }
 
 viewModel.save = function (doc, callback) {
-    request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
+    var doc_to_save = ko.toJS(doc);
+    delete doc_to_save['editing'];
+    delete doc_to_save['syncing'];
+    app.update(doc_to_save, function(error, data) {
       if (!error) {
         myChanges.push(data.id);
         /*
@@ -250,16 +261,16 @@ viewModel.save = function (doc, callback) {
 }
 
 viewModel.remove = function(doc) {
-    request({type: 'DELETE', url: app.baseURL + '../../' + doc._id + '?rev=' + doc._rev}, function(error, data) {
+    app.remove(doc, function(error, data) {
       myChanges.push(data.id);
       /*
         changes = myChanges[data.id] || [];
         changes.push(data.rev);
         myChanges[data.id] = changes;
       */
-        viewModel.children.remove(doc);
+        viewModel.children.remove(doc); // FIXME: move to observable
     })
-    request({url: app.baseURL + '_view/children?' + param({key: doc._id})}, function(error, data) {
+    app.view('children', {key: doc._id}, function(error, data) {
         $(data.rows).each(function(i, row) {
             viewModel.remove(row.value);
         })
@@ -278,14 +289,15 @@ viewModel.complete = function(doc, newValue) {
             })
         })
     }
-    var completed = true;
-    var children = viewModel.children();
-    for (var i = 0, length = children.length; i < length && completed; i++) {
-      completed = children[i].completed();
+    if (viewModel.parent) {
+      var completed = true;
+      var children = viewModel.children();
+      for (var i = 0, length = children.length; i < length && completed; i++) {
+        completed = children[i].completed();
+      }
+      viewModel.parent.completed(completed);
     }
-    this.parent.completed(completed);
 }
-
 
 var observable = function(doc) {
     var $save = function() {
@@ -306,7 +318,7 @@ var observable = function(doc) {
     });
     doc.editing = ko.observable(false);
     doc.remove = function() { viewModel.remove(this) };
-    doc.load = function() { viewModel.read(this._id, function(error, data) {
+    doc.load = function() { app.read(this._id, function(error, data) {
       doc._rev = data._rev;
       doc.syncing = true;
       // row initialized above
@@ -383,7 +395,7 @@ function handleChanges() {
             } else if (change.id == viewModel.parent._id) {
               viewModel.parent.load();
             } else {
-              viewModel.read(change.id, function(error, doc) {
+              app.read(change.id, function(error, doc) {
                 if (doc.parent_id == viewModel.parent._id) {
                   viewModel.children.push(observable(doc));
                 }
@@ -420,7 +432,7 @@ var load = function(callback) {
     var parent_id = window.location.hash.substring(2) || 'root'; // strip '#/'
     if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
         viewModel.reset();
-        request({url: app.baseURL + '_view/items?' + param({startkey: [parent_id], endkey: [parent_id, 2]})}, function(error, data) {
+        app.view('items', {startkey: [parent_id], endkey: [parent_id, 2]}, function(error, data) {
             if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
                 var $doc = data.rows.shift().value;
@@ -454,7 +466,7 @@ if (typeof $.sammy == 'function') {
             // Index of all databases
             this.get('#?/', function() {
                 this.redirect("#/root")
-                //viewModel.create(function() {
+                //viewModel.create('root', 'Li', function() {
                 //})
             });
             this.get(/#\/[\w\d]+$/, function() {
