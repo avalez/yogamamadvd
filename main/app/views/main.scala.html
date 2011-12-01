@@ -4,7 +4,7 @@
 
     <head>
         <title>@title</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=${_response_encoding}"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/menu.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/nav.css")">
@@ -43,9 +43,9 @@
           </div>
           <div id="welcome">
             @if(true) {
-              @Messages("text_welcome", "#", "#")
+              @Html(Messages("text_welcome", "#", "#"))
             } else {
-              @Messages("text_logged", "#", null, "#")
+              @Html(Messages("text_logged", "#", null, "#"))
             }
           </div>
           @if(true) {
@@ -61,7 +61,7 @@
 			  <li><a href="#">@Messages("text_terms")</a></li>
 		    </ul>
 		  </div>
-		  <div id="powered">@Messages("powered")</div>
+		  <div id="powered">@Html(Messages("powered"))</div>
 		</div>
 	</body>
 </html>
