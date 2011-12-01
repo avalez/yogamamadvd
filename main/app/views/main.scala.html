@@ -1,15 +1,67 @@
 @(title: String)(content: Html)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="ru" xml:lang="ru" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
 
-<!DOCTYPE html>
-
-<html>
     <head>
         <title>@title</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=${_response_encoding}"/>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/menu.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/nav.css")">
+
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("javascripts/jquery-1.6.4.min.js")" type="text/javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
+
+		<!--[if IE 7]>
+		<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/ie7.css")" />
+		<![endif]-->
+		<!--[if lt IE 7]>
+		<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/ie6.css")" />
+		<script type="text/javascript" src="@routes.Assets.at("avascripts/DD_belatedPNG_0.0.8a-min.js")"></script>
+		<script type="text/javascript">
+		DD_belatedPNG.fix('#logo img');
+		</script>
+		<![endif]-->
+		
+		<!-- TODO google analytics -->
+
     </head>
     <body>
-        @content
-    </body>
+		<div id="container">
+        <div id="logo"><img src="@routes.Assets.at("images/logo.png")" alt="@Messages("logo")" title="@Messages("logo")"/></div>
+		<div id="header">
+          <div id="product"><img src="@routes.Assets.at("images/product.png")" alt="@Messages("product")" title="@Messages("product")"/></div>
+          <div id="menu">
+            <ul>
+              <li><a href="#">@Messages("text_home")</a></li>
+              <li><a href="#">@Messages("text_order")</a></li>
+              <li><a href="#">@Messages("text_account")</a></li>
+              <li><a href="#">@Messages("text_faq")</a></li>
+            </ul>
+          </div>
+          <div id="welcome">
+            @if(true) {
+              @Messages("text_welcome", "#", "#")
+            } else {
+              @Messages("text_logged", "#", null, "#")
+            }
+          </div>
+          @if(true) {
+          <div class="heading">
+            <a href="#"><span id="cart_total">@Messages("text_items", 0, 0)</span></a>
+          </div>
+          }
+		  <!--div id="notification"></div-->
+		  <div id="content">@content</div>
+		  <div id="footer">
+		    <ul>
+		      <li><a href="#">@Messages("text_affiliate")</a></li>
+			  <li><a href="#">@Messages("text_terms")</a></li>
+		    </ul>
+		  </div>
+		  <div id="powered">@Messages("powered")</div>
+		</div>
+	</body>
 </html>
