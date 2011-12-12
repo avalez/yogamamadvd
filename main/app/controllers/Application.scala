@@ -10,15 +10,12 @@ import views._
 object Application extends Controller {
   
   def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.Empty] = {
-    var url = call.url;
-    if(request.queryString.contains("partial")) {
-      if (url.indexOf("?") > 0) {
-        url += "&partial"
-      } else {
-        url += "?partial"
-      }      
-    }
-    Status(play.api.http.Status.FOUND).withHeaders(LOCATION -> url)
+    Status(if(request.queryString.contains("partial")) {
+      // avoid browser transparently handling the redirect 
+      play.api.http.Status.OK
+    } else {
+      play.api.http.Status.FOUND
+    }).withHeaders(LOCATION -> call.url)
   }
 
   def index = Action { implicit request =>
