@@ -1,7 +1,6 @@
-@(users: Seq[User])
+@(users: Seq[User])(implicit request: RequestHeader)
 
 @main(Messages("product")) {
     
-    @users(0).email
     
 }
