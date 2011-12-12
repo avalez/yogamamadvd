@@ -52,11 +52,34 @@
     return false;
   });
 
+  _parseFormParams = function($form) {
+      var params = {},
+          form_fields = $form.serializeArray(),
+          i;
+      for (i = 0; i < form_fields.length; i++) {
+        params = this._parseParamPair(params, form_fields[i].name, form_fields[i].value);
+      }
+      return params;
+  };
+  
+  _parseParamPair = function(params, key, value) {
+      if (params[key]) {
+        if (_isArray(params[key])) {
+          params[key].push(value);
+        } else {
+          params[key] = [params[key], value];
+        }
+      } else {
+        params[key] = value;
+      }
+      return params;
+  };
+    
   $('form').live('submit.yogamamadvd', function(e) {
     e.preventDefault();
     var $form = $(e.target);
     var url = $form.attr('action');
-    $.ajax({url:url + '?partial', type: 'post', data: {email: 'test', password: 'test'},
+    $.ajax({url:url + '?partial', type: 'post', data: _parseFormParams($form),
       success: function(html, error, jqXHR) {
         var redirect = jqXHR.getResponseHeader('Location');
         if (redirect) {
