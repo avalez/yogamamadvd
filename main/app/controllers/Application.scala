@@ -26,10 +26,10 @@ object Application extends Controller {
 
   val loginForm = Form(
     of(
-      "email" -> text,
+      "username" -> text,
       "password" -> text
     ) verifying ("Invalid email or password", result => result match {
-      case (email, password) => true
+      case (email, password) => User.authenticate(email, password).isDefined
     })
   )
 
@@ -72,7 +72,7 @@ trait Secured extends Security.AllAuthenticated {
   override def username(request: RequestHeader) = request.session.get("email")
 
   /**
-   * Redirect to login if the use in not authorized.
+   * Redirect to login if the user is not authorized.
    */
   override def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login)
 

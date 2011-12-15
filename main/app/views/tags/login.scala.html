@@ -1,0 +1,40 @@
+@(form: Form[(String,String)], _type: String = "shipment", _url: String = "")
+    <h2>@Messages("text_returning_customer")</h2>
+    @helper.form(routes.Application.authenticate, ('id, "login" + _type)) {
+
+        <input type="hidden" name="url" value="@_url"/>
+        <div class="content" style="padding-top: 15px">
+          <table class="login-form">
+            @if(_type != "shipment") {
+            <tr>
+              <td colspan="3"><b>@Messages("text_i_am_returning_customer")</b></td>
+            </tr>
+            }
+            <tr>
+              <td><label for="username">@Messages("entry_email")</label></td>
+              <td><input type="text" name="username" value="@form("username").value" tabindex="1" autofocus="true"/>
+                @form("username").error.map { error =>
+                  <span class="error">@error</span>
+                }
+              </td>
+              <td><input type="checkbox" name="remember" id="remember" value="true" @if(form("remember").value) {checked="true"} tabindex="3"/>
+                <label for="remember">@form("remember").value</label></td>
+            </tr>
+            <tr>
+              <td><label for="password">@Messages("entry_password")</label></td>
+              <td><input type="password" name="password" value="" tabindex="2"/>
+                @form("password").error.map { error =>
+                  <span class="error">@error.message</span>
+                }
+              </td>
+              <td><a href="#">@Messages("text_forgotten")</a></td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <a onclick="$('#login@_type').submit();" class="button"><span>@Messages("button_login")</span></a>
+              </td>
+          </table>
+        </div>
+
+        
+    }    

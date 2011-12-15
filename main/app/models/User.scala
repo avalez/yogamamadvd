@@ -10,7 +10,7 @@ case class User (email: String, password: String)
 
 object User {
   // -- Parsers
-  
+
   /**
    * Parse a Project from a ResultSet
    */
@@ -20,9 +20,9 @@ object User {
       case email~password => User(email, password)
     }
   }
-  
+
   // -- Queries
-    
+
   /**
    * Retrieve a User from id.
    */
@@ -33,7 +33,7 @@ object User {
       ).as(User.simple ?)
     }
   }
-  
+
   /**
    * Retrieve all users.
    */
@@ -42,8 +42,25 @@ object User {
       SQL("select * from user").as(User.simple *)
     }
   }
-  
+
   /**
+  * Authenticate a User.
+  */
+  def authenticate(email: String, password: String): Option[User] = {
+    DB.withConnection { implicit connection =>
+      SQL(
+        """
+select * from user where
+email = {email} and password = {password}
+"""
+      ).on(
+        'email -> email,
+        'password -> password
+      ).as(User.simple ?)
+    }
+  }
+
+    /**
    * Create a User.
    */
   def create(user: User): User = {

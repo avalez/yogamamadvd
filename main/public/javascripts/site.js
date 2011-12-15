@@ -48,7 +48,9 @@
   $('a').live('click.history-yogamamadvd', function(e) {
     e.preventDefault();
     var url = fullPath(this);
-    setLocation(url);
+    if (url) {
+      setLocation(url);
+    }
     return false;
   });
 
@@ -88,8 +90,8 @@
           $('div#content').html(html)
         }
       },
-      error: function(jqXHR, textStatus) {
-        $('div.checkout-warning').show().delay(3000).fadeOut('slow');            
+      error: function(jqXHR, textStatus, html, test) {
+        $('div#content').html(jqXHR.responseText);
       }
     });
     return false;
