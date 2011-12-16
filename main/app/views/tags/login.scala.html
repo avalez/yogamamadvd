@@ -1,4 +1,4 @@
-@(form: Form[(String,String)], _type: String = "shipment", _url: String = "")
+@(form: Form[(String,String,Boolean)], _type: String = "shipment", _url: String = "")
     <h2>@Messages("text_returning_customer")</h2>
     @helper.form(routes.Application.authenticate, ('id, "login" + _type)) {
 
@@ -11,22 +11,26 @@
             </tr>
             }
             <tr>
-              <td><label for="username">@Messages("entry_email")</label></td>
-              <td><input type="text" name="username" value="@form("username").value" tabindex="1" autofocus="true"/>
-                @form("username").error.map { error =>
-                  <span class="error">@error</span>
+              @form.forField("username") { field =>
+              <td valign="top"><label for="@field.name" @field.error.map { _ => class="error" }>@Messages("entry_email")</label></td>
+              <td><input type="text" name="@field.name" value="@field.value" tabindex="1" autofocus="true"/>
+                @field.error.map { _ =>
+                  <br/><span class="error">@Messages("error_username")</span>
                 }
               </td>
-              <td><input type="checkbox" name="remember" id="remember" value="true" @if(form("remember").value) {checked="true"} tabindex="3"/>
-                <label for="remember">@form("remember").value</label></td>
+              }
+              <td valign="top"><input type="checkbox" name="remember" id="remember" value="true" @if(form("remember").value) {checked="true"} tabindex="3"/>
+                <label for="remember">@Messages("secure.remember")</label></td>
             </tr>
             <tr>
-              <td><label for="password">@Messages("entry_password")</label></td>
-              <td><input type="password" name="password" value="" tabindex="2"/>
-                @form("password").error.map { error =>
-                  <span class="error">@error.message</span>
+              @form.forField("password") { field =>
+              <td><label for="password" @field.error.map { _ => class="error" }>@Messages("entry_password")</label></td>
+              <td><input type="password" name="password" value="@field.value" tabindex="2"/>
+                @field.error.map { _ =>
+                  <br/><span class="error">@Messages("error_login_password")</span>
                 }
               </td>
+              }
               <td><a href="#">@Messages("text_forgotten")</a></td>
             </tr>
             <tr>

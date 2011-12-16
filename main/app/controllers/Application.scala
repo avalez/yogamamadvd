@@ -26,10 +26,12 @@ object Application extends Controller {
 
   val loginForm = Form(
     of(
-      "username" -> text,
-      "password" -> text
+      "username" -> email,
+      "password" -> requiredText,
+      "remember" -> boolean 
     ) verifying ("Invalid email or password", result => result match {
-      case (email, password) => User.authenticate(email, password).isDefined
+      // FIXME: setCookie if remember
+      case (email, password, remember) => User.authenticate(email, password).isDefined
     })
   )
 
