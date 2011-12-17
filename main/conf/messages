@@ -2,7 +2,7 @@
 
 text_items = %s шт. - %s руб.
 text_welcome = Войти в <a href="%s">личный кабинет</a> или <a href="%s">зарегистрироваться</a>
-text_logged = Вы вошли как <a href="%s">%s</a> <b>(</b> <a href="%s">Выйти</a> <b>)</b>
+text_logged = Вы вошли как <a href="{0}">{1}</a> <b>(</b> <a href="{2}">Выйти</a> <b>)</b>
 
 text_home = Главная
 text_order = Заказать

@@ -44,10 +44,10 @@
             </ul>
           </div>
           <div id="welcome">
-            @if(true) {
-              @Html(Messages("text_welcome", "#", "#"))
+            @if(request.session.get("username")) {
+              @Html(Messages("text_logged", '#', request.session.get("username").get, routes.Application.logout))
             } else {
-              @Html(Messages("text_logged", "#", null, "#"))
+              @Html(Messages("text_welcome", '#', "#"))
             }
           </div>
           @if(true) {
