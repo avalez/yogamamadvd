@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(implicit request: RequestHeader)
+@(title: String)(content: Html)(implicit flash: Flash, request: RequestHeader)
 @if(!request.queryString.contains("partial")) {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="ru" xml:lang="ru" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
@@ -44,11 +44,7 @@
             </ul>
           </div>
           <div id="welcome">
-            @if(request.session.get("username")) {
-              @Html(Messages("text_logged", '#', request.session.get("username").get, routes.Application.logout))
-            } else {
-              @Html(Messages("text_welcome", '#', "#"))
-            }
+            @tags.welcome(true)
           </div>
           @if(true) {
           <div class="heading">
@@ -69,4 +65,5 @@
 </html>
 } else {
 @content
+@tags.welcome()
 }

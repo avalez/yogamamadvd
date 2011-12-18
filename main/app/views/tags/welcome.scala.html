@@ -1,0 +1,12 @@
+@(force: Boolean = false)(implicit flash: Flash, request: RequestHeader)
+@if(force || flash.get("login-changed")) {
+<script type="text/javascript">
+  $('#welcome').html(
+            @if(request.session.get("username")) {
+              '@Html(Messages("text_logged", "#", request.session.get("username").get, routes.Application.logout))'
+            } else {
+              '@Html(Messages("text_welcome", "#", "#"))'
+            }
+ )
+</script>
+}

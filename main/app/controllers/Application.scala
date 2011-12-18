@@ -48,7 +48,8 @@ object Application extends Controller {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.Application.index).withSession("username" -> user._1).withCookies(
+      user => Redirect(routes.Application.index).withSession("username" -> user._1).
+      flashing("login-changed" -> user._1).withCookies(
         (if (user._3) Seq(Cookie(COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1)) else Seq.empty) : _*)
     )
   }
@@ -58,7 +59,8 @@ object Application extends Controller {
    */
   def logout = Action { implicit request =>
     Redirect(routes.Application.login).withNewSession.flashing(
-      "success" -> "You've been logged out"
+      "success" -> "You've been logged out",
+      "login-changed" -> null
     ).withCookies(Cookie(COOKIE_NAME, "", 0)) // remove
   }
 
