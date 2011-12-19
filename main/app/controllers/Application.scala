@@ -7,18 +7,9 @@ import play.api.libs.Crypto
 import models._
 import views._
 
-object Application extends Controller {
+object Application extends Controller with PartialRedirect {
   val COOKIE_NAME = "remember"
   
-  def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.Empty] = {
-    Status(if(request.queryString.contains("partial")) {
-      // avoid browser transparently handling the redirect 
-      play.api.http.Status.OK
-    } else {
-      play.api.http.Status.FOUND
-    }).withHeaders(LOCATION -> call.url)
-  }
-
   def index = Action { implicit request =>
     Ok(html.index(User.findAll))
   }
@@ -29,9 +20,10 @@ object Application extends Controller {
     of(
       "username" -> email,
       "password" -> requiredText,
-      "remember" -> boolean 
+      "remember" -> boolean,
+      "returnUrl" -> requiredText
     ) verifying ("Invalid email or password", result => result match {
-      case (email, password, remember) => User.authenticate(email, password).isDefined
+      case (email, password, remember, returnUrl) => User.authenticate(email, password).isDefined
     })
   )
 
@@ -48,9 +40,12 @@ object Application extends Controller {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.Application.index).withSession("username" -> user._1).
-      flashing("login-changed" -> user._1).withCookies(
-        (if (user._3) Seq(Cookie(COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1)) else Seq.empty) : _*)
+      user => {
+        val result = Redirect(user._4).withSession("username" -> user._1)
+        // rememberme
+        if (user._3) result.withCookies(Cookie(COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1))
+        else result
+      }
     )
   }
 
@@ -58,12 +53,29 @@ object Application extends Controller {
    * Logout and clean the session.
    */
   def logout = Action { implicit request =>
-    Redirect(routes.Application.login).withNewSession.flashing(
-      "success" -> "You've been logged out",
-      "login-changed" -> null
+    val returnUrl: String = request.queryString.get("returnUrl").getOrElse(Seq(routes.Application.login.url)).first
+    Redirect(returnUrl).withNewSession.flashing(
+      "success" -> "You've been logged out"
     ).withCookies(Cookie(COOKIE_NAME, "", 0)) // remove
   }
 
+}
+
+/**
+ * Transparent support for partial redirect.
+ */
+trait PartialRedirect extends Results with play.api.http.HeaderNames {
+  
+  def Redirect(url: String)(implicit request: RequestHeader): SimpleResult[Results.Empty] = {
+    Status(if(request.queryString.contains("partial")) {
+      // avoid browser transparently handling the redirect 
+      play.api.http.Status.OK
+    } else {
+      play.api.http.Status.FOUND
+    }).withHeaders(LOCATION -> url)
+  }
+
+  def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.Empty] = Redirect(call.url)
 }
 
 /**

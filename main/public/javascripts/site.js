@@ -8,7 +8,8 @@
   }
   
   request = function(url, type, data) {
-    $.ajax({url:url + '?partial', type: type, data: data,
+    $.ajax({url:url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
+      type: type, data: data,
       success: function(html, error, jqXHR) {
         var redirect = jqXHR.getResponseHeader('Location');
         if (redirect) {

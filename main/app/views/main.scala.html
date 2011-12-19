@@ -38,13 +38,13 @@
           <div id="menu">
             <ul>
               <li><a href="@routes.Application.index">@Messages("text_home")</a></li>
-              <li><a href="#">@Messages("text_order")</a></li>
+              <li><a href="@routes.Checkout.shipment">@Messages("text_order")</a></li>
               <li><a href="@routes.Application.login">@Messages("text_account")</a></li>
               <li><a href="#">@Messages("text_faq")</a></li>
             </ul>
           </div>
           <div id="welcome">
-            @tags.welcome(true)
+            @tags.welcome()
           </div>
           @if(true) {
           <div class="heading">

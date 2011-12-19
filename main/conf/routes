@@ -3,7 +3,12 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET     /                           controllers.Application.index
+
+# Order
+GET     /shipment                   controllers.Checkout.shipment
+POST    /ship                       controllers.Checkout.ship
+POST    /download                   controllers.Checkout.download
 
 # Authentication
 GET     /login                      controllers.Application.login
