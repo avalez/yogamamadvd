@@ -14,6 +14,10 @@ object Application extends Controller with PartialRedirect {
     Ok(html.index(User.findAll))
   }
 
+  def account = Security.Authenticated() { user => Action { implicit request =>
+    Ok(html.account.index(user))
+  }}
+
   // -- Authentication
 
   val loginForm = Form(
@@ -55,11 +59,12 @@ object Application extends Controller with PartialRedirect {
   def logout = Action { implicit request =>
     val returnUrl: String = request.queryString.get("returnUrl").getOrElse(Seq(routes.Application.login.url)).first
     Redirect(returnUrl).withNewSession.flashing(
-      "success" -> "You've been logged out"
+      "success" -> "You've been logged out "
     ).withCookies(Cookie(COOKIE_NAME, "", 0)) // remove
   }
 
 }
+
 
 /**
  * Transparent support for partial redirect.
@@ -76,22 +81,4 @@ trait PartialRedirect extends Results with play.api.http.HeaderNames {
   }
 
   def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.Empty] = Redirect(call.url)
-}
-
-/**
- * Provide security features
- */
-trait Secured extends Security.AllAuthenticated {
-
-  /**
-   * Retrieve the connected user email.
-   */
-  override def username(request: RequestHeader) = request.session.get("username").orElse(
-      request.cookies.get(Application.COOKIE_NAME).map( _.value ))
-
-  /**
-   * Redirect to login if the user is not authorized.
-   */
-  override def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login)
-
 }

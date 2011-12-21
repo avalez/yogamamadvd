@@ -10,6 +10,9 @@ GET     /shipment                   controllers.Checkout.shipment
 POST    /ship                       controllers.Checkout.ship
 POST    /download                   controllers.Checkout.download
 
+# Account
+GET     /account                    controllers.Application.account
+
 # Authentication
 GET     /login                      controllers.Application.login
 POST    /login                      controllers.Application.authenticate
