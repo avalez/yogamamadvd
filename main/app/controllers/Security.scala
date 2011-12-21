@@ -118,7 +118,8 @@ object Security {
   /**
    * Redirect to login if the user is not authorized.
    */
-  def onUnauthorized(request: RequestHeader) = Application.Redirect(routes.Application.login)(request)
+  def onUnauthorized(request: RequestHeader) = Application.Redirect(
+      routes.Application.login.url + "?returnUrl=" + request.path)(request)
 
 }
 

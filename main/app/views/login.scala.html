@@ -1,4 +1,4 @@
-@(form: Form[(String, String, Boolean, String)])(implicit flash: Flash, request: RequestHeader, user: Option[String])
+@(form: Form[(String, String, Boolean, String)], returnUrl: String)(implicit flash: Flash, request: RequestHeader, user: Option[String])
 
 @main(Messages("heading_login")) {
 
@@ -24,7 +24,7 @@
         <a href="#" class="button"><span>@Messages("button_continue")</span></a></div>
     </div>
     <div class="right">
-        @tags.login(form)
+        @tags.login(form, returnUrl)
     </div>
   </div>
     

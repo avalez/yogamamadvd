@@ -10,16 +10,15 @@
   request = function(url, type, data) {
     $.ajax({url:url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
       type: type, data: data,
-      success: function(html, error, jqXHR) {
+      complete: function(jqXHR) {
         var redirect = jqXHR.getResponseHeader('Location');
         if (redirect) {
           setLocation(redirect);
+        } else if (jqXHR.status == 500){
+            $('body').html(jqXHR.responseText)
         } else {
-          $('div#content').html(html)
+          $('div#content').html(jqXHR.responseText)
         }
-      },
-      error: function(jqXHR, textStatus) {
-        $('div.checkout-warning').show().delay(3000).fadeOut('slow');            
       }
     });
   }

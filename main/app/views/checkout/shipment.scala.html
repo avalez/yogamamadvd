@@ -18,7 +18,7 @@
         #{register action:downloadAndRegister(), url:shipment(), shipment:'download' /}
       </div>
       <div class="right">
-        @tags.login(form, "shipment", routes.Checkout.shipment.url)
+        @tags.login(form, routes.Checkout.shipment.url, "shipment")
       </div>
     } else {
       @helper.form(routes.Checkout.download, ('id, "download")) { }
@@ -39,7 +39,7 @@
         #{register action:shipAndRegister(), url:shipment(), shipment:'ship', countries:countries /}
       </div>
       <div class="right">
-        @tags.login(form, "shipment", routes.Checkout.shipment.url)
+        @tags.login(form, routes.Checkout.shipment.url, "shipment")
       </div>
     #{/if}
     #{else}

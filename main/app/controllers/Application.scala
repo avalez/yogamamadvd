@@ -8,8 +8,6 @@ import models._
 import views._
 
 object Application extends Controller with PartialRedirect {
-  val COOKIE_NAME = "remember"
-  
   def index = Security.AuthAware() { user => Action { implicit request =>
     Ok(html.index(User.findAll)(flash, request, user))
   }}
@@ -35,7 +33,7 @@ object Application extends Controller with PartialRedirect {
    * Login page.
    */
   def login = Action { implicit request =>
-    Ok(html.login(loginForm)(flash, request, None))
+    Ok(html.login(loginForm, returnUrl)(flash, request, None))
   }
 
   /**
@@ -43,24 +41,25 @@ object Application extends Controller with PartialRedirect {
    */
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.login(formWithErrors)(flash, request, None)),
+      formWithErrors => BadRequest(html.login(formWithErrors, returnUrl)(flash, request, None)),
       user => {
         val result = Redirect(user._4).withSession("username" -> user._1)
         // rememberme
-        if (user._3) result.withCookies(Cookie(COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1))
+        if (user._3) result.withCookies(Cookie(Security.COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1))
         else result
       }
     )
   }
-
+  
+  def returnUrl(implicit request: RequestHeader) = request.queryString.get("returnUrl").getOrElse(Seq(routes.Application.index.url)).first
+  
   /**
    * Logout and clean the session.
    */
   def logout = Action { implicit request =>
-    val returnUrl: String = request.queryString.get("returnUrl").getOrElse(Seq(routes.Application.login.url)).first
     Redirect(returnUrl).withNewSession.flashing(
       "success" -> "You've been logged out "
-    ).withCookies(Cookie(COOKIE_NAME, "", 0)) // remove
+    ).withCookies(Cookie(Security.COOKIE_NAME, "", 0)) // remove
   }
 
 }
