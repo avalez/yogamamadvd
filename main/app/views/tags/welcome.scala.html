@@ -1,10 +1,9 @@
-@()(implicit flash: Flash, request: RequestHeader)
+@()(implicit flash: Flash, request: RequestHeader, user: Option[String])
 <script type="text/javascript">
   $('#welcome').html(
-    @if(request.session.get("username")) {
-      '@Html(Messages("text_logged", "#", request.session.get("username").get, routes.Application.logout.url + "?returnUrl2=" + request.path))'
-    } else {
-      '@Html(Messages("text_welcome", "#", "#"))'
-    }
+    '@{user match {
+      case None => Html(Messages("text_welcome", "#", "#"))
+      case Some(username) => Html(Messages("text_logged", "#", username, routes.Application.logout.url + "?returnUrl=" + request.path))
+    }}'
  )
 </script>

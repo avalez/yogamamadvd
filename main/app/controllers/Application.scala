@@ -10,12 +10,12 @@ import views._
 object Application extends Controller with PartialRedirect {
   val COOKIE_NAME = "remember"
   
-  def index = Action { implicit request =>
-    Ok(html.index(User.findAll))
-  }
+  def index = Security.AuthAware() { user => Action { implicit request =>
+    Ok(html.index(User.findAll)(flash, request, user))
+  }}
 
   def account = Security.Authenticated() { user => Action { implicit request =>
-    Ok(html.account.index(user))
+    Ok(html.account.index(user)(flash, request, Some(user)))
   }}
 
   // -- Authentication
@@ -35,7 +35,7 @@ object Application extends Controller with PartialRedirect {
    * Login page.
    */
   def login = Action { implicit request =>
-    Ok(html.login(loginForm))
+    Ok(html.login(loginForm)(flash, request, None))
   }
 
   /**
@@ -43,7 +43,7 @@ object Application extends Controller with PartialRedirect {
    */
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.login(formWithErrors)),
+      formWithErrors => BadRequest(html.login(formWithErrors)(flash, request, None)),
       user => {
         val result = Redirect(user._4).withSession("username" -> user._1)
         // rememberme

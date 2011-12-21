@@ -1,4 +1,4 @@
-@(users: Seq[User])(implicit flash: Flash, request: RequestHeader)
+@(users: Seq[User])(implicit flash: Flash, request: RequestHeader, user: Option[String])
 
 @main(Messages("product")) {
     
