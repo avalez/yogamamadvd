@@ -7,7 +7,7 @@ import play.api.libs.Crypto
 import models._
 import views._
 
-trait Application extends Controller {
+trait ApplicationBase extends Controller {
   /** Key of the USERNAME attribute stored in session. */
   val USERNAME = "username"
 
@@ -67,10 +67,10 @@ trait Application extends Controller {
    * Redirect to login if the user is not authorized.
    */
   def onUnauthorized(request: RequestHeader) = Redirect(
-      routes.Application.login.url + "?returnUrl=" + request.path)(request)
+      routes.Application.login.url + "?returnUrl=" + java.net.URLEncoder.encode(request.path))(request)
 }
 
-object Application extends Application {
+object Application extends ApplicationBase {
   
   def index = Action { implicit request =>
     Ok(html.index(User.findAll))

@@ -1,10 +1,11 @@
 @()(implicit flash: Flash, request: RequestHeader, user: Option[String])
 <script type="text/javascript">
   $('#welcome').html(
-    '@if(user) {
-      Html(Messages("text_logged", "#", user, routes.Application.logout.url + "?returnUrl=" + request.path))
+    @if(user) {
+      '@Html(Messages("text_logged", "#", user.get, routes.Application.logout.url + "?returnUrl="
+        + java.net.URLEncoder.encode(request.path)))'
     } else {
-      Html(Messages("text_welcome", "#", "#"))
-    }'
+      '@Html(Messages("text_welcome", "#", "#"))'
+    }
  )
 </script>
