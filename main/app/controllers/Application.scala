@@ -109,7 +109,7 @@ object Application extends Application {
       user => {
         val result = Redirect(user._4).withSession("username" -> user._1)
         // rememberme
-        if (user._3) result.withCookies(Cookie(Security.COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1))
+        if (user._3) result.withCookies(Cookie(COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1))
         else result
       }
     )
@@ -123,7 +123,7 @@ object Application extends Application {
   def logout = Action { implicit request =>
     Redirect(returnUrl).withNewSession.flashing(
       "success" -> "You've been logged out "
-    ).withCookies(Cookie(Security.COOKIE_NAME, "", 0)) // remove
+    ).withCookies(Cookie(COOKIE_NAME, "", 0)) // remove
   }
 
 }
