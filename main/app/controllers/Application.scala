@@ -115,7 +115,7 @@ object Application extends ApplicationBase {
     )
   }
   
-  def returnUrl(implicit request: RequestHeader) = request.queryString.get("returnUrl").getOrElse(Seq(routes.Application.index.url)).first
+  def returnUrl(implicit request: RequestHeader) = request.queryString.get("returnUrl").map{ _.first }.getOrElse(routes.Application.index.url)
   
   /**
    * Logout and clean the session.
