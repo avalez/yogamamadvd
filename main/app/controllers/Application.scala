@@ -7,14 +7,78 @@ import play.api.libs.Crypto
 import models._
 import views._
 
-object Application extends Controller with PartialRedirect {
-  def index = Security.AuthAware() { user => Action { implicit request =>
-    Ok(html.index(User.findAll)(flash, request, user))
-  }}
+trait Application extends Controller {
+  /** Key of the USERNAME attribute stored in session. */
+  val USERNAME = "username"
 
-  def account = Security.Authenticated() { user => Action { implicit request =>
-    Ok(html.account.index(user)(flash, request, Some(user)))
-  }}
+  /** Key of the REMEBERME attribute stored in cookie. */
+  val COOKIE_NAME = "rememberme"
+
+  /**
+   * Retrieve user implicitly from the request.
+   */
+  implicit def username(implicit request: RequestHeader) = request.session.get(USERNAME).orElse(
+     request.cookies.get(COOKIE_NAME).map( _.value ))
+
+  /**
+   * Transparent support for partial redirect.
+   */
+  def Redirect(url: String)(implicit request: RequestHeader): SimpleResult[Results.Empty] = {
+    Status(if(request.queryString.contains("partial")) {
+      // avoid browser transparently handling the redirect 
+      play.api.http.Status.OK
+    } else {
+      play.api.http.Status.FOUND
+    }).withHeaders(LOCATION -> url)
+  }
+
+  /**
+   * Transparent support for partial redirect.
+   */
+  def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.Empty] = Redirect(call.url)
+  
+  /**
+   * Wraps another action, allowing only authenticated HTTP requests.
+   *
+   * The user name is retrieved from the session cookie, and passed as parameter.
+   *
+   * For example:
+   * {{{
+   * Authenticated { user =>
+   *   Action { request =>
+   *     Ok("Hello " + user)
+   *   }
+   * }
+   * }}}
+   *
+   * @tparam A the type of the request body [FIXME]
+   * @param username function used to retrieve the user name from the request header - the default is to read from session cookie
+   * @param onUnauthorized function used to generate alternative result if the user is not authenticated - the default is a simple 401 page
+   * @param action the action to wrap
+   */
+  def Authenticated(action: String => Request[AnyContent] => Result) = Action { implicit request =>
+    username match {
+      case None => onUnauthorized(request)
+      case Some(name) => action(name)(request)
+    }
+  }
+
+  /**
+   * Redirect to login if the user is not authorized.
+   */
+  def onUnauthorized(request: RequestHeader) = Redirect(
+      routes.Application.login.url + "?returnUrl=" + request.path)(request)
+}
+
+object Application extends Application {
+  
+  def index = Action { implicit request =>
+    Ok(html.index(User.findAll))
+  }
+
+  def account = Authenticated { user => implicit request =>
+    Ok(html.account.index(user))
+  }
 
   // -- Authentication
 
@@ -28,12 +92,12 @@ object Application extends Controller with PartialRedirect {
       case (email, password, remember, returnUrl) => User.authenticate(email, password).isDefined
     })
   )
-
+  
   /**
    * Login page.
    */
   def login = Action { implicit request =>
-    Ok(html.login(loginForm, returnUrl)(flash, request, None))
+    Ok(html.login(loginForm, returnUrl))
   }
 
   /**
@@ -41,7 +105,7 @@ object Application extends Controller with PartialRedirect {
    */
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.login(formWithErrors, returnUrl)(flash, request, None)),
+      formWithErrors => BadRequest(html.login(formWithErrors, returnUrl)),
       user => {
         val result = Redirect(user._4).withSession("username" -> user._1)
         // rememberme
@@ -62,22 +126,4 @@ object Application extends Controller with PartialRedirect {
     ).withCookies(Cookie(Security.COOKIE_NAME, "", 0)) // remove
   }
 
-}
-
-
-/**
- * Transparent support for partial redirect.
- */
-trait PartialRedirect extends Results with play.api.http.HeaderNames {
-  
-  def Redirect(url: String)(implicit request: RequestHeader): SimpleResult[Results.Empty] = {
-    Status(if(request.queryString.contains("partial")) {
-      // avoid browser transparently handling the redirect 
-      play.api.http.Status.OK
-    } else {
-      play.api.http.Status.FOUND
-    }).withHeaders(LOCATION -> url)
-  }
-
-  def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.Empty] = Redirect(call.url)
 }
