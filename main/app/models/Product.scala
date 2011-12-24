@@ -30,9 +30,19 @@ object Product {
     DB.withConnection { implicit connection =>
       SQL("select * from product where id = {id}").on(
         'id -> id
-      ).as(Product.simple ?)
+      ).as(simple ?)
     }
   }
 
+  /**
+   * Retrieve a Product from id.
+   */
+  def findByIds(ids: Iterable[Long]): List[Product] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from product where id in {ids}").on(
+        'ids -> ids.map(_.toString).reduceLeft(_ + ", " + _)
+      ).as(simple *)
+    }
+  }
 }
 

@@ -67,7 +67,12 @@ trait ApplicationBase extends Controller {
    * Redirect to login if the user is not authorized.
    */
   def onUnauthorized(request: RequestHeader) = Redirect(
-      routes.Application.login.url + "?returnUrl=" + java.net.URLEncoder.encode(request.path))(request)
+      routes.Application.login.url + "?returnUrl=" + encodeUrl(request.path))(request)
+
+  /**
+   * Translates a string into application/x-www-form-urlencoded format using "UTF-8" encoding scheme.
+   */
+  def encodeUrl = java.net.URLEncoder.encode(_:String, "UTF-8")
 }
 
 object Application extends ApplicationBase {
@@ -115,7 +120,7 @@ object Application extends ApplicationBase {
     )
   }
   
-  def returnUrl(implicit request: RequestHeader) = request.queryString.get("returnUrl").map{ _.first }.getOrElse(routes.Application.index.url)
+  def returnUrl(implicit request: RequestHeader) = request.queryString.get("returnUrl").map{ _.head }.getOrElse(routes.Application.index.url)
   
   /**
    * Logout and clean the session.
