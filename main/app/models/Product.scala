@@ -12,7 +12,7 @@ object Product {
   // -- Parsers
   
   /**
-   * Parse a Project from a ResultSet
+   * Parse a Product from a ResultSet
    */
   val simple = {
     get[Pk[Long]]("product.id") ~/
@@ -35,13 +35,12 @@ object Product {
   }
 
   /**
-   * Retrieve a Product from id.
+   * Retrieve Products by id's.
    */
-  def findByIds(ids: Iterable[Long]): List[Product] = {
+  def findByIds(ids: Long*): List[Product] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from product where id in {ids}").on(
-        'ids -> ids.map(_.toString).reduceLeft(_ + ", " + _)
-      ).as(simple *)
+      SQL("select * from product where id in (" + ids.map("{a" + _ + "}").reduceLeftOption(_ + ", " + _).
+          getOrElse("") +")").onParams(ids).as(simple *)
     }
   }
 }

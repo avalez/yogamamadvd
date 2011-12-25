@@ -2,6 +2,7 @@ package models
 
 import play.api.mvc.CookieBaker
 import scala.collection.mutable.ListMap
+import play.api.mvc.RequestHeader
 
 class Cart(var shipment: String = "", var payment: String = "") {
   var items:ListMap[Long, Item] = new ListMap[Long, Item]
@@ -27,19 +28,28 @@ object Cart extends CookieBaker[Cart] {
 
   def deserialize(data: Map[String, String]) = {
     val cart = new Cart(data.getOrElse("payment", ""), data.getOrElse("shipment", ""))
+    // decode products string to map
     val products = data.getOrElse("products", "").split(",").foldLeft(new ListMap[Long, Long]) { (map, productId) => {
-      val id = productId.toLong
-      val q = map.getOrElse(id, 0.toLong /* WTF? */)
-      map += (id -> (q + 1)) 
+      try {
+        val id = productId.toLong
+        val q = map.getOrElse(id, 0.toLong /* WTF? */)
+        map += (id -> (q + 1)) 
+      } catch {
+        case _ => map // ignore
+      }
     }}
-    Product.findByIds(products.keySet).foldLeft(cart) { (cart, product) =>
-      cart += (product -> products(product.id.get)) 
+    // add to cart
+    Product.findByIds(products.keys.toSeq : _*).foldLeft(cart) { (cart, product) =>
+      cart += (product -> products(product.id.get) /* quantity */) 
     }
   }
 
   def serialize(cart: Cart) = Map("shipment" -> cart.shipment,
       "payment" -> cart.payment,
+      // encode into products string (flatten list)
       "products" -> { for (productId <- cart.items.keySet; i <- 1L to cart.items(productId).quantity)
-        yield productId.toString}.reduceLeft(_ + "," + _))
-  
+        yield productId.toString}.toList.reduceLeftOption(_ + "," + _).getOrElse("")
+      )
+
+  def decodeFromCookie(implicit request: RequestHeader): Cart = decodeFromCookie(request.cookies.get(COOKIE_NAME))
 }
