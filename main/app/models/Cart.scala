@@ -29,15 +29,9 @@ object Cart extends CookieBaker[Cart] {
   def deserialize(data: Map[String, String]) = {
     val cart = new Cart(data.getOrElse("payment", ""), data.getOrElse("shipment", ""))
     // decode products string to map
-    val products = data.getOrElse("products", "").split(",").foldLeft(new ListMap[Long, Long]) { (map, productId) => {
-      try {
-        val id = productId.toLong
-        val q = map.getOrElse(id, 0.toLong /* WTF? */)
-        map += (id -> (q + 1)) 
-      } catch {
-        case _ => map // ignore
-      }
-    }}
+    val products = "(\\d+)-(\\d+)".r.findAllIn(data.getOrElse("products", "")).matchData.foldLeft(new ListMap[Long, Long]) {
+      (map, m) => map += m.group(0).toLong -> m.group(1).toLong
+    }
     // add to cart
     Product.findByIds(products.keys.toSeq : _*).foldLeft(cart) { (cart, product) =>
       cart += (product -> products(product.id.get) /* quantity */) 
@@ -45,11 +39,11 @@ object Cart extends CookieBaker[Cart] {
   }
 
   def serialize(cart: Cart) = Map("shipment" -> cart.shipment,
-      "payment" -> cart.payment,
-      // encode into products string (flatten list)
-      "products" -> { for (productId <- cart.items.keySet; i <- 1L to cart.items(productId).quantity)
-        yield productId.toString}.toList.reduceLeftOption(_ + "," + _).getOrElse("")
-      )
+    "payment" -> cart.payment,
+    // encode into products string (flatten list)
+    "products" -> { for (productId <- cart.items.keys)
+      yield "" + productId + "-" + cart.items(productId).quantity}.toList.reduceLeftOption(_ + "," + _).getOrElse("")
+    )
 
   def decodeFromCookie(implicit request: RequestHeader): Cart = decodeFromCookie(request.cookies.get(COOKIE_NAME))
 }
