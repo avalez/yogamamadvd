@@ -6,15 +6,22 @@
     <head>
         <title>@title</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/menu.css")">
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/nav.css")">
+        <link href="@routes.Assets.at("stylesheets/main.css")" rel="stylesheet" media="screen"/>
+        <link href="@routes.Assets.at("stylesheets/menu.css")" rel="stylesheet" media="screen"/>
+        <link href="@routes.Assets.at("stylesheets/nav.css")" rel="stylesheet" media="screen"/>
 
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link href="@routes.Assets.at("images/favicon.png")" rel="shortcut icon" type="image/png"/>
         <script src="@routes.Assets.at("javascripts/jquery-1.6.4.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/site.js")" type="text/javascript"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-		    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" rel="stylesheet" type="text/css"/>
+
+        <script src="@routes.Assets.at("javascripts/customInput.jquery.js")" type="text/javascript"></script>
+        <link href="@routes.Assets.at("stylesheets/customInput.css")" rel="stylesheet"/>
+        <script src="@routes.Assets.at("javascripts/jquery.tipTip.minified.js")" type="text/javascript"></script>
+        <link href="@routes.Assets.at("stylesheets/tipTip.css")" rel="stylesheet"/>
+
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js" type="text/javascript"></script>
 
 		<!--[if IE 7]>
 		<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/ie7.css")" />

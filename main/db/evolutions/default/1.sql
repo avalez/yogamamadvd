@@ -7,6 +7,11 @@ create table user (
   password varchar(255) not null
 );
 
+create table gateway (
+  name varchar(32) not null primary key,
+  categories varchar(255) not null
+);
+
 create table product (
   id bigint not null primary key,
   name varchar(255) not null,

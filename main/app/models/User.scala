@@ -60,7 +60,7 @@ email = {email} and password = {password}
     }
   }
 
-    /**
+  /**
    * Create a User.
    */
   def create(user: User): User = {

@@ -7,8 +7,9 @@ GET     /                           controllers.Application.index
 
 # Order
 GET     /shipment                   controllers.Checkout.shipment
-POST    /ship                       controllers.Checkout.ship
-POST    /download                   controllers.Checkout.download
+POST    /shipment                   controllers.Checkout.setshipment(shipment: String)
+GET     /payment                    controllers.Checkout.payment
+POST    /payment                    controllers.Checkout.setpayment
 
 # Account
 GET     /account                    controllers.Application.account

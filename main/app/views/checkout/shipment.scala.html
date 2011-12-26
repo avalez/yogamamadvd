@@ -21,7 +21,7 @@
         @tags.login(form, routes.Checkout.shipment.url, "shipment")
       </div>
     } else {
-      @helper.form(routes.Checkout.download, ('id, "download")) { }
+      @helper.form(routes.Checkout.setshipment("download"), ('id, "download")) { }
       <div class="buttons">
         <a onclick="$('#download').submit();" class="button"><span>@Messages("button_continue")</span></a>
       </div>
@@ -43,7 +43,7 @@
       </div>
     #{/if}
     #{else}
-      @helper.form(routes.Checkout.ship, ('id, "ship")) { }
+      @helper.form(routes.Checkout.setshipment("ship"), ('id, "ship")) { }
       <div class="buttons">
         <a onclick="$('#ship').submit();" class="button"><span>@Messages("button_continue")</span></a>
       </div>

@@ -27,6 +27,18 @@ object InitialData {
         User("admin@example.com", "password")
       ).foreach(User.create)
       
+      Seq(
+        Gateway("post", "ondelivery"),
+        Gateway("yandex", "internet"),
+        Gateway("rbk", "visa_mastercard"),
+        Gateway("webmoney", "internet"),
+        Gateway("liqpay", "internet"),
+        Gateway("qiwi", "normal"),
+        Gateway("robokassa", "visa_mastercard"),
+        Gateway("transfer", "normal"),
+        Gateway("paypal", "internet, visa_mastercard"),
+        Gateway("bank", "normal")
+      ).foreach(Gateway.create)
     }
     
   }
