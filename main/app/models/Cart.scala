@@ -18,6 +18,8 @@ class Cart(var shipment: String = "", var payment: String = "", var _category: S
     items += (id -> item)
     this
   }
+  
+  def clear = { quantity = 0; total = 0; items.clear }
 
   class Item(var quantity:Long, var price:Double, var total:Double)
 }

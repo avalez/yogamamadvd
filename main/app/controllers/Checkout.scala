@@ -50,14 +50,15 @@ object Checkout extends ApplicationBase {
   
   def setproduct = WithCart { cart => implicit request =>
     val f = request.body.urlFormEncoded
-    f.get("products[]").map { products =>
+    val productsOption = f.get("products").orElse(f.get("products[]"))
+    productsOption.map { products =>
+      cart.clear
       for (product <- Product.findByIds(products.map(_.toLong))) {
         f.get("qties." + product.product_id).map { qties =>
           cart += (product, qties.head.toLong)
         }
       }
-      Redirect(routes.Checkout.product).flashing(
-        "error" -> "Select product")
+      Redirect(routes.Checkout.product)
     }.getOrElse(Redirect(routes.Checkout.product).flashing(
         "error" -> "Select product"))
   }
