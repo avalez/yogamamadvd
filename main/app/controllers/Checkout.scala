@@ -5,6 +5,7 @@ import play.api.mvc.AnyContent
 import play.api.mvc.Request
 import play.api.mvc.SimpleResult
 import models.Gateway
+import models.Product
 
 object Checkout extends ApplicationBase {
   
@@ -19,7 +20,7 @@ object Checkout extends ApplicationBase {
     Redirect(routes.Checkout.payment)
   }
 
-  // gateway
+  // payment
   
   def payment = WithCart { cart => implicit request =>
     // gateways reverse map (http://daily-scala.blogspot.com/2010/03/how-to-reverse-map.html)
@@ -34,11 +35,33 @@ object Checkout extends ApplicationBase {
       case (Some(payment), Some(_category)) =>
         cart.payment = payment.head
         cart._category = _category.head
-        Redirect(routes.Checkout.payment)
+        Redirect(routes.Checkout.product)
       case _ => Redirect(routes.Checkout.payment).flashing(
         "error" -> "Select payment method")
     }
   }
+
+  // product
+  
+  def product = WithCart { cart => implicit request =>
+    val products = Product.findAll
+    Ok(views.html.checkout.product(cart, products))
+  }
+  
+  def setproduct = WithCart { cart => implicit request =>
+    val f = request.body.urlFormEncoded
+    f.get("products[]").map { products =>
+      for (product <- Product.findByIds(products.map(_.toLong))) {
+        f.get("qties." + product.product_id).map { qties =>
+          cart += (product, qties.head.toLong)
+        }
+      }
+      Redirect(routes.Checkout.product).flashing(
+        "error" -> "Select product")
+    }.getOrElse(Redirect(routes.Checkout.product).flashing(
+        "error" -> "Select product"))
+  }
+
   // wrapper
 
   def WithCart[A](action: Cart => Request[AnyContent] => SimpleResult[A]) = Action{ implicit request =>

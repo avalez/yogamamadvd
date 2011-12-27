@@ -6,7 +6,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Product(id: Pk[Long], name: String)
+case class Product(product_id: Pk[Long], name: String, thumb: String, description: String, price: Double, special: Double = 0)
 
 object Product {
   // -- Parsers
@@ -16,8 +16,11 @@ object Product {
    */
   val simple = {
     get[Pk[Long]]("product.id") ~/
-    get[String]("product.name") ^^ {
-      case id~name => Product(id, name)
+    get[String]("product.name") ~/
+    get[String]("product.thumb") ~/
+    get[String]("product.description") ~/
+    get[Double]("product.price") ^^ {
+      case id~name~thumb~description~price => Product(id, name, thumb, description, price)
     }
   }
   
@@ -37,10 +40,44 @@ object Product {
   /**
    * Retrieve Products by id's.
    */
-  def findByIds(ids: Long*): List[Product] = {
+  def findByIds(ids: Seq[Long]): List[Product] = {
     DB.withConnection { implicit connection =>
+      val idString = ids.map(_.toString)
       SQL("select * from product where id in (" + ids.map("{a" + _ + "}").reduceLeftOption(_ + ", " + _).
-          getOrElse("") +")").onParams(ids).as(simple *)
+          getOrElse("") +")").onParams(ids.map(anorm.toParameterValue(_)) : _*).as(simple *)
+    }
+  }
+
+  /**
+   * Retrieve all Products.
+   */
+  def findAll = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from product").as(simple *)
+    }
+  }
+
+  /**
+   * Create Product.
+   */
+  def create(product: Product): Product = {
+    DB.withConnection { implicit connection =>
+      SQL(
+        """
+insert into product(name, thumb, description, price) values (
+{name}, {thumb}, {description}, {price}
+)
+"""
+      ).on(
+//        'id -> product.product_id,
+        'name -> product.name,
+        'thumb -> product.thumb,
+        'description -> product.description,
+        'price -> product.price
+      ).executeUpdate()
+      
+      product
+      
     }
   }
 }

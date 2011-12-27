@@ -75,7 +75,7 @@
   
   _parseParamPair = function(params, key, value) {
       if (params[key]) {
-        if (_isArray(params[key])) {
+        if ($.isArray(params[key])) {
           params[key].push(value);
         } else {
           params[key] = [params[key], value];

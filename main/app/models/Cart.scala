@@ -10,9 +10,10 @@ class Cart(var shipment: String = "", var payment: String = "", var _category: S
   var total:Double = 0d
     
   def += (kv: (Product, Long)) = {
-    val (id, quantity) = (kv._1.id.get, kv._2)
-    val item = items.getOrElse(id, new Item(id, 0  /* FIXME */, 0))
+    val (id, quantity) = (kv._1.product_id.get, kv._2)
+    val item = new Item(0, 0  /* FIXME */, 0)
     item.quantity += quantity
+    // TODO: discounts for multi-order
     item.total = item.price * item.quantity
     items += (id -> item)
     this
@@ -32,11 +33,11 @@ object Cart extends CookieBaker[Cart] {
         data.getOrElse("_category", ""))
     // decode products string to map
     val products = "(\\d+)-(\\d+)".r.findAllIn(data.getOrElse("products", "")).matchData.foldLeft(new ListMap[Long, Long]) {
-      (map, m) => map += m.group(0).toLong /* id */ -> m.group(1).toLong /* quantity */
+       (map, m) => map += m.group(1).toLong /* id */ -> m.group(2).toLong /* quantity */
     }
     // add to cart
-    Product.findByIds(products.keys.toSeq : _*).foldLeft(cart) { (cart, product) =>
-      cart += (product -> products(product.id.get) /* quantity */) 
+    Product.findByIds(products.keys.toSeq).foldLeft(cart) { (cart, product) =>
+      cart += (product -> products(product.product_id.get) /* quantity */) 
     }
   }
 
@@ -44,8 +45,8 @@ object Cart extends CookieBaker[Cart] {
     "payment" -> cart.payment,
     "_category" -> cart._category,
     // encode into products string (flatten list)
-    "products" -> { for (productId <- cart.items.keys)
-      yield "" + productId + "-" + cart.items(productId).quantity}.toList.reduceLeftOption(_ + "," + _).getOrElse("")
+    "products" -> { for ((productId, item) <- cart.items)
+      yield "" + productId + "-" + item.quantity}.reduceLeftOption(_ + "," + _).getOrElse("")
     )
 
   def decodeFromCookie(implicit request: RequestHeader): Cart = decodeFromCookie(request.cookies.get(COOKIE_NAME))

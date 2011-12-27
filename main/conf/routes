@@ -10,6 +10,8 @@ GET     /shipment                   controllers.Checkout.shipment
 POST    /shipment                   controllers.Checkout.setshipment(shipment: String)
 GET     /payment                    controllers.Checkout.payment
 POST    /payment                    controllers.Checkout.setpayment
+GET     /product                    controllers.Checkout.product
+POST    /product                    controllers.Checkout.setproduct
 
 # Account
 GET     /account                    controllers.Application.account
