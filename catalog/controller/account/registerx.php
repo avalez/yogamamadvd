@@ -9,13 +9,13 @@ class ControllerAccountRegisterX extends Resource
 
   		$this->load->model('account/customer');
 
-    	if ($this->model_account_customer->getTotalCustomersByEmail($this->request->get['email'])) {
+    	if ($this->model_account_customer->getTotalCustomersByEmail($this->request->get['email']) == 0) {
 
-  	    $this->renderJson(false);
+  	    $this->renderJson(true);
 
     	} else {
 
-    	    $this->renderJson(true);
+    	    $this->renderJson(false);
 
     	}
 

@@ -27,7 +27,7 @@ abstract class Resource extends Controller
 
         } elseif (method_exists($this, $requestMethod)) {
 
-            $response->addHeader('Etag', '"' . $etag . '"');
+            $response->addHeader('Etag: "' . $etag . '"');
 
             $methodReflection = new ReflectionMethod($this, $requestMethod);
             $requestParametersReflection = new ReflectionProperty('Request', strtolower($requestMethod));
@@ -55,7 +55,7 @@ abstract class Resource extends Controller
     }
 
     protected function renderJson($object) {
-        $this->responseJson($object, Resource::OK);
+        $this->response->setOutput(json_encode($object));
     }
 
     protected function forbidden($message) {
@@ -76,9 +76,7 @@ abstract class Resource extends Controller
 
     protected function responseJson($object, $code) {
         $this->response->addHeader('HTTP/1.1 ' . $code);
-        if (!empty($object)) {
-            $this->response->setOutput(json_encode($object));
-        }
+        $this->renderJson($object);
     }
     
     public static function customerToUser($customer) {
