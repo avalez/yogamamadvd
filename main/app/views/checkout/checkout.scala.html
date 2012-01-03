@@ -1,0 +1,157 @@
+@(cart: Cart, products: List[Product])(implicit flash: Flash, request: RequestHeader, user: Option[String])
+
+@main(Messages("product")) {
+
+<div class="checkout-cart-content">
+  <div class="left">
+    <h2 style="background: left top url(@routes.Assets.at("images/basket.png")) no-repeat; padding-left: 28px;">Корзина</h2>
+    <div class="product-grid content">
+      @for(product <- products) {
+      <div id="selected-@{product.product_id}" @if(!cart.items.contains(product.product_id.get)) {style="display:none"}>
+        @if(product.thumb != null) {
+        <div class="image"><a href="#"><img src="@routes.Assets.at("images/" + product.thumb)" title="@{product.name}" alt="@{product.name}" id="image@{product.product_id}" /></a></div>
+        }
+        <div class="name"><a href="#">@{product.name}</a></div>
+        <div class="price">
+        <label>Цена:</label>
+        @if(product.price != 0) {
+          @if(product.special == 0) {
+          @{product.price}
+          } else {
+          <span class="price-old">@{product.price}</span> <span class="price-new">@{product.special}</span>
+          }
+        }
+        </div>
+        <div class="quantity">
+          <label for="count_disc11">Количество:</label>
+          <select id="selected-qty-@{product.product_id}" class="select_qty selected-qty" productId="@{product.product_id}">
+            @for(i <- 1 to 12) {
+            <option value="@i" @if(cart.items.contains(product.product_id.get) && cart.items(product.product_id.get).quantity == i) {selected="true"}>@i</option>
+            }
+          </select> шт.
+        </div>
+        <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" onclick="return removeFromCart('@routes.Checkout.removeFromCart(product.product_id.get)')">Убрать из корзины</a></div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="right">
+    <h2 style="background: left top url(@routes.Assets.at("images/package.png")) no-repeat; padding-left: 28px;">Заказ</h2>
+    <div class="content">
+      <div class="cart-total">
+      </div>
+      <div class="cart-details">
+      </div>
+    </div>
+
+    <div class="buttons">
+      <form action="#" method="post" enctype="multipart/form-data" id="checkout"></form>
+      <a id="checkout-button" class="button"><span>Оформить заказ</span></a>
+    </div>
+  </div>
+</div>
+
+<div>
+<h2>Курс</h2>
+<div class="product-list">
+  @for(product <- products) {
+  <div id="available-@{product.product_id}" @if(cart.items.contains(product.product_id.get)) {style="display:none"}>
+    @if(product.thumb != null) {
+    <div class="image"><a href="#"><img src="@routes.Assets.at("images/" + product.thumb)" title="@{product.name}" alt="@{product.name}" id="image@{product.product_id}" /></a></div>
+    }
+    <div class="price">
+      <label>Цена:</label>
+      @if(product.price != 0) {
+        @if(product.special == 0) {
+        @{product.price}
+        } else {
+        <span class="price-old">@{product.price}</span> <span class="price-new">@{product.special}</span>
+        }
+      }
+      <div class="quantity">
+        Количество:
+        <select id="available-qty-@{product.product_id}" class="select_qty">
+        @for(i <- 1 to 12) {
+        <option value="@i">@i</option>
+        }
+        </select> шт.
+      </div>
+      <div class="buttons"><a productId="@{product.product_id}" class="button addToCart"><span>Добавить в корзину</span></a></div>
+    </div>
+    <div class="name"><a href="#">@{product.name}</a></div>
+    <div class="description">@Html(product.description.substring(1, product.description.indexOf("</p>")) + "...</p>")</div>
+  </div>
+  }
+</div>
+
+{{if !$('#dialog')[0]}}
+<div id="dialog" style="display: none">
+</div>
+{{/if}}
+
+<script type="text/javascript">
+$('#dialog').dialog({ autoOpen: false, modal: true, title: '@Messages("text_your_address")' }).dialog('close');
+
+$('a#checkout-button').click(function(event) {
+  {{if address}}
+  $('#checkout').submit()
+  {{else}}
+  if (app.cart('shipment') != 'download') {
+    $('#dialog').dialog('open')
+  } else {
+    $('#checkout').submit()
+  }
+  {{/if}}
+});
+
+$('a.addToCart').click(function() {
+  var productId = $(this).attr('productId');
+  var quantity = $('select#available-qty-' + productId).val();
+  var qties = {};
+  qties['qties.' + productId] = quantity;
+  app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
+    $('select#selected-qty-' + productId).val(quantity);
+    $('#available-' + productId).fadeOut();
+    $('#selected-' + productId).fadeIn();
+    $('div.cart-total').tmplItem().update();
+  }})
+});
+
+$('select.selected-qty').change(function() {
+  var productId = $(this).attr('productId');
+  var quantity = $(this).val();
+  var qties = {};
+  qties['qties.' + productId] = quantity;
+  app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
+    $('div.cart-total').tmplItem().update();
+  }})
+});
+
+$('a.removeFromCart').click(function() {
+  var productId = $(this).attr('productId');
+  app.trigger('updateCart', {products: productId, callback: function() {
+    $('#selected-' + productId).fadeOut();
+    $('#available-' + productId).fadeIn();
+    $('div.cart-total').tmplItem().update();
+  }})
+});
+
+$('select#payment').change(function() {
+  var payment = $(this).val();
+  var category = $("option:selected", this).attr("category");
+  app.trigger('updateCart', {payment: payment, callback: function() {
+    app.cart('_category', category);
+    $('div.content').tmplItem().update();
+  }})
+});
+
+$('select#shipment').change(function() {
+  var shipment = $(this).val();
+  app.trigger('updateCart', {shipment: shipment, callback: function() {
+    $('div.content').tmplItem().update();
+  }})
+});
+</script>
+
+}

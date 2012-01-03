@@ -12,6 +12,9 @@ GET     /payment                    controllers.Checkout.payment
 POST    /payment                    controllers.Checkout.setpayment
 GET     /product                    controllers.Checkout.product
 POST    /product                    controllers.Checkout.setproduct
+GET     /checkout                   controllers.Checkout.checkout
+POST    /checkout                   controllers.Checkout.docheckout
+POST    /removeFromCart             controllers.Checkout.removeFromCart(productId: Long)
 
 # Account
 GET     /account                    controllers.Application.account

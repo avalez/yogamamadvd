@@ -1,0 +1,4 @@
+@(cart: Cart)(implicit flash: Flash, request: RequestHeader, user: Option[String])
+{
+  "total": "@Messages("text_items", cart.quantity, cart.total)"
+}

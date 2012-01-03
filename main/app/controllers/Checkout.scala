@@ -58,9 +58,27 @@ object Checkout extends ApplicationBase {
           cart += (product, qties.head.toLong)
         }
       }
-      Redirect(routes.Checkout.product)
+      Redirect(routes.Checkout.checkout)
     }.getOrElse(Redirect(routes.Checkout.product).flashing(
         "error" -> "Select product"))
+  }
+
+  // checkout
+  
+  def checkout = WithCart { cart => implicit request =>
+    val products = Product.findAll
+    Ok(views.html.checkout.checkout(cart, products))
+  }
+  
+  def removeFromCart(productId: Long) = WithCart { cart => implicit request =>
+    // request.body.urlFormEncoded.get("productId").map(_.head).map { productId =>
+      cart.items.remove(productId.toLong)
+      Ok(views.html.checkout.updateCart(cart)).as("application/json")
+    //}.getOrElse(BadRequest(views.html.checkout.removeFromCart(cart)))
+  }
+
+  def docheckout = WithCart { cart => implicit request =>
+    Redirect(routes.Checkout.checkout)
   }
 
   // wrapper
