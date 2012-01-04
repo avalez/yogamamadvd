@@ -70,11 +70,22 @@ object Checkout extends ApplicationBase {
     Ok(views.html.checkout.checkout(cart, products))
   }
   
-  def removeFromCart(productId: Long) = WithCart { cart => implicit request =>
-    // request.body.urlFormEncoded.get("productId").map(_.head).map { productId =>
+  def removeFromCart = WithCart { cart => implicit request =>
+    request.body.urlFormEncoded.get("productId").map(_.head).map { productId =>
       cart.items.remove(productId.toLong)
-      Ok(views.html.checkout.updateCart(cart)).as("application/json")
-    //}.getOrElse(BadRequest(views.html.checkout.removeFromCart(cart)))
+    }
+    Ok(views.html.checkout.updateCart(cart)).as("application/json")
+  }
+
+  def addToCart = WithCart { cart => implicit request =>
+    val f = request.body.urlFormEncoded 
+    (f.get("productId"), f.get("quantity")) match {
+      case (Some(productId), Some(quantity)) => Product.findById(productId.head.toLong).map { product =>
+        cart += (product, quantity.head.toLong)
+      }
+      case _ => Some(cart) // ignore
+    }
+    Ok(views.html.checkout.updateCart(cart)).as("application/json")
   }
 
   def docheckout = WithCart { cart => implicit request =>

@@ -9,7 +9,7 @@
       @for(product <- products) {
       <div id="selected-@{product.product_id}" @if(!cart.items.contains(product.product_id.get)) {style="display:none"}>
         @if(product.thumb != null) {
-        <div class="image"><a href="#"><img src="@routes.Assets.at("images/" + product.thumb)" title="@{product.name}" alt="@{product.name}" id="image@{product.product_id}" /></a></div>
+        <div class="image"><a href="#"><img src="@routes.Assets.at("images/" + product.thumb)" title="@{product.name}" alt="@{product.name}" id="selected-image-@{product.product_id}" /></a></div>
         }
         <div class="name"><a href="#">@{product.name}</a></div>
         <div class="price">
@@ -30,7 +30,7 @@
             }
           </select> шт.
         </div>
-        <div class="remove"><a class="ui-icon ui-icon-trash" title="Убрать из корзины" onclick="return removeFromCart('@routes.Checkout.removeFromCart(product.product_id.get)')">Убрать из корзины</a></div>
+        <div class="remove"><a class="ui-icon ui-icon-trash removeFromCart" title="Убрать из корзины" productId="@product.product_id.get">Убрать из корзины</a></div>
       </div>
       }
     </div>
@@ -58,7 +58,7 @@
   @for(product <- products) {
   <div id="available-@{product.product_id}" @if(cart.items.contains(product.product_id.get)) {style="display:none"}>
     @if(product.thumb != null) {
-    <div class="image"><a href="#"><img src="@routes.Assets.at("images/" + product.thumb)" title="@{product.name}" alt="@{product.name}" id="image@{product.product_id}" /></a></div>
+    <div class="image"><a href="#"><img src="@routes.Assets.at("images/" + product.thumb)" title="@{product.name}" alt="@{product.name}" id="available-image-@{product.product_id}" /></a></div>
     }
     <div class="price">
       <label>Цена:</label>
@@ -77,7 +77,7 @@
         }
         </select> шт.
       </div>
-      <div class="buttons"><a productId="@{product.product_id}" class="button addToCart"><span>Добавить в корзину</span></a></div>
+      <div class="buttons"><a class="button addToCart" productId="@product.product_id.get"><span>Добавить в корзину</span></a></div>
     </div>
     <div class="name"><a href="#">@{product.name}</a></div>
     <div class="description">@Html(product.description.substring(1, product.description.indexOf("</p>")) + "...</p>")</div>
@@ -90,8 +90,6 @@
 </div>
 {{/if}}
 
-<script type="text/javascript">
-$('#dialog').dialog({ autoOpen: false, modal: true, title: '@Messages("text_your_address")' }).dialog('close');
 
 $('a#checkout-button').click(function(event) {
   {{if address}}
@@ -105,36 +103,27 @@ $('a#checkout-button').click(function(event) {
   {{/if}}
 });
 
+<script type="text/javascript">
+$('#dialog').dialog({ autoOpen: false, modal: true, title: '@Messages("text_your_address")' }).dialog('close');
+
+
 $('a.addToCart').click(function() {
   var productId = $(this).attr('productId');
-  var quantity = $('select#available-qty-' + productId).val();
-  var qties = {};
-  qties['qties.' + productId] = quantity;
-  app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
-    $('select#selected-qty-' + productId).val(quantity);
-    $('#available-' + productId).fadeOut();
-    $('#selected-' + productId).fadeIn();
-    $('div.cart-total').tmplItem().update();
-  }})
+  var quantity = $('#available-qty-' + productId).val();
+  var image_el = $('#available-image-' + productId);
+  return addToCart('@routes.Checkout.addToCart', productId, quantity, image_el);
 });
 
 $('select.selected-qty').change(function() {
   var productId = $(this).attr('productId');
   var quantity = $(this).val();
-  var qties = {};
-  qties['qties.' + productId] = quantity;
-  app.trigger('updateCart', {products: productId, qties: qties, callback: function() {
-    $('div.cart-total').tmplItem().update();
-  }})
+  var image_el = $('#selected-image-' + productId);
+  return addToCart('@routes.Checkout.addToCart', productId, quantity, image_el);
 });
 
 $('a.removeFromCart').click(function() {
   var productId = $(this).attr('productId');
-  app.trigger('updateCart', {products: productId, callback: function() {
-    $('#selected-' + productId).fadeOut();
-    $('#available-' + productId).fadeIn();
-    $('div.cart-total').tmplItem().update();
-  }})
+  return removeFromCart('@routes.Checkout.removeFromCart', productId);
 });
 
 $('select#payment').change(function() {

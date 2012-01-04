@@ -14,7 +14,8 @@ GET     /product                    controllers.Checkout.product
 POST    /product                    controllers.Checkout.setproduct
 GET     /checkout                   controllers.Checkout.checkout
 POST    /checkout                   controllers.Checkout.docheckout
-POST    /removeFromCart             controllers.Checkout.removeFromCart(productId: Long)
+POST    /removeFromCart             controllers.Checkout.removeFromCart
+POST    /addToCart                  controllers.Checkout.addToCart
 
 # Account
 GET     /account                    controllers.Application.account
