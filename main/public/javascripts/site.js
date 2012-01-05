@@ -101,8 +101,8 @@ function updateCart(url, data, callback) {
         url: url,
         data: data,
         type: 'post',
-        success: function(json) {
-            $('#cart_total').html(json['total']);
+        success: function(html) {
+            $('#cart_total').html(html);
             
             callback();
         }

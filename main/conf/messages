@@ -13,7 +13,7 @@ button_cart = В Корзину
 button_continue = Продолжить
 button_login = Войти
 
-format_price = %s руб.
+format_price = {0} руб.
 
 product = Йога для будущих мам
 logo = Life Yoga Club

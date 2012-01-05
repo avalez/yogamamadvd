@@ -10,16 +10,18 @@ class Cart(var shipment: String = "", var payment: String = "", var _category: S
   var total:Double = 0d
     
   def += (kv: (Product, Long)) = {
-    val (id, quantity) = (kv._1.product_id.get, kv._2)
-    val item = new Item(0, 0  /* FIXME */, 0)
-    item.quantity += quantity
+    val (id, price, quantity) = (kv._1.product_id.get, kv._1.price, kv._2)
     // TODO: discounts for multi-order
-    item.total = item.price * item.quantity
+    val item = new Item(quantity, price, price * quantity)
+    items.get(id).map(total -= _.total)
+    total += item.total
     items += (id -> item)
     this
   }
   
   def clear = { quantity = 0; total = 0; items.clear }
+  
+  def totals = Map("total" -> total)
 
   class Item(var quantity:Long, var price:Double, var total:Double)
 }

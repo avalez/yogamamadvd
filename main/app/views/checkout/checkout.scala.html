@@ -1,4 +1,4 @@
-@(cart: Cart, products: List[Product])(implicit flash: Flash, request: RequestHeader, user: Option[String])
+@(cart: Cart, products: List[Product], gateways: List[Gateway])(implicit flash: Flash, request: RequestHeader, user: Option[String])
 
 @main(Messages("product")) {
 
@@ -38,11 +38,8 @@
 
   <div class="right">
     <h2 style="background: left top url(@routes.Assets.at("images/package.png")) no-repeat; padding-left: 28px;">Заказ</h2>
-    <div class="content">
-      <div class="cart-total">
-      </div>
-      <div class="cart-details">
-      </div>
+    <div id="cart_total" class="content">
+    @tags.total(cart, gateways)
     </div>
 
     <div class="buttons">
@@ -129,17 +126,14 @@ $('a.removeFromCart').click(function() {
 $('select#payment').change(function() {
   var payment = $(this).val();
   var category = $("option:selected", this).attr("category");
-  app.trigger('updateCart', {payment: payment, callback: function() {
-    app.cart('_category', category);
-    $('div.content').tmplItem().update();
-  }})
+  return updateCart('@routes.Checkout.updatePayment', {gateway: payment, _category: category}, function() {
+  })
 });
 
 $('select#shipment').change(function() {
   var shipment = $(this).val();
-  app.trigger('updateCart', {shipment: shipment, callback: function() {
-    $('div.content').tmplItem().update();
-  }})
+  return updateCart('@routes.Checkout.updateShipment', {shipment: shipment}, function() {
+  })
 });
 </script>
 

@@ -100,13 +100,6 @@ label {
 #header #welcome {
     float: right;
 }
-#header .heading {
-    float: right;
-}
-#header .heading a span {
-   background: #FFFFFF url('../images/cart.png') 1% 50% no-repeat;
-   padding-left: 20px;
-}
 .success, .warning, .attention, .information {
 	padding: 10px 10px 10px 33px;
 	margin-bottom: 15px;

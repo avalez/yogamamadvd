@@ -6,6 +6,9 @@ import play.api.mvc.Request
 import play.api.mvc.SimpleResult
 import models.Gateway
 import models.Product
+import play.api.data._
+import format.Formats._
+import validation.Constraints._
 
 object Checkout extends ApplicationBase {
   
@@ -20,25 +23,56 @@ object Checkout extends ApplicationBase {
     Redirect(routes.Checkout.payment)
   }
 
+  def updateShipment = WithCart { cart => implicit request =>
+    request.body.urlFormEncoded.get("shipment").map{
+      shipment => cart.shipment = shipment.head
+    }
+    val gateways = Gateway.findAll
+    Ok(views.html.tags.total(cart, gateways))
+  }
+
   // payment
   
   def payment = WithCart { cart => implicit request =>
     // gateways reverse map (http://daily-scala.blogspot.com/2010/03/how-to-reverse-map.html)
     val gateways = (for (gateway <- Gateway.findAll; category <- "\\w+".r.findAllIn(gateway.categories))
       yield (gateway.name -> category)) groupBy( _._2) map {case (key,value) => (key, value.unzip._1)}
+    // set initial payment category
+    if (cart._category.isEmpty()) {
+      cart._category = if (cart.shipment != "download") "ondelivery" else "internet"
+    }
     Ok(views.html.checkout.payment(cart, gateways))
   }
   
+  val gatewayForm = Form(
+    of(
+      "gateway" -> requiredText,
+      "_category" -> requiredText
+    )
+  )
+
   def setpayment = WithCart { cart => implicit request =>
-    val f = request.body.urlFormEncoded 
-    (f.get("gateway"), f.get("_category")) match {
-      case (Some(payment), Some(_category)) =>
-        cart.payment = payment.head
-        cart._category = _category.head
+    gatewayForm.bindFromRequest.fold(
+      hasErrors => Redirect(routes.Checkout.payment).flashing(
+        "error" -> "Select payment method"),
+      form => {
+        cart.payment = form._1
+        cart._category = form._2
         Redirect(routes.Checkout.product)
-      case _ => Redirect(routes.Checkout.payment).flashing(
-        "error" -> "Select payment method")
-    }
+      }
+    )
+  }
+
+  def updatePayment = WithCart { cart => implicit request =>
+    val gateways = Gateway.findAll
+    gatewayForm.bindFromRequest.fold(
+      hasErrors => BadRequest(views.html.tags.total(cart, gateways)),
+      form => {
+        cart.payment = form._1
+        cart._category = form._2
+        Ok(views.html.tags.total(cart, gateways))
+      }
+    )
   }
 
   // product
@@ -67,16 +101,18 @@ object Checkout extends ApplicationBase {
   
   def checkout = WithCart { cart => implicit request =>
     val products = Product.findAll
-    Ok(views.html.checkout.checkout(cart, products))
+    val gateways = Gateway.findAll
+    Ok(views.html.checkout.checkout(cart, products, gateways))
   }
   
   def removeFromCart = WithCart { cart => implicit request =>
     request.body.urlFormEncoded.get("productId").map(_.head).map { productId =>
       cart.items.remove(productId.toLong)
     }
-    Ok(views.html.checkout.updateCart(cart)).as("application/json")
+    val gateways = Gateway.findAll
+    Ok(views.html.tags.total(cart, gateways))
   }
-
+  
   def addToCart = WithCart { cart => implicit request =>
     val f = request.body.urlFormEncoded 
     (f.get("productId"), f.get("quantity")) match {
@@ -85,7 +121,8 @@ object Checkout extends ApplicationBase {
       }
       case _ => Some(cart) // ignore
     }
-    Ok(views.html.checkout.updateCart(cart)).as("application/json")
+    val gateways = Gateway.findAll
+    Ok(views.html.tags.total(cart, gateways))
   }
 
   def docheckout = WithCart { cart => implicit request =>

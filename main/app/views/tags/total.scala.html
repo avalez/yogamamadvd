@@ -1,0 +1,71 @@
+@(cart: Cart, gateways: List[Gateway])(implicit flash: Flash, request: RequestHeader, user: Option[String])
+
+  <div class="cart-total">
+    <table>
+      @for(total <- cart.totals) {
+      <tr>
+        <td>@Messages(total._1):</td>
+        <td>@Messages("format_price", total._2)</td>
+      </tr>
+      }
+    </table>
+  </div>
+  <div class="cart-details">
+    <table width="100%">
+      <tr>
+        <td>Способ оплаты:</td>
+        <td><select id="payment" class="box">
+          @for(gateway <- gateways if cart.shipment != "download" || !gateway.categories.contains("ondelivery")) {
+          <option value="@gateway.name" category="@{"\\w+".r.findAllIn(gateway.categories).toSeq.head}" @if(cart.payment == gateway.name) {selected="true"}>@Messages("pgw_" + gateway.name)</option>
+          }
+          </select></td>
+      </tr>
+      <tr>
+        <td>Способ доставки:</td>
+        <td><select id="shipment" class="box">
+          @for(shipment <- List("download", "ship")) { <!-- TODO: ship to RU only -->
+            <option value="@shipment" @if(cart.shipment == shipment) {selected="true"}>@Messages("shipment_" + shipment)</option>
+          }
+        </select>
+        </td>
+      </tr>
+      @if(cart.shipment != "download" /* TODO: || !connected() */) {
+        <tr>
+          <td colspan="2"></td>
+        </tr>
+        @if(user) {
+        <tr>
+          <td>Адрес доставки:</td>
+          @if(false /* TODO: address */) {
+          <td>${address.firstname} ${address.lastname}</td>
+        </tr>
+        <tr>
+            <td><a onclick="$('#dialog').dialog('open')" style="float: right; padding-right: 20px">Изменить</a></td>
+          <td>${address.address_1}</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>${address.city}</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>${address.zone}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>${address.country} ${address.postcode}</td>
+          } else {
+          <td><a onclick="$('#dialog').dialog('open')">Ввести</a></td>
+          }
+        </tr>
+        } else {
+        <tr>
+          <td colspan="2">@Html(Messages("text_welcome",
+            routes.Application.login + "?returnUrl=" + Application.encodeUrl(request.path),
+            "#"))</td>
+        </tr>
+        }
+      }
+    </table>
+  </div>
+
