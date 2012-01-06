@@ -2,6 +2,8 @@
 
 @main(Messages("product")) {
 
+@tags.nav()
+
 <div class="checkout-cart-content">
   <div class="left">
     <h2 style="background: left top url(@routes.Assets.at("images/basket.png")) no-repeat; padding-left: 28px;">Корзина</h2>
@@ -82,58 +84,55 @@
   }
 </div>
 
-{{if !$('#dialog')[0]}}
 <div id="dialog" style="display: none">
 </div>
-{{/if}}
-
-
-$('a#checkout-button').click(function(event) {
-  {{if address}}
-  $('#checkout').submit()
-  {{else}}
-  if (app.cart('shipment') != 'download') {
-    $('#dialog').dialog('open')
-  } else {
-    $('#checkout').submit()
-  }
-  {{/if}}
-});
 
 <script type="text/javascript">
 $('#dialog').dialog({ autoOpen: false, modal: true, title: '@Messages("text_your_address")' }).dialog('close');
-
 
 $('a.addToCart').click(function() {
   var productId = $(this).attr('productId');
   var quantity = $('#available-qty-' + productId).val();
   var image_el = $('#available-image-' + productId);
-  return addToCart('@routes.Checkout.addToCart', productId, quantity, image_el);
+  return addToCart(productId, quantity, image_el);
 });
 
 $('select.selected-qty').change(function() {
   var productId = $(this).attr('productId');
   var quantity = $(this).val();
   var image_el = $('#selected-image-' + productId);
-  return addToCart('@routes.Checkout.addToCart', productId, quantity, image_el);
+  return addToCart(productId, quantity, image_el);
 });
 
 $('a.removeFromCart').click(function() {
   var productId = $(this).attr('productId');
-  return removeFromCart('@routes.Checkout.removeFromCart', productId);
+  return removeFromCart(productId);
 });
 
 $('select#payment').change(function() {
   var payment = $(this).val();
   var category = $("option:selected", this).attr("category");
-  return updateCart('@routes.Checkout.updatePayment', {gateway: payment, _category: category}, function() {
+  return updateCart({gateway: payment, _category: category}, function() {
   })
 });
 
 $('select#shipment').change(function() {
   var shipment = $(this).val();
-  return updateCart('@routes.Checkout.updateShipment', {shipment: shipment}, function() {
+  return updateCart({shipment: shipment}, function() {
   })
+});
+
+$('a#checkout-button').click(function(event) {
+  @if(false /* address */ ) {
+    $('#checkout').submit()
+  } else {
+    var shipment = $('select#shipment').val();
+    if (shipment != 'download') {
+      $('#dialog').dialog('open')
+    } else {
+      $('#checkout').submit()
+    }
+  }
 });
 </script>
 

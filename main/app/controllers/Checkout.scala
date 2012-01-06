@@ -107,7 +107,7 @@ object Checkout extends ApplicationBase {
   
   def removeFromCart = WithCart { cart => implicit request =>
     request.body.urlFormEncoded.get("productId").map(_.head).map { productId =>
-      cart.items.remove(productId.toLong)
+      cart -= productId.toLong
     }
     val gateways = Gateway.findAll
     Ok(views.html.tags.total(cart, gateways))

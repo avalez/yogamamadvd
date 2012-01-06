@@ -2,6 +2,8 @@
 
 @main(Messages("product")) {
    
+  @tags.nav(checkout = "disabled")
+
   <h2>Курс</h2>
 
   @helper.form(routes.Checkout.setproduct, ('id, "cart")) {

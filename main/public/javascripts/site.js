@@ -96,11 +96,9 @@
 
 })(jQuery);
 
-function updateCart(url, data, callback) {
-    $.ajax({
-        url: url,
+function updateCart(call, data, callback) {
+    call({
         data: data,
-        type: 'post',
         success: function(html) {
             $('#cart_total').html(html);
             
@@ -113,8 +111,10 @@ function updateCart(url, data, callback) {
     });
 }
 
-function addToCart(url, productId, quantity, image_el) {
-    updateCart(url, {productId: productId, quantity: quantity}, function() {
+function addToCart(productId, quantity, image_el) {
+    updateCart(jsRoutes.controllers.Checkout.addToCart().ajax,
+      {productId: productId, quantity: quantity},
+      function() {
                 
         $('#available-' + productId).fadeOut();
         $('#selected-' + productId).fadeIn();
@@ -141,8 +141,9 @@ function addToCart(url, productId, quantity, image_el) {
     });
 }
 
-function removeFromCart(url, productId) {
-    updateCart(url, {productId: productId}, function() {
+function removeFromCart(productId) {
+    updateCart(jsRoutes.controllers.Checkout.removeFromCart().ajax,
+      {productId: productId}, function() {
 
         $('#selected-' + productId).fadeOut();
         $('#available-' + productId).fadeIn();

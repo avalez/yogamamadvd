@@ -3,9 +3,9 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.libs.Crypto
-
 import models._
 import views._
+import play.api.Routes
 
 trait ApplicationBase extends Controller {
   /** Key of the USERNAME attribute stored in session. */
@@ -131,4 +131,13 @@ object Application extends ApplicationBase {
     ).withCookies(Cookie(COOKIE_NAME, "", 0)) // remove
   }
 
-}
+  // -- Javascript routing
+
+  def javascriptRoutes = Action {
+    import routes.javascript._
+    Ok(
+      Routes.javascriptRouter("jsRoutes")(
+        Checkout.addToCart, Checkout.removeFromCart, Checkout.updateShipment, Checkout.updatePayment
+      )
+    ).as("text/javascript")
+  }}

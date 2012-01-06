@@ -1,0 +1,15 @@
+@(shipment: String = "active", payment: String = "active", product: String = "active", checkout: String = "active")
+@link(status: String, href: String)(content: Html) = {
+  @if(status == "active") {<a href="@href">} @content @if(status == "active") {</a>}
+}
+<div id="nav">
+  <ul>
+    <li class="@shipment">@link(shipment, routes.Checkout.shipment.url){Выбор способа доставки}</li>
+
+    <li class="@payment">@link(payment, routes.Checkout.payment.url){Выбор способа оплаты}</li>
+
+    <li class="@product">@link(product, routes.Checkout.product.url){Выбор курса}</li>
+
+    <li class="@checkout">@link(checkout, routes.Checkout.checkout.url){Заказ}</li>
+  </ul>
+</div>

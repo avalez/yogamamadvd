@@ -19,6 +19,12 @@ class Cart(var shipment: String = "", var payment: String = "", var _category: S
     this
   }
   
+  def -= (productId: Long) = {
+    items.get(productId).map(total -= _.total)
+    items -= productId
+    this
+  }
+
   def clear = { quantity = 0; total = 0; items.clear }
   
   def totals = Map("total" -> total)
