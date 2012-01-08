@@ -2,7 +2,7 @@
 <script type="text/javascript">
   $('#welcome').html(
     @if(user) {
-      '@Html(Messages("text_logged", "#", user.get, routes.Application.logout.url + "?returnUrl="
+      '@Html(Messages("text_logged", "#", user.get, routes.Account.logout.url + "?returnUrl="
         + Application.encodeUrl(request.path)))'
     } else {
       '@Html(Messages("text_welcome", "#", "#"))'

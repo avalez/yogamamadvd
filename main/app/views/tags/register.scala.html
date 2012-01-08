@@ -1,0 +1,73 @@
+@(form: Form[User], _url: String, _type: String = "account")
+
+@inputText(name: String, args: (Symbol,Any)*) = {
+  @tags.inputText(form(name), args :_ *)
+}
+
+@inputRadio(name: String) = {
+            <input type="radio" name="user.newsletter" value="1" @if(form(name).value == "1") {checked="checked"} />
+@Messages("text_yes")
+            <input type="radio" name="user.newsletter" value="0" @if(form(name).value == "1") {checked="checked"} />
+@Messages("text_no")
+}
+
+
+  @helper.form(routes.Account.register, ('id, "register" + _type)) {
+    <input type="hidden" name="returnUrl" value="@_url"/>
+    @if(_type == "account") {
+    <h2>@Messages("text_your_details")</h2>
+    } else {
+    <h2>@Messages("text_new_customer")</h2>
+    }
+    <div class="content">
+      <table class="form">
+        @inputText("firstname", 'tabindex -> "1", 'autofocus -> "true")
+        @inputText("lastname")
+        @inputText("email")
+        @if(_type != "download") {
+          @inputText("telephone")
+          @inputText("fax")
+        }
+      </table>
+    </div>
+    @if(_type != "download") {
+    <h2>@Messages("text_your_address") </h2>
+    <div class="content">
+      <table class="form">
+        @inputText("company")
+        @inputText("address_1")
+        @inputText("address_2")
+        @geonames_autocomplete(form)
+      </table>
+    </div>
+    }
+    @if(_type == "account") {
+    <h2>@Messages("text_your_password")</h2>
+    <div class="content">
+      <table class="form">
+        @inputText("password")
+        @inputText("confirm")
+      </table>
+    </div>
+    <h2>@Messages("text_newsletter")</h2>
+    <div class="content">
+      <table class="form">
+        <tr>
+          <td>@Messages("entry_newsletter")</td>
+          <td>@inputRadio("newsletter")</td>
+        </tr>
+      </table>
+    </div>
+    }
+    @if(true /* text_agree */) {
+    <div class="buttons">
+      <div class="right">@Html(Messages("text_agree"))
+        <input type="checkbox" name="user.agree" value="1" @if(form("agree").value == "1") {checked="checked"}/>
+        <a onclick="$('#register@_type').submit();" class="button"><span>@Messages("button_continue")</span></a></div>
+    </div>
+    } else {
+    <div class="buttons">
+      <a onclick="$('#register@_type').submit();" class="button"><span>@Messages("button_continue")</span></a>
+    </div>
+    }
+  }

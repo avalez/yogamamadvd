@@ -1,0 +1,10 @@
+@(field: play.api.data.Field, args: (Symbol,Any)*)
+
+  <tr>
+    <td>@if(!field.constraints.isEmpty) {<span class="required">*</span>}@Messages("entry_" + field.name)</td>
+    <td><input id="@field.id" type="text" name="@field.name" value="@field.value" @toHtmlArgs(args)/>
+      @field.error.map { _ =>
+        <br/><span class="error">@Messages("error_" + field.name)</span>
+      }
+    </td>
+  </tr>

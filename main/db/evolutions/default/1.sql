@@ -3,6 +3,8 @@
 # --- !Ups
 
 create table user (
+  firstname varchar(64) not null,
+  lastname varchar(64) not null,
   email varchar(64) not null primary key,
   password varchar(64) not null
 );

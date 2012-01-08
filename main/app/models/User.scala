@@ -6,18 +6,21 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class User (email: String, password: String)
+case class User(firstname: String, lastname: String, email: String, password: String, confirmPassword: String = "")
 
 object User {
+  
   // -- Parsers
 
   /**
    * Parse a Project from a ResultSet
    */
   val simple = {
+    get[String]("user.firstname") ~/
+    get[String]("user.lastname") ~/
     get[String]("user.email") ~/
     get[String]("user.password") ^^ {
-      case email~password => User(email, password)
+      case firstname~lastname~email~password => User(firstname, lastname, email, password)
     }
   }
 
@@ -68,10 +71,12 @@ email = {email} and password = {password}
       SQL(
         """
 insert into user values (
-{email}, {password}
+{firstname}, {lastname}, {email}, {password}
 )
 """
       ).on(
+        'firstname -> user.firstname,
+        'lastname -> user.lastname,
         'email -> user.email,
         'password -> user.password
       ).executeUpdate()

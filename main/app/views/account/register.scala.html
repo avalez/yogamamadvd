@@ -1,0 +1,21 @@
+@(form: Form[User], returnUrl: String)(implicit flash: Flash, request: RequestHeader, user: Option[String])
+
+@main(Messages("heading_register")) {
+
+  <h1>@Messages("heading_register")</h1>
+
+  @form.globalError.map { error =>
+    <div class="warning">
+        @error.message
+    </div>
+  }
+
+  @flash.get("success").map { message =>
+    <div class="success">
+        @message
+    </div>
+  }
+
+  @tags.register(form, returnUrl)
+    
+}

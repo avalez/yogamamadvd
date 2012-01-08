@@ -15,7 +15,7 @@ object Checkout extends ApplicationBase {
   // shipment
 
   def shipment = WithCart { cart => implicit request =>
-    Ok(views.html.checkout.shipment(Application.loginForm, cart))
+    Ok(views.html.checkout.shipment(Account.loginForm, cart))
   }
 
   def setshipment(shipment: String) = WithCart { cart => implicit request =>

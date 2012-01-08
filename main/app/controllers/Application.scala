@@ -67,7 +67,7 @@ trait ApplicationBase extends Controller {
    * Redirect to login if the user is not authorized.
    */
   def onUnauthorized(request: RequestHeader) = Redirect(
-      routes.Application.login.url + "?returnUrl=" + encodeUrl(request.path))(request)
+      routes.Account.login.url + "?returnUrl=" + encodeUrl(request.path))(request)
 
   /**
    * Translates a string into application/x-www-form-urlencoded format using "UTF-8" encoding scheme.
@@ -79,56 +79,6 @@ object Application extends ApplicationBase {
   
   def index = Action { implicit request =>
     Ok(html.index(User.findAll))
-  }
-
-  def account = Authenticated { user => implicit request =>
-    Ok(html.account.index(user))
-  }
-
-  // -- Authentication
-
-  val loginForm = Form(
-    of(
-      "username" -> email,
-      "password" -> requiredText,
-      "remember" -> boolean,
-      "returnUrl" -> requiredText
-    ) verifying ("Invalid email or password", result => result match {
-      case (email, password, remember, returnUrl) => User.authenticate(email, password).isDefined
-    })
-  )
-  
-  /**
-   * Login page.
-   */
-  def login = Action { implicit request =>
-    Ok(html.login(loginForm, returnUrl))
-  }
-
-  /**
-   * Handle login form submission.
-   */
-  def authenticate = Action { implicit request =>
-    loginForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.login(formWithErrors, returnUrl)),
-      user => {
-        val result = Redirect(user._4).withSession("username" -> user._1)
-        // rememberme
-        if (user._3) result.withCookies(Cookie(COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1))
-        else result
-      }
-    )
-  }
-  
-  def returnUrl(implicit request: RequestHeader) = request.queryString.get("returnUrl").map{ _.head }.getOrElse(routes.Application.index.url)
-  
-  /**
-   * Logout and clean the session.
-   */
-  def logout = Action { implicit request =>
-    Redirect(returnUrl).withNewSession.flashing(
-      "success" -> "You've been logged out "
-    ).withCookies(Cookie(COOKIE_NAME, "", 0)) // remove
   }
 
   // -- Javascript routing

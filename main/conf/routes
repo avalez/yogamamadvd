@@ -20,12 +20,11 @@ POST    /updatePayment              controllers.Checkout.updatePayment
 POST    /updateShipment             controllers.Checkout.updateShipment
 
 # Account
-GET     /account                    controllers.Application.account
-
-# Authentication
-GET     /login                      controllers.Application.login
-POST    /login                      controllers.Application.authenticate
-GET     /logout                     controllers.Application.logout
+GET     /account                    controllers.Account.index
+GET     /login                      controllers.Account.login
+POST    /login                      controllers.Account.authenticate
+GET     /logout                     controllers.Account.logout
+GET     /register                   controllers.Account.register
 
 # Javascript routing
 GET     /assets/javascripts/routes  controllers.Application.javascriptRoutes

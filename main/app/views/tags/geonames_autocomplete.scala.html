@@ -1,0 +1,33 @@
+@(form: Form[User])
+
+@inputText(form("city"))
+@inputText(form("postcode"))
+@inputText(form("country"))
+@inputText(form("zone"))
+
+<script type="text/javascript"><!--
+
+$(function() {
+    $( "#city" ).autocomplete({
+        source: function( request, response ) {
+            $.getJSON("http://ws.geonames.org/searchJSON?name_startsWith=" + request.term + "&featureClass=P&maxRows=12&stye=full&lang=" + '${lang}', function( data ) {
+                response( $.map( data.geonames, function( item ) {
+                    return {
+                        label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                        value: item.name
+                    }
+                }));
+            });
+        },
+        minLength: 4,
+        select: function( event, ui ) {
+            if (ui.item) {
+              var selected = ui.item.label.split(",")
+              $('#zone').val(selected[1]);
+              $('#country').val(selected[2]);
+            }
+        },
+    });
+});
+
+//--></script> 
