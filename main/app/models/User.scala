@@ -6,7 +6,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class User(firstname: String, lastname: String, email: String, password: String, confirmPassword: String = "")
+case class User(firstname: String, lastname: String, email: String, address: Address, password: String, confirmPassword: String = "")
 
 object User {
   
@@ -20,7 +20,7 @@ object User {
     get[String]("user.lastname") ~/
     get[String]("user.email") ~/
     get[String]("user.password") ^^ {
-      case firstname~lastname~email~password => User(firstname, lastname, email, password)
+      case firstname~lastname~email~password => User(firstname, lastname, email, null, password)
     }
   }
 

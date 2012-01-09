@@ -5,6 +5,11 @@ import play.api.data._
 import play.api.libs.Crypto
 import models._
 import views._
+import anorm.Pk
+import play.api.data.format.Formats
+import anorm.Id
+import play.api.data.format.Formatter
+import anorm.Pk
 
 object Account extends ApplicationBase {
   
@@ -58,11 +63,35 @@ object Account extends ApplicationBase {
 
   // -- Registration
 
+  implicit def pkLongFormat = new Formatter[Pk[Long]] {
+
+    override val format = Some("format.numeric", Nil)
+
+    def bind(key: String, data: Map[String, String]) = {
+      Formats.longFormat.bind(key, data).right.flatMap { s =>
+        Right(Id(s))
+      }
+    }
+
+    def unbind(key: String, value: Pk[Long]) = Map(key -> value.toString)
+  }
+
   val registerForm = Form(
     of(User.apply _)(
       "firstname" -> requiredText,
       "lastname" -> requiredText,
       "email" -> email,
+      "address" -> of(Address.apply _)(
+          "id" -> of[Pk[Long]],
+          "user_id" -> number,
+          "address_1" -> requiredText,
+          "address_2" -> text,
+          "city" -> requiredText,
+          "postcode" -> requiredText,
+          "zone" -> requiredText,
+          "country" -> requiredText,
+          "country_code" -> requiredText
+          ),
       "password" -> requiredText,
       "confirm" -> requiredText
     ) verifying ("error_exists", result => result match {

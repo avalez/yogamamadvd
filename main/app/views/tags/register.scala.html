@@ -7,7 +7,7 @@
 @inputRadio(name: String) = {
             <input type="radio" name="user.newsletter" value="1" @if(form(name).value == "1") {checked="checked"} />
 @Messages("text_yes")
-            <input type="radio" name="user.newsletter" value="0" @if(form(name).value == "1") {checked="checked"} />
+            <input type="radio" name="user.newsletter" value="0" @if(form(name).value == "0") {checked="checked"} />
 @Messages("text_no")
 }
 
