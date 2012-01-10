@@ -6,7 +6,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Address(product_id: Pk[Long], user_id: Long, address_1: String, address_2: String,
+case class Address(product_id: Pk[Long], user_email: String, company: String, address_1: String, address_2: String,
     city: String, postcode: String, zone: String, country: String, country_code: String)
 
 object Address {
@@ -18,7 +18,8 @@ object Address {
    */
   val simple = {
     get[Pk[Long]]("address.id") ~/
-    get[Long]("address.user_id") ~/
+    get[String]("address.user_email") ~/
+    get[String]("company") ~/
     get[String]("address.address_1") ~/
     get[String]("address.address_2") ~/
     get[String]("address.city") ~/
@@ -26,8 +27,8 @@ object Address {
     get[String]("address.zone") ~/
     get[String]("address.country") ~/
     get[String]("address.country_coude") ^^ {
-      case id~user_id~address_1~address_2~city~postcode~zone~country~country_code =>
-        Address(id, user_id, address_1, address_2, city, postcode, zone, country, country_code)
+      case id~user_email~company~address_1~address_2~city~postcode~zone~country~country_code =>
+        Address(id, user_email, company, address_1, address_2, city, postcode, zone, country, country_code)
     }
   }
 
@@ -52,11 +53,12 @@ object Address {
       SQL(
         """
 insert into address values (
-          {user_id}, {address_1}, {address_2}, {city}, {postcode}, {zone}, {country}, {country_code}
+          {user_email}, {address_1}, {address_2}, {city}, {postcode}, {zone}, {country}, {country_code}
 )
 """
       ).on(
-        'user_id -> address.user_id,
+        'user_id -> address.user_email,
+        'company -> address.company,
         'address_1 -> address.address_1,
         'address_2 -> address.address_2,
         'city -> address.city,

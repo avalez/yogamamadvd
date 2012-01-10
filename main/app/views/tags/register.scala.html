@@ -12,8 +12,10 @@
 }
 
 
-  @helper.form(routes.Account.register, ('id, "register" + _type)) {
+  @helper.form(routes.Account.doRegister, ('id, "register" + _type)) {
     <input type="hidden" name="returnUrl" value="@_url"/>
+    <input type="hidden" name="address.id" value="@form("address.id").value"/>
+    <input type="hidden" name="address.user_email" value="@form("address.user_email").value"/>
     @if(_type == "account") {
     <h2>@Messages("text_your_details")</h2>
     } else {
@@ -34,9 +36,9 @@
     <h2>@Messages("text_your_address") </h2>
     <div class="content">
       <table class="form">
-        @inputText("company")
-        @inputText("address_1")
-        @inputText("address_2")
+        @inputText("address.company")
+        @inputText("address.address_1")
+        @inputText("address.address_2")
         @geonames_autocomplete(form)
       </table>
     </div>

@@ -10,6 +10,7 @@ import play.api.data.format.Formats
 import anorm.Id
 import play.api.data.format.Formatter
 import anorm.Pk
+import anorm.NotAssigned
 
 object Account extends ApplicationBase {
   
@@ -63,6 +64,7 @@ object Account extends ApplicationBase {
 
   // -- Registration
 
+  /** Default formatter for the `Pk[Long]` type. */
   implicit def pkLongFormat = new Formatter[Pk[Long]] {
 
     override val format = Some("format.numeric", Nil)
@@ -83,7 +85,8 @@ object Account extends ApplicationBase {
       "email" -> email,
       "address" -> of(Address.apply _)(
           "id" -> of[Pk[Long]],
-          "user_id" -> number,
+          "user_email" -> requiredText,
+          "company" -> text,
           "address_1" -> requiredText,
           "address_2" -> text,
           "city" -> requiredText,
@@ -102,10 +105,24 @@ object Account extends ApplicationBase {
   )
   
   /**
-   * Login page.
+   * Register page.
    */
   def register = Action { implicit request =>
     Ok(html.account.register(registerForm, returnUrl))
+  }
+
+  /**
+   * Handle login form submission.
+   */
+  def doRegister = Action { implicit request =>
+    registerForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.account.register(formWithErrors, returnUrl)),
+      user => {
+        User.create(user)
+        Address.create(user.address)
+        Redirect(returnUrl).withSession("username" -> user.email) 
+      }
+    )
   }
 
   // -- Utils

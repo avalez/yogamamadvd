@@ -25,6 +25,7 @@ GET     /login                      controllers.Account.login
 POST    /login                      controllers.Account.authenticate
 GET     /logout                     controllers.Account.logout
 GET     /register                   controllers.Account.register
+POST     /register                   controllers.Account.doRegister
 
 # Javascript routing
 GET     /assets/javascripts/routes  controllers.Application.javascriptRoutes
