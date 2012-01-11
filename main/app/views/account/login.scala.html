@@ -1,4 +1,4 @@
-@(form: Form[(String, String, Boolean, String)], returnUrl: String)(implicit flash: Flash, request: RequestHeader, user: Option[String])
+@(form: Form[(String, String, Boolean)], returnUrl: String)(implicit flash: Flash, request: RequestHeader, user: Option[String])
 
 @main(Messages("heading_login")) {
 
@@ -21,7 +21,7 @@
       <div class="content">
         <p><b>@Messages("text_register")</b></p>
         <p>@Messages("text_register_account")</p>
-        <a href="@routes.Account.register" class="button"><span>@Messages("button_continue")</span></a></div>
+        <a href="@routes.Account.register?returnUrl=@Application.encodeUrl(returnUrl)" class="button"><span>@Messages("button_continue")</span></a></div>
     </div>
     <div class="right">
         @tags.login(form, returnUrl)

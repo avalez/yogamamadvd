@@ -28,6 +28,13 @@ object InitialData {
       ).foreach(User.create)
     }
       
+    if(Address.findAll.isEmpty) {
+      
+      Seq(
+        Address(NotAssigned, "admin@example.com", "", "Vinohradska", "", "Praha", "12000", "Vinohrady", "Czech Republic", "CZ")
+      ).foreach(Address.create)
+    }
+
     if(Gateway.findAll.isEmpty) {
       Seq(
         Gateway("post", "ondelivery"),

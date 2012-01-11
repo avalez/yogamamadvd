@@ -1,8 +1,8 @@
-@(form: Form[(String, String, Boolean, String)], _url: String, _type: String = "account")
+@(form: Form[(String, String, Boolean)], returnUrl: String, _type: String = "account")
     <h2>@Messages("text_returning_customer")</h2>
     @helper.form(routes.Account.authenticate, ('id, "login" + _type)) {
 
-        <input type="hidden" name="returnUrl" value="@form("returnUrl").value.getOrElse(_url)"/>
+        <input type="hidden" name="returnUrl" value="@returnUrl"/>
         <div class="content" style="padding-top: 15px">
           <table class="login-form">
             @if(_type != "shipment") {

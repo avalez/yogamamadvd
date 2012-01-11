@@ -1,10 +1,11 @@
 @(field: play.api.data.Field, args: (Symbol,Any)*)
 
 @name = @{"\\w+$".r.findFirstIn(field.name).get /* strip prefix in fields like address.address_1 */}
+@_type(args: Seq[(Symbol,Any)]) = @{args.filter(_._1 == 'type).headOption.getOrElse('type, "text")._2 /* default type text */}
 
 <tr>
   <td>@if(!field.constraints.isEmpty) {<span class="required">*</span>}@Messages("entry_" + name)</td>
-  <td><input id="@name" type="text" name="@field.name" value="@field.value" @toHtmlArgs(args)/>
+  <td><input id="@name" type="@_type(args)" name="@field.name" value="@field.value" @toHtmlArgs(args)/>
     @field.error.map { _ =>
       <br/><span class="error">@Messages("error_" + name)</span>
     }

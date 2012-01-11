@@ -26,13 +26,22 @@ object Address {
     get[String]("address.postcode") ~/
     get[String]("address.zone") ~/
     get[String]("address.country") ~/
-    get[String]("address.country_coude") ^^ {
+    get[String]("address.country_code") ^^ {
       case id~user_email~company~address_1~address_2~city~postcode~zone~country~country_code =>
         Address(id, user_email, company, address_1, address_2, city, postcode, zone, country, country_code)
     }
   }
 
   // -- Queries
+
+  /**
+   * Retrieve all addresses.
+   */
+  def findAll = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from address").as(simple *)
+    }
+  }
 
   /**
    * Retrieve a User from id.
@@ -53,11 +62,11 @@ object Address {
       SQL(
         """
 insert into address values (
-          {user_email}, {address_1}, {address_2}, {city}, {postcode}, {zone}, {country}, {country_code}
+          null, {user_email}, {company}, {address_1}, {address_2}, {city}, {postcode}, {zone}, {country}, {country_code}
 )
 """
       ).on(
-        'user_id -> address.user_email,
+        'user_email -> address.user_email,
         'company -> address.company,
         'address_1 -> address.address_1,
         'address_2 -> address.address_2,

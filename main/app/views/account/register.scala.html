@@ -6,13 +6,19 @@
 
   @form.globalError.map { error =>
     <div class="warning">
-        @error.message
+        @Messages(error.message)
+    </div>
+  }
+
+  @form.errors.map { error =>
+    <div class="warning">
+        @error.key = @Messages(error.message)
     </div>
   }
 
   @flash.get("success").map { message =>
     <div class="success">
-        @message
+        @Messages(message)
     </div>
   }
 

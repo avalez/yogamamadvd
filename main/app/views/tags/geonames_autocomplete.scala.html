@@ -4,16 +4,17 @@
 @inputText(form("address.postcode"))
 @inputText(form("address.country"))
 @inputText(form("address.zone"))
+<input type="hidden" id="country_code" name="address.country_code" value="@form("address.country_code").value"/>
 
 <script type="text/javascript"><!--
 
 $(function() {
     $( "#city" ).autocomplete({
         source: function( request, response ) {
-            $.getJSON("http://ws.geonames.org/searchJSON?name_startsWith=" + request.term + "&featureClass=P&maxRows=12&stye=full&lang=" + '${lang}', function( data ) {
+            $.getJSON('http://ws.geonames.org/searchJSON?name_startsWith=' + request.term + '&featureClass=P&maxRows=12&stye=full&lang=' + 'ru', function( data ) {
                 response( $.map( data.geonames, function( item ) {
                     return {
-                        label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                        label: item.name + ', ' + (item.adminName1 ? item.adminName1 : item.name) + ', ' + item.countryName + ', ' + item.countryCode,
                         value: item.name
                     }
                 }));
@@ -22,9 +23,10 @@ $(function() {
         minLength: 4,
         select: function( event, ui ) {
             if (ui.item) {
-              var selected = ui.item.label.split(",")
-              $('#zone').val(selected[1]);
-              $('#country').val(selected[2]);
+                var selected = ui.item.label.split(',');
+                $('#zone').val(selected[1].trim());
+                $('#country').val(selected[2].trim());
+                $('#country_code').val(selected[3].trim())
             }
         },
     });
