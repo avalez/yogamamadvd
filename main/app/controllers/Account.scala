@@ -3,14 +3,12 @@ package controllers;
 import play.api.mvc._
 import play.api.data._
 import play.api.libs.Crypto
+import format.Formats
+import format.Formatter
+import anorm.Id
+import anorm.Pk
 import models._
 import views._
-import anorm.Pk
-import play.api.data.format.Formats
-import anorm.Id
-import play.api.data.format.Formatter
-import anorm.Pk
-import anorm.NotAssigned
 
 object Account extends ApplicationBase {
   
@@ -115,7 +113,10 @@ object Account extends ApplicationBase {
    * Handle login form submission.
    */
   def doRegister = Action { implicit request =>
-    registerForm.bindFromRequest.fold(
+    val data = request.body.urlFormEncoded ++ request.queryString
+    // FIXME: do this in form definition
+    val data1 = data + ("address.user_email" -> data("email"))
+    registerForm.bind(data1.mapValues(_.headOption.getOrElse(""))).fold(
       formWithErrors => BadRequest(html.account.register(formWithErrors, returnUrl)),
       user => {
         User.create(user)
