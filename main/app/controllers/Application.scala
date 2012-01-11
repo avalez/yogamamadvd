@@ -73,6 +73,14 @@ trait ApplicationBase extends Controller {
    * Translates a string into application/x-www-form-urlencoded format using "UTF-8" encoding scheme.
    */
   def encodeUrl = java.net.URLEncoder.encode(_:String, "UTF-8")
+
+
+  /**
+   * Retrieves form or query parameter from implicit request.
+   */
+  def requestParam(name: String, default: String = null)(implicit request: Request[AnyContent]) = (request.body.urlFormEncoded ++
+      request.queryString).get(name).map(_.head).getOrElse(default)
+
 }
 
 object Application extends ApplicationBase {

@@ -10,18 +10,6 @@
     </div>
   }
 
-  @form.errors.map { error =>
-    <div class="warning">
-        @error.key = @Messages(error.message)
-    </div>
-  }
-
-  @flash.get("success").map { message =>
-    <div class="success">
-        @Messages(message)
-    </div>
-  }
-
   @tags.register(form, returnUrl)
     
 }

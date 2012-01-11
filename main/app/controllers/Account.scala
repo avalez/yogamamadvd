@@ -8,6 +8,10 @@ import format.Formatter
 import anorm.NotAssigned
 import models._
 import views._
+import play.api.data.validation.Constraint
+import play.api.data.validation.Invalid
+import play.api.data.validation.ValidationError
+import play.api.data.validation.Valid
 
 object Account extends ApplicationBase {
   
@@ -60,46 +64,45 @@ object Account extends ApplicationBase {
 
   // -- Registration
 
-  val registerForm = Form(
-    of(User.apply _)(
-      "firstname" -> requiredText,
-      "lastname" -> requiredText,
-      "email" -> email,
-      "address" -> of(Address.apply _)(
-          "id" -> ignored(NotAssigned),
-          "user_email" -> requiredText,
-          "company" -> text,
-          "address_1" -> requiredText,
-          "address_2" -> text,
-          "city" -> requiredText,
-          "postcode" -> requiredText,
-          "zone" -> requiredText,
-          "country" -> requiredText,
-          "country_code" -> text
-          ),
-      "password" -> requiredText,
-      "confirm" -> requiredText
-    ) verifying ("error_exists", result => result match {
-      case (user) => User.findByEmail(user.email).isEmpty
-    }) verifying ("error_confirm", result => result match {
-      case (user) => user.password == user.confirmPassword
+  // dynamic mapping to refer other fields in Formatter and Constraint
+  // see http://groups.google.com/group/play-framework/browse_thread/thread/64993b444f35e197
+  def mapping(implicit request: Request[AnyContent]) = of(User.apply _)(
+    "firstname" -> requiredText,
+    "lastname" -> requiredText,
+    "email" -> email,
+    "address" -> of(Address.apply _)(
+        "id" -> ignored(NotAssigned),
+        "user_email" -> ignored(requestParam("email")),
+        "company" -> text,
+        "address_1" -> requiredText,
+        "address_2" -> text,
+        "city" -> requiredText,
+        "postcode" -> requiredText,
+        "zone" -> requiredText,
+        "country" -> requiredText,
+        "country_code" -> text
+        ),
+    "password" -> requiredText,
+    "confirm" -> requiredText.verifying(Constraint[String]("constraint.equals") { o =>
+          if (o == requestParam("password")) Valid
+          else Invalid("error.equals")
     })
-  )
-  
+  ) verifying ("error_exists", result => result match {
+      case (user) => User.findByEmail(user.email).isEmpty
+  })
+
   /**
    * Register page.
    */
   def register = Action { implicit request =>
-    Ok(html.account.register(registerForm, returnUrl))
+    Ok(html.account.register(Form(mapping), returnUrl))
   }
 
   /**
    * Handle register form submission.
    */
   def doRegister = Action { implicit request =>
-    // FIXME: do this in form definition
-    val data = params + ("address.user_email" -> request.body.urlFormEncoded("email") /* assumes valid request */) 
-    registerForm.bind(data.mapValues(_.headOption.getOrElse(""))).fold(
+    Form(mapping).bindFromRequest.fold(
       formWithErrors => BadRequest(html.account.register(formWithErrors, returnUrl)),
       user => {
         User.create(user)
@@ -110,11 +113,10 @@ object Account extends ApplicationBase {
   }
 
   // -- Utils
-  
-  def params(implicit request: Request[AnyContent]) = request.body.urlFormEncoded ++ request.queryString
-  
-  def returnUrl(implicit request: Request[AnyContent]) = params.get("returnUrl").map(_.head).getOrElse(routes.Application.index.url)
-  
+
+  def returnUrl(implicit request: Request[AnyContent]) = requestParam("returnUrl", routes.Application.index.url)
+
+
   /** Default formatter for the `Pk[Long]` type.
   import anorm.Id
   import anorm.Pk
