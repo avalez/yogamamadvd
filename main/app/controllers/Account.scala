@@ -63,7 +63,7 @@ object Account extends ApplicationBase {
   // dynamic mapping to refer other fields in Formatter and Constraint
   // see http://groups.google.com/group/play-framework/browse_thread/thread/64993b444f35e197
   // and satisfy registration through checkout wizar
-  def mapping(implicit request: Request[AnyContent], _type: String = "account") = of(User.apply _)(
+  private def mapping(implicit request: Request[AnyContent], _type: String = "account") = of(User.apply _)(
     "firstname" -> requiredText,
     "lastname" -> requiredText,
     "email" -> email,
@@ -102,44 +102,24 @@ object Account extends ApplicationBase {
    * Handle register form submission.
    */
   def doRegister = Action { implicit request =>
-    Form(mapping).bindFromRequest.fold(
-      formWithErrors => BadRequest(html.account.register(formWithErrors, returnUrl)),
-      user => {
-        User.create(user)
-        Address.create(user.address)
-        Redirect(returnUrl).withSession("username" -> user.email) 
-      }
-    )
+    realRegister(Form(mapping), formWithErrors => html.account.register(formWithErrors, returnUrl))
   }
 
   val registerFormDownload = Form(mapping(null, "download"))
   
   def registerFormShip(implicit request: Request[AnyContent]) = Form(mapping(request, "ship"))
 
-  def doRegisterDownload = Checkout.WithCart { cart => implicit request =>
-    registerFormDownload.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.checkout.shipment(loginForm, formWithErrors, registerFormShip, cart)),
+  def realRegister(registerForm: Form[User], view: (Form[User]) => Html)(implicit request: Request[AnyContent]) =
+    registerForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(view(formWithErrors)),
       user => {
         User.create(user)
-        cart.shipment = "download"
-        // ... set WithCart type parameter 
+        if (user.address != null) {
+          Address.create(user.address)
+        }
         Redirect(returnUrl).withSession("username" -> user.email).asInstanceOf[SimpleResult[Html]]
       }
     )
-  }
-
-
-  def doRegisterShip = Checkout.WithCart { cart => implicit request =>
-    registerFormDownload.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.checkout.shipment(loginForm, registerFormDownload, formWithErrors, cart)),
-      user => {
-        User.create(user)
-        cart.shipment = "ship"
-        // ... set WithCart type parameter 
-        Redirect(returnUrl).withSession("username" -> user.email).asInstanceOf[SimpleResult[Html]]
-      }
-    )
-  }
 
   // -- Utils
 

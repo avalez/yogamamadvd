@@ -19,7 +19,7 @@
       Также имейте в виду, что этот вариант подходит для тех, у кого быстрый и безлимитный доступ к Интернету. </p>
     @if(!request.session.get("username")) {
       <div class="left">
-        @tags.register(registerFormDownload, routes.Checkout.payment.url, routes.Account.doRegisterDownload, "download")
+        @tags.register(registerFormDownload, routes.Checkout.payment.url, routes.Checkout.setshipment("download"), "download")
       </div>
       <div class="right">
         @tags.login(loginForm, routes.Checkout.shipment.url, "shipment")
@@ -40,7 +40,7 @@
       проживания и заплатить за доставку, что немного увеличит итоговую цену. </p>
     @if(!request.session.get("username")) {
       <div class="left">
-        @tags.register(registerFormShip, routes.Checkout.payment.url, routes.Account.doRegisterShip, "ship")
+        @tags.register(registerFormShip, routes.Checkout.payment.url, routes.Checkout.setshipment("ship"), "ship")
       </div>
       <div class="right">
         @tags.login(loginForm, routes.Checkout.shipment.url, "shipment")

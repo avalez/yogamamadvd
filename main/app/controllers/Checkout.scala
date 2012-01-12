@@ -1,15 +1,16 @@
 package controllers
 
 import models.Cart
+import models.Gateway
+import models.Product
+import models.User
+import play.api.data.Form
+import play.api.data.of
+import play.api.data.requiredText
 import play.api.mvc.AnyContent
 import play.api.mvc.Request
 import play.api.mvc.SimpleResult
-import models.Gateway
-import models.Product
-import play.api.data._
-import format.Formats._
-import validation.Constraints._
-import models.User
+import play.api.templates.Html
 
 object Checkout extends ApplicationBase {
   
@@ -21,7 +22,17 @@ object Checkout extends ApplicationBase {
   
   def setshipment(shipment: String) = WithCart { cart => implicit request =>
     cart.shipment = shipment
-    Redirect(routes.Checkout.payment)
+    // register
+    if (!request.body.urlFormEncoded.isEmpty) {
+      val forms = (Account.registerFormDownload, Account.registerFormShip)
+      if (shipment == "download") {
+        Account.realRegister(forms._1, formWithErrors => views.html.checkout.shipment(Account.loginForm, formWithErrors, forms._2, cart))
+      } else {
+        Account.realRegister(forms._2, formWithErrors => views.html.checkout.shipment(Account.loginForm, forms._1, formWithErrors, cart))
+      }
+    } else {
+      Redirect(routes.Checkout.payment).asInstanceOf[SimpleResult[Html]]
+    }
   }
 
   def updateShipment = WithCart { cart => implicit request =>
