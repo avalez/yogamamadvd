@@ -84,8 +84,11 @@
   }
 </div>
 
+@user.map { email =>
 <div id="dialog" style="display: none">
+  @tags.register(Account.addressForm(email), routes.Checkout.checkout.url, routes.Checkout.setshipmentAndRegister("ship"), "ship")
 </div>
+}
 
 <script type="text/javascript">
 $('#dialog').dialog({ autoOpen: false, modal: true, title: '@Messages("text_your_address")' }).dialog('close');
@@ -112,13 +115,13 @@ $('a.removeFromCart').click(function() {
 $('select#payment').change(function() {
   var payment = $(this).val();
   var category = $("option:selected", this).attr("category");
-  return updateCart({gateway: payment, _category: category}, function() {
+  return updateCart(jsRoutes.controllers.Checkout.updatePayment().ajax, {gateway: payment, _category: category}, function() {
   })
 });
 
 $('select#shipment').change(function() {
   var shipment = $(this).val();
-  return updateCart({shipment: shipment}, function() {
+  return updateCart(jsRoutes.controllers.Checkout.updateShipment().ajax, {shipment: shipment}, function() {
   })
 });
 

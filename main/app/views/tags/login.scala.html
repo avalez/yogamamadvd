@@ -41,12 +41,20 @@
               }
               <td><a href="#">@Messages("text_forgotten")</a></td>
             </tr>
+            @if(_type == "account") {
             <tr>
               <td colspan="3">
-                <a onclick="$('#login@_type').submit();" class="button"><span>@Messages(if (_type == "account") {"button_login"} else {"button_continue"})</span></a>
+                <a onclick="$('#login@_type').submit();" class="button"><span>@Messages("button_login")</span></a>
               </td>
+            </tr>
+            }
           </table>
         </div>
+        @if(_type != "account") {
+        <div class="buttons">
+          <a onclick="$('#login@_type').submit();" class="button"><span>@Messages("button_continue")</span></a>
+        </div>
+        }
 
         
     }    

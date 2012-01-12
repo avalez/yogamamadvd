@@ -8,6 +8,7 @@ import models._
 import views._
 import validation._
 import play.api.templates.Html
+import anorm.Pk
 
 object Account extends ApplicationBase {
   
@@ -62,26 +63,18 @@ object Account extends ApplicationBase {
   }
 
   // -- Registration
-
+  
   // dynamic mapping to refer other fields in Formatter and Constraint
   // see http://groups.google.com/group/play-framework/browse_thread/thread/64993b444f35e197
   // and satisfy registration through checkout wizar
-  private def mapping(implicit request: Request[AnyContent], _type: String = "account") = of(User.apply _)(
+  private def registerMapping(implicit request: Request[AnyContent], _type: String = "account") = 
+    mapping(NotAssigned, _type)
+  
+  private def mapping(addressId: Pk[Long], _type: String)(implicit request: Request[AnyContent]) = of(User.apply _)(
     "firstname" -> requiredText,
     "lastname" -> requiredText,
     "email" -> email,
-    "address" -> {if (_type != "download") {of(Address.apply _)(
-        "id" -> ignored(NotAssigned),
-        "user_email" -> ignored(requestParam("email")),
-        "company" -> text,
-        "address_1" -> requiredText,
-        "address_2" -> text,
-        "city" -> requiredText,
-        "postcode" -> requiredText,
-        "zone" -> requiredText,
-        "country" -> requiredText,
-        "country_code" -> text
-    )} else {ignored(null)}},
+    "address" -> {if (_type != "download") {addressMapping(addressId, requestParam("email"))} else {ignored(null)}},
     "password" -> {if (_type == "account") { requiredText
       } else { /* TODO: generate password: */ ignored("password")}},
     "confirm" -> {if (_type == "account") {
@@ -94,23 +87,36 @@ object Account extends ApplicationBase {
       case (user) => User.findByEmail(user.email).isEmpty
   })
 
+  private def addressMapping(addressId: Pk[Long], email: String) = of(Address.apply _)(
+    "id" -> ignored(addressId),
+    "user_email" -> ignored(email),
+    "company" -> text,
+    "address_1" -> requiredText,
+    "address_2" -> text,
+    "city" -> requiredText,
+    "postcode" -> requiredText,
+    "zone" -> requiredText,
+    "country" -> requiredText,
+    "country_code" -> text
+  ) 
+
   /**
    * Register page.
    */
   def register = Action { implicit request =>
-    Ok(html.account.register(Form(mapping), returnUrl))
+    Ok(html.account.register(Form(registerMapping), returnUrl))
   }
 
   /**
    * Handle register form submission.
    */
   def doRegister = Action { implicit request =>
-    realRegister(Form(mapping), formWithErrors => html.account.register(formWithErrors, returnUrl))
+    realRegister(Form(registerMapping), formWithErrors => html.account.register(formWithErrors, returnUrl))
   }
 
-  val registerFormDownload = Form(mapping(null, "download"))
+  val registerFormDownload = Form(registerMapping(null, "download"))
   
-  def registerFormShip(implicit request: Request[AnyContent]) = Form(mapping(request, "ship"))
+  def registerFormShip(implicit request: Request[AnyContent]) = Form(registerMapping(request, "ship"))
 
   def realRegister(registerForm: Form[User], view: (Form[User]) => Html)(implicit request: Request[AnyContent]) =
     registerForm.bindFromRequest.fold(
@@ -128,6 +134,11 @@ object Account extends ApplicationBase {
 
   def returnUrl(implicit request: Request[AnyContent]) = requestParam("returnUrl", routes.Application.index.url)
 
+  def addressForm(email: String)(implicit request: RequestHeader) = {
+    val user = User.findByEmail(email).get
+    // FIXME: addressId
+    Form(mapping(NotAssigned, "ship")(request.asInstanceOf[Request[AnyContent]]))/*.fill(user)*/
+  }
 
   /** Default formatter for the `Pk[Long]` type.
   import anorm.Id

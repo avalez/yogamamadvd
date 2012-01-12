@@ -82,13 +82,13 @@ object Checkout extends ApplicationBase {
   }
 
   def updatePayment = WithCart { cart => implicit request =>
-    val gateways = Gateway.findAll
+    val html = views.html.tags.total(cart, Gateway.findAll)
     gatewayForm.bindFromRequest.fold(
-      hasErrors => BadRequest(views.html.tags.total(cart, gateways)),
+      hasErrors => BadRequest(html),
       form => {
         cart.payment = form._1
         cart._category = form._2
-        Ok(views.html.tags.total(cart, gateways))
+        Ok(html)
       }
     )
   }

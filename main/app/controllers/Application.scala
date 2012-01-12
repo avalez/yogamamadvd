@@ -85,7 +85,7 @@ trait ApplicationBase extends Controller {
 object Application extends ApplicationBase {
   
   def index = Action { implicit request =>
-    Ok(html.index(User.findAll))
+    Ok(html.index())
   }
 
   // -- Javascript routing
