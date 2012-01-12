@@ -1,4 +1,6 @@
-@(form: Form[(String, String, Boolean)], cart: Cart)(implicit flash: Flash, request: RequestHeader, user: Option[String])
+@(loginForm: Form[(String, String, Boolean)], registerFormDownload: Form[User],
+  registerFormShip: Form[User], cart: Cart)(implicit flash: Flash,
+  request: RequestHeader, user: Option[String])
 
 @main(Messages("product")) {
 
@@ -17,10 +19,10 @@
       Также имейте в виду, что этот вариант подходит для тех, у кого быстрый и безлимитный доступ к Интернету. </p>
     @if(!request.session.get("username")) {
       <div class="left">
-        #{register action:downloadAndRegister(), url:shipment(), shipment:'download' /}
+        @tags.register(registerFormDownload, routes.Checkout.payment.url, routes.Account.doRegisterDownload, "download")
       </div>
       <div class="right">
-        @tags.login(form, routes.Checkout.shipment.url, "shipment")
+        @tags.login(loginForm, routes.Checkout.shipment.url, "shipment")
       </div>
     } else {
       @helper.form(routes.Checkout.setshipment("download"), ('id, "download")) { }
@@ -36,20 +38,19 @@
       и со всей полиграфией (обложка, графика диска).</p>
     <p>Обратная сторона медали: посылку придется подождать 4-12 дней, в зависимости от места вашего
       проживания и заплатить за доставку, что немного увеличит итоговую цену. </p>
-    #{if !user}
+    @if(!request.session.get("username")) {
       <div class="left">
-        #{register action:shipAndRegister(), url:shipment(), shipment:'ship', countries:countries /}
+        @tags.register(registerFormShip, routes.Checkout.payment.url, routes.Account.doRegisterShip, "ship")
       </div>
       <div class="right">
-        @tags.login(form, routes.Checkout.shipment.url, "shipment")
+        @tags.login(loginForm, routes.Checkout.shipment.url, "shipment")
       </div>
-    #{/if}
-    #{else}
+    } else {
       @helper.form(routes.Checkout.setshipment("ship"), ('id, "ship")) { }
       <div class="buttons">
         <a onclick="$('#ship').submit();" class="button"><span>@Messages("button_continue")</span></a>
       </div>
-    #{/else}
+    }
   </div>
 </div>
 <br/><br/><br/>

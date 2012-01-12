@@ -1,4 +1,4 @@
-@(form: Form[User], returnUrl: String, _type: String = "account")
+@(form: Form[User], returnUrl: String, _action: Call = routes.Account.doRegister, _type: String = "account")
 
 @inputText(name: String, args: (Symbol,Any)*) = {
   @tags.inputText(form(name), args :_ *)
@@ -12,7 +12,7 @@
 }
 
 
-  @helper.form(routes.Account.doRegister, ('id, "register" + _type)) {
+  @helper.form(_action, ('id, "register" + _type)) {
     <input type="hidden" name="returnUrl" value="@returnUrl"/>
     <input type="hidden" name="address.id" value="@form("address.id").value"/>
     <input type="hidden" name="address.user_email" value="@form("address.user_email").value"/>
@@ -61,7 +61,7 @@
       </table>
     </div>
     }
-    @if(true /* text_agree */) {
+    @if(false /* TODO: text_agree */) {
     <div class="buttons">
       <div class="right">@Html(Messages("text_agree"))
         <input type="checkbox" name="user.agree" value="1" @if(form("agree").value == "1") {checked="checked"}/>

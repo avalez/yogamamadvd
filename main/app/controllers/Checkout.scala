@@ -9,15 +9,16 @@ import models.Product
 import play.api.data._
 import format.Formats._
 import validation.Constraints._
+import models.User
 
 object Checkout extends ApplicationBase {
   
   // shipment
 
   def shipment = WithCart { cart => implicit request =>
-    Ok(views.html.checkout.shipment(Account.loginForm, cart))
+    Ok(views.html.checkout.shipment(Account.loginForm, Account.registerFormDownload, Account.registerFormShip, cart))
   }
-
+  
   def setshipment(shipment: String) = WithCart { cart => implicit request =>
     cart.shipment = shipment
     Redirect(routes.Checkout.payment)

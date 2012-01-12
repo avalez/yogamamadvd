@@ -23,14 +23,13 @@ trait ApplicationBase extends Controller {
   /**
    * Transparent support for partial redirect.
    */
-  def Redirect(url: String)(implicit request: RequestHeader): SimpleResult[Results.Empty] = {
-    Status(if(request.queryString.contains("partial")) {
+  def Redirect(url: String)(implicit request: RequestHeader) = new Status(
+    if(request.queryString.contains("partial")) {
       // avoid browser transparently handling the redirect 
       play.api.http.Status.OK
     } else {
       play.api.http.Status.FOUND
     }).withHeaders(LOCATION -> url)
-  }
 
   /**
    * Transparent support for partial redirect.

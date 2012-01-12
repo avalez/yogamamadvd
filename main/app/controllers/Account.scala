@@ -3,15 +3,11 @@ package controllers;
 import play.api.mvc._
 import play.api.data._
 import play.api.libs.Crypto
-import format.Formats
-import format.Formatter
 import anorm.NotAssigned
 import models._
 import views._
-import play.api.data.validation.Constraint
-import play.api.data.validation.Invalid
-import play.api.data.validation.ValidationError
-import play.api.data.validation.Valid
+import validation._
+import play.api.templates.Html
 
 object Account extends ApplicationBase {
   
@@ -66,11 +62,12 @@ object Account extends ApplicationBase {
 
   // dynamic mapping to refer other fields in Formatter and Constraint
   // see http://groups.google.com/group/play-framework/browse_thread/thread/64993b444f35e197
-  def mapping(implicit request: Request[AnyContent]) = of(User.apply _)(
+  // and satisfy registration through checkout wizar
+  def mapping(implicit request: Request[AnyContent], _type: String = "account") = of(User.apply _)(
     "firstname" -> requiredText,
     "lastname" -> requiredText,
     "email" -> email,
-    "address" -> of(Address.apply _)(
+    "address" -> {if (_type != "download") {of(Address.apply _)(
         "id" -> ignored(NotAssigned),
         "user_email" -> ignored(requestParam("email")),
         "company" -> text,
@@ -81,12 +78,15 @@ object Account extends ApplicationBase {
         "zone" -> requiredText,
         "country" -> requiredText,
         "country_code" -> text
-        ),
-    "password" -> requiredText,
-    "confirm" -> requiredText.verifying(Constraint[String]("constraint.equals") { o =>
+    )} else {ignored(null)}},
+    "password" -> {if (_type == "account") { requiredText
+      } else { /* TODO: generate password: */ ignored("password")}},
+    "confirm" -> {if (_type == "account") {
+      requiredText.verifying(Constraint[String]("constraint.equals") { o =>
           if (o == requestParam("password")) Valid
           else Invalid("error.equals")
-    })
+      })
+    } else { ignored(null)}}
   ) verifying ("error_exists", result => result match {
       case (user) => User.findByEmail(user.email).isEmpty
   })
@@ -108,6 +108,35 @@ object Account extends ApplicationBase {
         User.create(user)
         Address.create(user.address)
         Redirect(returnUrl).withSession("username" -> user.email) 
+      }
+    )
+  }
+
+  val registerFormDownload = Form(mapping(null, "download"))
+  
+  def registerFormShip(implicit request: Request[AnyContent]) = Form(mapping(request, "ship"))
+
+  def doRegisterDownload = Checkout.WithCart { cart => implicit request =>
+    registerFormDownload.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.checkout.shipment(loginForm, formWithErrors, registerFormShip, cart)),
+      user => {
+        User.create(user)
+        cart.shipment = "download"
+        // ... set WithCart type parameter 
+        Redirect(returnUrl).withSession("username" -> user.email).asInstanceOf[SimpleResult[Html]]
+      }
+    )
+  }
+
+
+  def doRegisterShip = Checkout.WithCart { cart => implicit request =>
+    registerFormDownload.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.checkout.shipment(loginForm, registerFormDownload, formWithErrors, cart)),
+      user => {
+        User.create(user)
+        cart.shipment = "ship"
+        // ... set WithCart type parameter 
+        Redirect(returnUrl).withSession("username" -> user.email).asInstanceOf[SimpleResult[Html]]
       }
     )
   }
