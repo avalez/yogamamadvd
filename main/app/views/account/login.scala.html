@@ -5,7 +5,7 @@
   <h1>@Messages("heading_login")</h1>
   @form.globalError.map { error =>
     <div class="warning">
-        @error.message
+        @Messages(error.message)
     </div>
   }
 

@@ -22,7 +22,7 @@ object Account extends ApplicationBase {
       "username" -> email,
       "password" -> requiredText,
       "remember" -> boolean
-    ) verifying ("Invalid email or password", result => result match {
+    ) verifying ("secure.error", result => result match {
       case (email, password, remember) => User.authenticate(email, password).isDefined
     })
   )
@@ -37,18 +37,21 @@ object Account extends ApplicationBase {
   /**
    * Handle login form submission.
    */
-  def authenticate = Action { implicit request =>
+  def doLogin = Action { implicit request =>
+    realLogin(formWithErrors => html.account.login(formWithErrors, returnUrl))
+  }
+  
+  def realLogin(view: (Form[(String, String, Boolean)]) => Html)(implicit request: Request[AnyContent]) =
     loginForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.account.login(formWithErrors, returnUrl)),
+      formWithErrors => BadRequest(view(formWithErrors)),
       user => {
         val result = Redirect(returnUrl).withSession("username" -> user._1)
         // rememberme
         if (user._3) result.withCookies(Cookie(COOKIE_NAME, Crypto.sign(user._1) + "-" + user._1))
         else result
-      }
+      }.asInstanceOf[SimpleResult[Html]]
     )
-  }
-  
+
   /**
    * Logout and clean the session.
    */

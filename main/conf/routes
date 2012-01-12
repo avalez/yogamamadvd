@@ -8,6 +8,8 @@ GET     /                           controllers.Application.index
 # Order
 GET     /shipment                   controllers.Checkout.shipment
 POST    /shipment                   controllers.Checkout.setshipment(shipment: String)
+POST    /shipmentLogin              controllers.Checkout.setshipmentAndLogin(shipment: String)
+POST    /shipmentRegister           controllers.Checkout.setshipmentAndRegister(shipment: String)
 GET     /payment                    controllers.Checkout.payment
 POST    /payment                    controllers.Checkout.setpayment
 GET     /product                    controllers.Checkout.product
@@ -22,10 +24,10 @@ POST    /updateShipment             controllers.Checkout.updateShipment
 # Account
 GET     /account                    controllers.Account.index
 GET     /login                      controllers.Account.login
-POST    /login                      controllers.Account.authenticate
+POST    /login                      controllers.Account.doLogin
 GET     /logout                     controllers.Account.logout
 GET     /register                   controllers.Account.register
-POST     /register                  controllers.Account.doRegister
+POST    /register                  controllers.Account.doRegister
 
 # Javascript routing
 GET     /assets/javascripts/routes  controllers.Application.javascriptRoutes

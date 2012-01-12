@@ -1,11 +1,19 @@
-@(form: Form[(String, String, Boolean)], returnUrl: String, _type: String = "account")
+@(form: Form[(String, String, Boolean)], returnUrl: String, _action: Call = routes.Account.login, _type: String = "account")
     <h2>@Messages("text_returning_customer")</h2>
-    @helper.form(routes.Account.authenticate, ('id, "login" + _type)) {
+    @helper.form(_action, ('id, "login" + _type)) {
 
         <input type="hidden" name="returnUrl" value="@returnUrl"/>
         <div class="content" style="padding-top: 15px">
+          @if(_type != "account") {
+          	@form.globalError.map { error =>
+		      <div class="warning">
+		        @Messages(error.message)
+		      </div>
+		    }
+		  }
+			  
           <table class="login-form">
-            @if(_type != "shipment") {
+            @if(_type == "account") {
             <tr>
               <td colspan="3"><b>@Messages("text_i_am_returning_customer")</b></td>
             </tr>
@@ -35,7 +43,7 @@
             </tr>
             <tr>
               <td colspan="3">
-                <a onclick="$('#login@_type').submit();" class="button"><span>@Messages("button_login")</span></a>
+                <a onclick="$('#login@_type').submit();" class="button"><span>@Messages(if (_type == "account") {"button_login"} else {"button_continue"})</span></a>
               </td>
           </table>
         </div>

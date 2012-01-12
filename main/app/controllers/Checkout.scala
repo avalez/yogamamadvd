@@ -22,16 +22,22 @@ object Checkout extends ApplicationBase {
   
   def setshipment(shipment: String) = WithCart { cart => implicit request =>
     cart.shipment = shipment
+    Redirect(routes.Checkout.payment)
+  }
+
+  def setshipmentAndLogin(shipment: String) = WithCart { cart => implicit request =>
+    cart.shipment = shipment
+    Account.realLogin(formWithErrors => views.html.checkout.shipment(formWithErrors, Account.registerFormDownload, Account.registerFormShip, cart))
+  }
+
+  def setshipmentAndRegister(shipment: String) = WithCart { cart => implicit request =>
+    cart.shipment = shipment
     // register
-    if (!request.body.urlFormEncoded.isEmpty) {
-      val forms = (Account.registerFormDownload, Account.registerFormShip)
-      if (shipment == "download") {
-        Account.realRegister(forms._1, formWithErrors => views.html.checkout.shipment(Account.loginForm, formWithErrors, forms._2, cart))
-      } else {
-        Account.realRegister(forms._2, formWithErrors => views.html.checkout.shipment(Account.loginForm, forms._1, formWithErrors, cart))
-      }
+    val forms = (Account.registerFormDownload, Account.registerFormShip)
+    if (shipment == "download") {
+      Account.realRegister(forms._1, formWithErrors => views.html.checkout.shipment(Account.loginForm, formWithErrors, forms._2, cart))
     } else {
-      Redirect(routes.Checkout.payment).asInstanceOf[SimpleResult[Html]]
+      Account.realRegister(forms._2, formWithErrors => views.html.checkout.shipment(Account.loginForm, forms._1, formWithErrors, cart))
     }
   }
 
