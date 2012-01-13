@@ -1,7 +1,7 @@
 # Application
 
 text_items = %s шт. - %s руб.
-text_welcome = Войти в <a href="%s">личный кабинет</a> или <a href="%s">зарегистрироваться</a>
+text_welcome = Войти в <a href="{0}">личный кабинет</a> или <a href="{1}">зарегистрироваться</a>
 text_logged = Вы вошли как <a href="{0}">{1}</a> <b>(</b> <a href="{2}">Выйти</a> <b>)</b>
 
 text_home = Главная

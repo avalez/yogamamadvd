@@ -2,10 +2,11 @@
 <script type="text/javascript">
   $('#welcome').html(
     @if(user) {
-      '@Html(Messages("text_logged", "#", user.get, routes.Account.logout.url + "?returnUrl="
+      '@Html(Messages("text_logged", routes.Account.index, user.get, routes.Account.logout.url + "?returnUrl="
         + Application.encodeUrl(request.path)))'
     } else {
-      '@Html(Messages("text_welcome", "#", "#"))'
+      '@Html(Messages("text_welcome", routes.Account.login + "?returnUrl=" + Application.encodeUrl(request.path),
+            routes.Account.register + "?returnUrl=" + Application.encodeUrl(request.path)))'
     }
  )
 </script>

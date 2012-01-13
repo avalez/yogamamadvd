@@ -68,13 +68,14 @@ object Account extends ApplicationBase {
   // see http://groups.google.com/group/play-framework/browse_thread/thread/64993b444f35e197
   // and satisfy registration through checkout wizar
   private def registerMapping(implicit request: Request[AnyContent], _type: String = "account") = 
-    mapping(NotAssigned, _type)
+    mapping(NotAssigned, requestParam("email"), _type)
   
-  private def mapping(addressId: Pk[Long], _type: String)(implicit request: Request[AnyContent]) = of(User.apply _)(
+  // user_emal 'call by name' is for static registerFormDownload when request is null
+  private def mapping(addressId: Pk[Long], user_email: => String, _type: String)(implicit request: Request[AnyContent]) = of(User.apply _)(
     "firstname" -> requiredText,
     "lastname" -> requiredText,
     "email" -> email,
-    "address" -> {if (_type != "download") {addressMapping(addressId, requestParam("email"))} else {ignored(null)}},
+    "address" -> {if (_type != "download") {optional(addressMapping(addressId, user_email))} else {ignored(None)}},
     "password" -> {if (_type == "account") { requiredText
       } else { /* TODO: generate password: */ ignored("password")}},
     "confirm" -> {if (_type == "account") {
@@ -123,9 +124,7 @@ object Account extends ApplicationBase {
       formWithErrors => BadRequest(view(formWithErrors)),
       user => {
         User.create(user)
-        if (user.address != null) {
-          Address.create(user.address)
-        }
+        user.address.map(Address.create(_))
         Redirect(returnUrl).withSession("username" -> user.email).asInstanceOf[SimpleResult[Html]]
       }
     )
@@ -134,10 +133,12 @@ object Account extends ApplicationBase {
 
   def returnUrl(implicit request: Request[AnyContent]) = requestParam("returnUrl", routes.Application.index.url)
 
-  def addressForm(email: String)(implicit request: RequestHeader) = {
-    val user = User.findByEmail(email).get
-    // FIXME: addressId
-    Form(mapping(NotAssigned, "ship")(request.asInstanceOf[Request[AnyContent]]))/*.fill(user)*/
+  /**
+   * complete user with address
+   */
+  def addressForm(user: User)(implicit request: RequestHeader) = {
+    val addressId = user.address.map(_.address_id).getOrElse(NotAssigned)
+    Form(mapping(addressId, user.email, "ship")(request.asInstanceOf[Request[AnyContent]])).fill(user)
   }
 
   /** Default formatter for the `Pk[Long]` type.

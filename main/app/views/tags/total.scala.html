@@ -1,4 +1,4 @@
-@(cart: Cart, gateways: List[Gateway])(implicit flash: Flash, request: RequestHeader, user: Option[String])
+@(cart: Cart, gateways: List[Gateway])(implicit flash: Flash, request: RequestHeader, user: Option[User])
 
   <div class="cart-total">
     <table>
@@ -29,40 +29,42 @@
         </select>
         </td>
       </tr>
-      @if(cart.shipment != "download" /* TODO: || !connected() */) {
+      @if(cart.shipment != "download" || !user) {
         <tr>
           <td colspan="2"></td>
         </tr>
-        @if(user) {
+        @user.map { user =>
         <tr>
           <td>Адрес доставки:</td>
-          @if(false /* TODO: address */) {
-          <td>${address.firstname} ${address.lastname}</td>
+          @user.address.map { address =>
+          <td>@user.firstname @user.lastname</td>
         </tr>
         <tr>
-            <td><a onclick="$('#dialog').dialog('open')" style="float: right; padding-right: 20px">Изменить</a></td>
-          <td>${address.address_1}</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td>${address.city}</td>
+            <td><a class="dialog" style="float: right; padding-right: 20px">Изменить</a></td>
+          <td>@address.address_1</td>
         </tr>
         <tr>
           <td>&nbsp;</td>
-          <td>${address.zone}</td>
+          <td>@address.city</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>@address.zone</td>
         </tr>
         <tr>
           <td></td>
-          <td>${address.country} ${address.postcode}</td>
-          } else {
-          <td><a onclick="$('#dialog').dialog('open')">Ввести</a></td>
+          <td>@address.country @address.postcode</td>
+          }
+          @if(!user.address) {
+          <td><a class="dialog">Ввести</a></td>
           }
         </tr>
-        } else {
+        }
+        @if(!user) {
         <tr>
           <td colspan="2">@Html(Messages("text_welcome",
             routes.Account.login + "?returnUrl=" + Application.encodeUrl(request.path),
-            "#"))</td>
+            routes.Account.register + "?returnUrl=" + Application.encodeUrl(request.path)))</td>
         </tr>
         }
       }

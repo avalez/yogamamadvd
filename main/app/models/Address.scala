@@ -6,7 +6,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Address(product_id: Pk[Long], user_email: String, company: String, address_1: String, address_2: String,
+case class Address(address_id: Pk[Long], user_email: String, company: String, address_1: String, address_2: String,
     city: String, postcode: String, zone: String, country: String, country_code: String)
 
 object Address {
@@ -44,13 +44,24 @@ object Address {
   }
 
   /**
-   * Retrieve a User from id.
+   * Retrieve an Address from id.
    */
   def findById(id: Long): Option[Address] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from user where id = {id}").on(
+      SQL("select * from address where id = {id}").on(
         'id -> id
       ).as(simple ?)
+    }
+  }
+
+  /**
+   * Retrieve an Address from id.
+   */
+  def findByUserEmail(email: String) = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from address where user_email = {email}").on(
+        'email -> email
+      ).as(simple *)
     }
   }
 

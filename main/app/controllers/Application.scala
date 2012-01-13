@@ -18,7 +18,18 @@ trait ApplicationBase extends Controller {
    * Retrieve user implicitly from the request.
    */
   implicit def username(implicit request: RequestHeader) = request.session.get(USERNAME).orElse(
-     request.cookies.get(COOKIE_NAME).map( _.value ))
+    request.cookies.get(COOKIE_NAME).map( _.value ))
+
+  /**
+   * Retrieve complete user with address implicitly from the request.
+   */
+  implicit def user(implicit request: RequestHeader) = username.map { username =>
+    // FIXME: user left join address
+    User.findByEmail(username).map { user =>
+      val address = Address.findByUserEmail(username).headOption
+      User(user.firstname, user.lastname, user.email, address, user.password)
+    }
+  }.getOrElse(None)
 
   /**
    * Transparent support for partial redirect.
