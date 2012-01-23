@@ -57,6 +57,7 @@
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery.tipTip.minified.js"></script>
 
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery.json-2.3.min.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/MM.js"></script>
 <script type="text/javascript">
 $(function() {
   <?php if ($logged) { ?>
@@ -81,7 +82,7 @@ DD_belatedPNG.fix('#logo img');
 <![endif]-->
 <?php echo $google_analytics; ?>
 </head>
-<body>
+<body onLoad="MM_preloadImages('catalog/view/theme/yogamamadvd/image/button-left.png', 'catalog/view/theme/yogamamadvd/image/button-right.png', 'catalog/view/theme/yogamamadvd/image/button-left-active.png', 'catalog/view/theme/yogamamadvd/image/button-right-active.png')">
 <div id="container">
   <?php if ($logo) { ?>
   <div id="logo"><img src="<?php echo $logo; ?>" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
