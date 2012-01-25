@@ -63,11 +63,30 @@
         @if(!user) {
         <tr>
           <td colspan="2">@Html(Messages("text_welcome",
-            routes.Account.login + "?returnUrl=" + Application.encodeUrl(request.path),
-            routes.Account.register + "?returnUrl=" + Application.encodeUrl(request.path)))</td>
+            routes.Account.login + "?returnUrl=" + Application.encodeUrl(routes.Checkout.checkout.url),
+            routes.Account.register + "?returnUrl=" + Application.encodeUrl(routes.Checkout.checkout.url)))</td>
         </tr>
         }
       }
     </table>
   </div>
+
+<script type="text/javascript">
+$('select#payment').change(function() {
+  var payment = $(this).val();
+  var category = $("option:selected", this).attr("category");
+  return updateCart(jsRoutes.controllers.Checkout.updatePayment().ajax, {gateway: payment, _category: category}, function() {
+  })
+});
+
+$('select#shipment').change(function() {
+  var shipment = $(this).val();
+  return updateCart(jsRoutes.controllers.Checkout.updateShipment().ajax, {shipment: shipment}, function() {
+  })
+});
+
+$('a.dialog').click(function() {
+  $('#dialog').dialog('open');
+}); 
+</script>
 

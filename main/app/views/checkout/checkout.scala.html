@@ -86,8 +86,13 @@
 
 @user.map { user =>
 <div id="dialog" style="display: none">
-  @tags.register(Account.addressForm(user), routes.Checkout.checkout.url, routes.Checkout.setshipmentAndRegister("ship"), "ship")
+  @tags.register(Account.addressForm(user), routes.Checkout.checkout.url, routes.Checkout.updateAddress, "update")
 </div>
+
+<script type="text/javascript">
+  var dialog = $('#dialog').dialog({ autoOpen: false, modal: true, title: "@Messages("text_your_address")" });
+  destroyableDialogs.push(dialog);
+</script>
 }
 
 <script type="text/javascript">
@@ -110,20 +115,7 @@ $('a.removeFromCart').click(function() {
   return removeFromCart(productId);
 });
 
-$('select#payment').live('change', function() {
-  var payment = $(this).val();
-  var category = $("option:selected", this).attr("category");
-  return updateCart(jsRoutes.controllers.Checkout.updatePayment().ajax, {gateway: payment, _category: category}, function() {
-  })
-});
-
-$('select#shipment').live('change', function() {
-  var shipment = $(this).val();
-  return updateCart(jsRoutes.controllers.Checkout.updateShipment().ajax, {shipment: shipment}, function() {
-  })
-});
-
-$('a#checkout-button').live('click', function(event) {
+$('a#checkout-button').click(function(event) {
   @if(false /* address */ ) {
     $('#checkout').submit()
   } else {
@@ -136,11 +128,6 @@ $('a#checkout-button').live('click', function(event) {
   }
 });
 
-$('a.dialog').live('click', function() {
-  $('#dialog').dialog({modal: true, title: '@Messages("text_your_address")', close: function(e, ui) {
-    $(this).dialog('destroy');
-  }});
-}); 
 </script>
 
 }(flash, request, user.map(_.email))

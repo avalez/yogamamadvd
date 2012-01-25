@@ -20,6 +20,7 @@ POST    /removeFromCart             controllers.Checkout.removeFromCart
 POST    /addToCart                  controllers.Checkout.addToCart
 POST    /updatePayment              controllers.Checkout.updatePayment
 POST    /updateShipment             controllers.Checkout.updateShipment
+POST    /updateAddress              controllers.Checkout.updateAddress
 
 # Account
 GET     /account                    controllers.Account.index

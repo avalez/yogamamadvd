@@ -1,3 +1,5 @@
+var destroyableDialogs = [];
+
 (function($) {
   var _has_history = !!(window.history && history.pushState);
   
@@ -17,6 +19,11 @@
         } else if (jqXHR.status == 500){
             $('body').html(jqXHR.responseText)
         } else {
+          $.each(destroyableDialogs, function(i,dialog){
+            dialog.empty().remove();
+          });
+          destroyableDialogs = [];
+          
           $('div#content').html(jqXHR.responseText)
         }
       }

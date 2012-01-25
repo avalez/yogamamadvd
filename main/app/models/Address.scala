@@ -93,6 +93,36 @@ insert into address values (
     }
   }
   
+  /**
+   * Update.
+   */
+  def update(address: Address): Address = {
+    DB.withConnection { implicit connection =>
+      SQL(
+        """
+update address values (
+          user_email = {user_email}, company = {company}, address_1 = {address_1}, address_2 = {address_2},
+          city = {city}, postcode = {postcode}, zone = {zone}, country = {country}, country_code = {country_code}
+          where id = {id} 
+)
+"""
+      ).on(
+        'id -> address.address_id,
+        'user_email -> address.user_email,
+        'company -> address.company,
+        'address_1 -> address.address_1,
+        'address_2 -> address.address_2,
+        'city -> address.city,
+        'postcode -> address.postcode,
+        'zone -> address.zone,
+        'country -> address.country,
+        'country_code -> address.country_code
+      ).executeUpdate()
+      
+      address
+      
+    }
+  }
 
 }
 

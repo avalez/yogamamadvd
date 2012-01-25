@@ -16,7 +16,8 @@
     <input type="hidden" name="returnUrl" value="@returnUrl"/>
     <input type="hidden" name="address.id" value="@form("address.id").value"/>
     <input type="hidden" name="address.user_email" value="@form("address.user_email").value"/>
-    @if(_type == "account") {
+    @if(_type != "update") {
+    @if(_type == "account" || _type == "update") {
     <h2>@Messages("text_your_details")</h2>
     } else {
     <h2>@Messages("text_new_customer")</h2>
@@ -32,8 +33,11 @@
         }
       </table>
     </div>
+    }
     @if(_type != "download") {
+    @if(_type != "update") {
     <h2>@Messages("text_your_address") </h2>
+    }
     <div class="content">
       <table class="form">
         @inputText("address.company")

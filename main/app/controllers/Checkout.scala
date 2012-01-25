@@ -11,6 +11,7 @@ import play.api.mvc.AnyContent
 import play.api.mvc.Request
 import play.api.mvc.SimpleResult
 import play.api.templates.Html
+import models.Address
 
 object Checkout extends ApplicationBase {
   
@@ -49,6 +50,24 @@ object Checkout extends ApplicationBase {
     Ok(views.html.tags.total(cart, gateways))
   }
 
+  def updateAddress = WithCart { cart => implicit request =>
+    Application.user map { user =>
+      val form = Account.addressForm(user)
+      form.bindFromRequest.fold(
+        formWithErrors => None,
+        user => {
+          user.address.map(Address.update(_))
+        }
+      )
+    }
+    Redirect(routes.Checkout.checkout)
+    /*
+    val products = Product.findAll
+    val gateways = Gateway.findAll
+    Ok(views.html.checkout.checkout(cart, products, gateways))
+    */
+  }
+
   // payment
   
   def payment = WithCart { cart => implicit request =>
@@ -82,13 +101,13 @@ object Checkout extends ApplicationBase {
   }
 
   def updatePayment = WithCart { cart => implicit request =>
-    val html = views.html.tags.total(cart, Gateway.findAll)
+    def html(cart: Cart) = views.html.tags.total(cart, Gateway.findAll)
     gatewayForm.bindFromRequest.fold(
-      hasErrors => BadRequest(html),
+      hasErrors => BadRequest(html(cart)),
       form => {
         cart.payment = form._1
         cart._category = form._2
-        Ok(html)
+        Ok(html(cart))
       }
     )
   }
