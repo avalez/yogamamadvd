@@ -1,0 +1,25 @@
+@(form: Form[User], userOption: Option[User])
+
+@main("Welcome to Play 2.0 beta") {
+    
+    @helper.form(routes.Application.submit) {
+    @helper.inputText(form("email"))
+    @helper.inputText(form("address.address_1"))
+    <input type="submit" value="submit"/>
+   }
+   
+   @userOption.map { user =>
+   <dl>
+   	<dt>email</dt>
+   	<dd>@user.email</dd>
+   </dl>
+   @user.address.map { address =>
+   <dl>
+   	<dt>address</dt>
+   	<dd>@address.address_1</dd>
+   </dl>
+   }
+      
+   }
+    
+}
