@@ -57,10 +57,9 @@ object Checkout extends ApplicationBase {
         formWithErrors => BadRequest(views.html.tags.register(formWithErrors,
             routes.Checkout.checkout.url, routes.Checkout.updateAddress, "update")),
         userForm => {
-          play.api.Logger("application").debug(userForm.address.toString)
           userForm.address.map(Address.update(_))
           val gateways = Gateway.findAll
-          Ok(views.html.tags.total(cart, gateways)(flash, request, Some(user)))
+          Ok(views.html.tags.total(cart, gateways)(flash, request, Some(userForm)))
         }
       )
     }.getOrElse(Redirect(routes.Checkout.checkout)).asInstanceOf[SimpleResult[Html]]

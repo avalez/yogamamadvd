@@ -100,11 +100,10 @@ insert into address values (
     DB.withConnection { implicit connection =>
       SQL(
         """
-update address values (
+update address set
           user_email = {user_email}, company = {company}, address_1 = {address_1}, address_2 = {address_2},
           city = {city}, postcode = {postcode}, zone = {zone}, country = {country}, country_code = {country_code}
-          where id = {id} 
-)
+          where id = {id}
 """
       ).on(
         'id -> address.address_id,
