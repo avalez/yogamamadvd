@@ -10,6 +10,17 @@ var destroyableDialogs = [];
   }
   
   request = function(url, type, data) {
+    doRequest(url, type, data, function(jqXHR) {
+      $.each(destroyableDialogs, function(i,dialog){
+        dialog.empty().remove();
+      });
+      destroyableDialogs = [];
+      
+      $('div#content').html(jqXHR.responseText)
+    });
+  }
+  
+  doRequest = function(url, type, data, success) {
     $.ajax({url:url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
       type: type, data: data,
       complete: function(jqXHR) {
@@ -19,12 +30,7 @@ var destroyableDialogs = [];
         } else if (jqXHR.status == 500){
             $('body').html(jqXHR.responseText)
         } else {
-          $.each(destroyableDialogs, function(i,dialog){
-            dialog.empty().remove();
-          });
-          destroyableDialogs = [];
-          
-          $('div#content').html(jqXHR.responseText)
+            success(jqXHR);
         }
       }
     });

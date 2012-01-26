@@ -51,21 +51,19 @@ object Checkout extends ApplicationBase {
   }
 
   def updateAddress = WithCart { cart => implicit request =>
-    Application.user map { user =>
+    Application.user.map { user =>
       val form = Account.addressForm(user)
       form.bindFromRequest.fold(
-        formWithErrors => None,
-        user => {
-          user.address.map(Address.update(_))
+        formWithErrors => BadRequest(views.html.tags.register(formWithErrors,
+            routes.Checkout.checkout.url, routes.Checkout.updateAddress, "update")),
+        userForm => {
+          play.api.Logger("application").debug(userForm.address.toString)
+          userForm.address.map(Address.update(_))
+          val gateways = Gateway.findAll
+          Ok(views.html.tags.total(cart, gateways)(flash, request, Some(user)))
         }
       )
-    }
-    Redirect(routes.Checkout.checkout)
-    /*
-    val products = Product.findAll
-    val gateways = Gateway.findAll
-    Ok(views.html.checkout.checkout(cart, products, gateways))
-    */
+    }.getOrElse(Redirect(routes.Checkout.checkout)).asInstanceOf[SimpleResult[Html]]
   }
 
   // payment
@@ -139,7 +137,7 @@ object Checkout extends ApplicationBase {
   def checkout = WithCart { cart => implicit request =>
     val products = Product.findAll
     val gateways = Gateway.findAll
-    Ok(views.html.checkout.checkout(cart, products, gateways))
+    Ok(views.html.checkout.checkout(cart, products, gateways, Application.user.map(Account.addressForm(_))))
   }
   
   def removeFromCart = WithCart { cart => implicit request =>

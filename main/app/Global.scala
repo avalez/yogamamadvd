@@ -24,7 +24,7 @@ object InitialData {
     if(User.findAll.isEmpty) {
       
       Seq(
-        User("Admin", "", "admin@example.com", null, "password"),
+        User("Test", "Admin", "admin@example.com", null, "password"),
         User("Test", "User", "test@example.com", null, "password")
       ).foreach(User.create)
     }

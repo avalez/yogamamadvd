@@ -1,4 +1,4 @@
-@(cart: Cart, products: List[Product], gateways: List[Gateway])(implicit flash: Flash, request: RequestHeader, user: Option[User])
+@(cart: Cart, products: List[Product], gateways: List[Gateway], addressForm: Option[Form[User]])(implicit flash: Flash, request: RequestHeader, user: Option[User])
 
 @main(Messages("product")) {
 
@@ -84,9 +84,9 @@
   }
 </div>
 
-@user.map { user =>
+@addressForm.map { form =>
 <div id="dialog" style="display: none">
-  @tags.register(Account.addressForm(user), routes.Checkout.checkout.url, routes.Checkout.updateAddress, "update")
+  @tags.register(form, routes.Checkout.checkout.url, routes.Checkout.updateAddress, "update")
 </div>
 
 <script type="text/javascript">
@@ -127,6 +127,18 @@ $('a#checkout-button').click(function(event) {
     }
   }
 });
+
+updateAddress = function($form) {
+  var url = $form.attr('action');
+  doRequest(url, 'post',  _parseFormParams($form), function(jqXHR) {
+    if (jqXHR.status == 400){
+       $('#dialog').html(jqXHR.responseText)
+    } else {
+       $('#dialog').dialog('close');
+       $('#cart_total').html(jqXHR.responseText);
+    }
+  });
+}
 
 </script>
 

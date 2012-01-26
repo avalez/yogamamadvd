@@ -85,7 +85,7 @@ object Account extends ApplicationBase {
       })
     } else { ignored(null)}}
   ) verifying ("error_exists", result => result match {
-      case (user) => User.findByEmail(user.email).isEmpty
+      case (user) => _type == "update" || User.findByEmail(user.email).isEmpty
   })
 
   private def addressMapping(addressId: Pk[Long], email: String) = of(Address.apply _)(
@@ -99,7 +99,7 @@ object Account extends ApplicationBase {
     "zone" -> requiredText,
     "country" -> requiredText,
     "country_code" -> text
-  ) 
+  )
 
   /**
    * Register page.
@@ -136,9 +136,9 @@ object Account extends ApplicationBase {
   /**
    * complete user with address
    */
-  def addressForm(user: User)(implicit request: RequestHeader) = {
+  def addressForm(user: User)(implicit request: Request[AnyContent]) = {
     val addressId = user.address.map(_.address_id).getOrElse(NotAssigned)
-    Form(mapping(addressId, user.email, "ship")(request.asInstanceOf[Request[AnyContent]])).fill(user)
+    Form(mapping(addressId, user.email, "update")).fill(user)
   }
 
   /** Default formatter for the `Pk[Long]` type.

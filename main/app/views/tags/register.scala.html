@@ -11,6 +11,12 @@
 @Messages("text_no")
 }
 
+            @form.errors.map { error =>
+              <div class="warning">
+                @error.key - @error.message
+              </div>
+            }
+            
 
   @helper.form(_action, ('id, "register" + _type)) {
     <input type="hidden" name="returnUrl" value="@returnUrl"/>
@@ -33,6 +39,10 @@
         }
       </table>
     </div>
+    } else {
+        <input type="hidden" name="firstname" value="@form("firstname").value"/>
+        <input type="hidden" name="lastname" value="@form("lastname").value"/>
+        <input type="hidden" name="email" value="@form("email").value"/>
     }
     @if(_type != "download") {
     @if(_type != "update") {
@@ -73,7 +83,11 @@
     </div>
     } else {
     <div class="buttons">
+      @if(_type == "account") {
       <a onclick="$('#register@_type').submit();" class="button"><span>@Messages("button_continue")</span></a>
+      } else {
+      <a onclick="updateAddress($('#register@_type'))" class="button"><span>@Messages("button_continue")</span></a>
+      }
     </div>
     }
   }
