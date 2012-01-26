@@ -3,21 +3,28 @@ package controllers
 import play.api._
 import play.api.data._
 import play.api.mvc._
-import models.User
-import models.Address
-
+import models._
+import play.api.data.Forms._
+import play.api.data.format.Formats._
 
 object Application extends Controller {
 
-   val form = Form(of(User.apply _)(
+  val test = Form(of(
     "email" -> optional(email),
-    "address" -> optional(of(Address.apply _)(
-        "address_1" -> requiredText
+    "address" -> optional(of(
+       "address_1" -> text
     ))
   ))
+
+  val form = Form(mapping(
+    "email" -> optional(email),
+    "address" -> optional(mapping(
+       "address_1" -> text
+    )(Address.apply)(Address.unapply))
+  )(User.apply)(User.unapply))
   
   def index = Action {
-     val user = User(Some("text@example.com"), Some(Address("Vinohradska 33")))
+    val user = User(Some("text@example.com"), Some(Address("Vinohradska 33")))
     Ok(views.html.index(form.fill(user), None))
   }
   
