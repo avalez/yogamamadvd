@@ -20,7 +20,8 @@ class ControllerModuleFeatured extends Controller {
 			
 			if ($product_info) {
 				if ($product_info['image']) {
-					$image = $this->model_tool_image->resize($product_info['image'], $setting['image_width'], $setting['image_height']);
+					//$image = $this->model_tool_image->resize($product_info['image'], $setting['image_width'], $setting['image_height']);
+  				$image = $this->model_tool_image->resize($product_info['image'], $this->config->get('config_image_thumb_width'), $this->config->get('config_image_thumb_height'));
 				} else {
 					$image = false;
 				}

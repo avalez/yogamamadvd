@@ -16,7 +16,8 @@
 <?php foreach ($links as $link) { ?>
 <link href="<?php echo $link['href']; ?>" rel="<?php echo $link['rel']; ?>" />
 <?php } ?>
-<link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/stylesheet.css" />
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine:700|Monsieur+La+Doulaise|Italianno|Pinyon+Script|Miss+Fajardose|Dancing+Script">
+<link rel="stylesheet" type="text/css" href="catalog/view/theme/wedishop/stylesheet/stylesheet.css" />
 <?php foreach ($styles as $style) { ?>
 <link rel="<?php echo $style['rel']; ?>" type="text/css" href="<?php echo $style['href']; ?>" media="<?php echo $style['media']; ?>" />
 <?php } ?>
@@ -50,7 +51,7 @@ DD_belatedPNG.fix('#logo img');
 <div id="container">
 <div id="header">
   <?php if ($logo) { ?>
-  <div id="logo"><a href="<?php echo $home; ?>"><img src="<?php echo $logo; ?>" title="<?php echo $name; ?>" alt="<?php echo $name; ?>" /></a></div>
+  <div id="logo"><a href="<?php echo $home; ?>"><!--img src="<?php echo $logo; ?>" title="<?php echo $name; ?>" alt="<?php echo $name; ?>" /--><?php echo $name; ?></a><span>handmade wedding accessories</span></div>
   <?php } ?>
   <?php if (count($languages) > 1) { ?>
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
@@ -63,7 +64,7 @@ DD_belatedPNG.fix('#logo img');
     </div>
   </form>
   <?php } ?>
-  <?php if (count($currencies) > 1) { ?>
+  <?php if (false && count($currencies) > 1) { ?>
   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
     <div id="currency"><?php echo $text_currency; ?><br />
       <?php foreach ($currencies as $currency) { ?>
@@ -88,7 +89,7 @@ DD_belatedPNG.fix('#logo img');
   <?php } ?>
   <div id="cart">
     <div class="heading">
-      <h4><?php echo $text_cart; ?></h4>
+      <img src="image/data/cart.png" alt="Cart">
       <a><span id="cart_total"><?php echo $text_items; ?></span></a></div>
     <div class="content"></div>
   </div>
