@@ -14,8 +14,9 @@
 
   <div class="product-list">
   @for(product <- products) {
+    @defining(cart.items.get(product.product_id.get)) { selectedProduct =>
     <div>
-      <input id="product-@product.product_id" type="checkbox" value="@product.product_id" name="products" style="display: none" @if(cart.items.contains(product.product_id.get)) {checked="true"} />
+      <input id="product-@product.product_id" type="checkbox" value="@product.product_id" name="products" style="display: none" @if(selectedProduct) {checked="true"} />
       <label for="product-@{product.product_id}" style="padding: 20px; margin-top: 30px; float: left;"></label>
         <div>
           <div class="left">
@@ -36,7 +37,7 @@
               Количество:
               <select name="qties.@{product.product_id}" class="select_qty">
                 @for(i <- 1 to 12) {
-                <option value="@i" @if(cart.items.contains(product.product_id.get) && cart.items(product.product_id.get).quantity == i) {selected="true"}>@i</option>
+                <option value="@i" @if(selectedProduct && selectedProduct.get.quantity == i) {selected="true"}>@i</option>
                 }
               </select> шт.
             </div>
@@ -47,7 +48,7 @@
         </div>
       </label>
     </div>
-  }
+  }}
   </div>
   <div class="buttons">
     <a onclick="$('#cart').submit();" class="button"><span>@Messages("button_checkout")</span></a>
