@@ -1,6 +1,6 @@
 <?php
 // Version
-define('VERSION', '1.0.1');
+define('VERSION', '1.5.1.3');
 
 // Config
 require_once('config.php');
@@ -22,12 +22,6 @@ require_once(DIR_SYSTEM . 'library/tax.php');
 require_once(DIR_SYSTEM . 'library/weight.php');
 require_once(DIR_SYSTEM . 'library/length.php');
 require_once(DIR_SYSTEM . 'library/cart.php');
-require_once(DIR_SYSTEM . 'library/resource.php');
-
-require_once(DIR_SYSTEM . 'library/s3.php');
-$useSSL = isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTPS'] == '1'));
-// TODO: configurable
-S3::init("awsAccessKey", "awsSecretKey", $useSSL);
 
 // Registry
 $registry = new Registry();
@@ -74,7 +68,7 @@ if (!$store_query->num_rows) {
 }
 
 // Url
-$url = new Url($config->get('config_url'), $config->get('config_ssl'));	
+$url = new Url($config->get('config_url'), $config->get('config_use_ssl') ? $config->get('config_ssl') : $config->get('config_url'));	
 $registry->set('url', $url);
 
 // Log 
@@ -208,7 +202,8 @@ if (isset($request->get['tracking']) && !isset($request->cookie['tracking'])) {
 $registry->set('currency', new Currency($registry));
 
 // Tax
-$registry->set('tax', new Tax($registry));
+$tax = new Tax($registry);
+$registry->set('tax', $tax);
 
 // Weight
 $registry->set('weight', new Weight($registry));

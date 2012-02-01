@@ -26,9 +26,6 @@ abstract class Controller {
 
 	protected function redirect($url, $status = 302) {
 		header('Status: ' . $status);
-        if (isset($this->request->get['partial'])) {
-            $url .= '&partial=true';
-        }
 		header('Location: ' . str_replace('&amp;', '&', $url));
 		exit();
 	}
@@ -55,33 +52,9 @@ abstract class Controller {
 	
 	protected function render() {
 		foreach ($this->children as $child) {
-            if (isset($this->request->get['partial'])
-                && ($child == 'common/header' || $child == 'common/footer')) {
-                $this->data[basename($child)] = "";
-            } else if (isset($this->request->server['PATH_INFO'])
-                && ($child == 'common/content_top' || $child == 'common/content_bottom')) {
-                $this->data[basename($child)] = "";
-            } else {
-			    $this->data[basename($child)] = $this->getChild($child);
-            }
+			$this->data[basename($child)] = $this->getChild($child);
 		}
 		
-        if (isset($this->request->get['partial']) && $this->children) {
-
-            foreach ($this->document->getLinks() as $link) {
-              $this->output .= '<link rel="' . $link['rel'] . '" href="' . $style['href'] . '" />' . "\n";
-            }
-            foreach ($this->document->getStyles() as $style) {
-              $this->output .= '<link rel="' . $style['rel'] . '" type="text/css" href="' . $style['href'] . '" media="' . $style['media'] . '" />' . "\n";
-            }
-            foreach ($this->document->getScripts() as $script) {
-              $this->output .= '<script type="text/javascript" src="' . $script . '"></script>' . "\n";
-            }
-
-            $this->output .= '<title>' . $this->document->getTitle() . '</title>' . "\n";
-
-        }
-
 		if (file_exists(DIR_TEMPLATE . $this->template)) {
 			extract($this->data);
 			
@@ -89,7 +62,7 @@ abstract class Controller {
       
 	  		require(DIR_TEMPLATE . $this->template);
       
-	  		$this->output .= ob_get_contents();
+	  		$this->output = ob_get_contents();
 
       		ob_end_clean();
       		
