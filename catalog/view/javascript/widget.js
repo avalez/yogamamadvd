@@ -1,4 +1,5 @@
 var destroyableDialogs = [];
+var baseUrl = '../../../';
 
 (function($) {
   var _has_history = !!(window.history && history.pushState);
@@ -35,8 +36,13 @@ var destroyableDialogs = [];
         }
       },
       success: function(data) {
-        success(data['output']);
-        
+        var redirect = data['redirect'];
+        if (redirect) {
+          var relative = redirect.substring(redirect.indexOf('index.php'));
+          setLocation(relative);
+        } else {
+          success(data['output']);
+        }
       }
     });
   }

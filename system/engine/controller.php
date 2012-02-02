@@ -25,11 +25,17 @@ abstract class Controller {
 	}
 
 	protected function redirect($url, $status = 302) {
-		header('Status: ' . $status);
+        header('Status: ' . $status);
         if (isset($this->request->get['partial'])) {
             $url .= '&partial=true';
         }
-		header('Location: ' . str_replace('&amp;', '&', $url));
+        if (isset($_GET['callback'])) {
+            $json = array();
+            $json['redirect'] = str_replace('&amp;', '&', $url);
+            echo $_GET['callback'] . '(' .  json_encode($json) . ');';
+        } else {
+            header('Location: ' . str_replace('&amp;', '&', $url));
+        }
 		exit();
 	}
 	
