@@ -22,7 +22,8 @@ var baseUrl = '../../../';
   }
   
   doRequest = function(url, type, data, success) {
-    $.ajax({url:url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
+    url = url.replace(/.*#!\//, baseUrl + 'index.php?');
+    $.ajax({url: url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
       type: type, data: data, dataType: "jsonp",
       complete:
     /*$.getJSON(url,*/ function(jqXHR) {
@@ -38,8 +39,7 @@ var baseUrl = '../../../';
       success: function(data) {
         var redirect = data['redirect'];
         if (redirect) {
-          var relative = redirect.substring(redirect.indexOf('index.php'));
-          setLocation(relative);
+          setLocation(redirect);
         } else {
           success(data['output']);
         }
@@ -53,7 +53,8 @@ var baseUrl = '../../../';
   }
   
   setLocation = function(new_location) {
-      if (/^([^#\/]|$)/.test(new_location)) { // non-prefixed url
+    new_location = new_location.replace(/.*index.php\?(route=.+?)(&.*|$)/, "#!\/$1");
+      if (false && /^([^#\/]|$)/.test(new_location)) { // non-prefixed url
         if (_has_history) {
           new_location = '/' + new_location;
         } else {
@@ -114,8 +115,16 @@ var baseUrl = '../../../';
     e.preventDefault();
     var $form = $(e.target);
     var url = $form.attr('action');
+    url = url.replace(/.*index.php\?(route=.+?)(&.*|$)/, "#!\/$1");
     request(url, 'post', _parseFormParams($form));
     return false;
   });
+  
+  // Override .load() method to prefix with baseUrl
+  var originalLoadMethod = jQuery.fn.load;
+  jQuery.fn.load = function(){
+    arguments[0] = baseUrl + arguments[0];
+    originalLoadMethod.apply( this, arguments );
+  }
 
 })(jQuery);
