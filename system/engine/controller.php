@@ -27,7 +27,7 @@ abstract class Controller {
 	protected function redirect($url, $status = 302) {
         header('Status: ' . $status);
         if (isset($this->request->get['partial'])) {
-            $url .= '&partial=true';
+            //$url .= '&partial=true';
         }
         if (isset($_GET['callback'])) {
             $json = array();
@@ -75,7 +75,7 @@ abstract class Controller {
         if (isset($this->request->get['partial']) && $this->children) {
 
             foreach ($this->document->getLinks() as $link) {
-              $this->output .= '<link rel="' . $link['rel'] . '" href="' . $style['href'] . '" />' . "\n";
+              $this->output .= '<link rel="' . $link['rel'] . '" href="' . $link['href'] . '" />' . "\n";
             }
             foreach ($this->document->getStyles() as $style) {
               $this->output .= '<link rel="' . $style['rel'] . '" type="text/css" href="' . $style['href'] . '" media="' . $style['media'] . '" />' . "\n";

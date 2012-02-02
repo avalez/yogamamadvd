@@ -22,7 +22,10 @@ var baseUrl = '../../../';
   }
   
   doRequest = function(url, type, data, success) {
-    url = url.replace(/.*#!\//, baseUrl + 'index.php?');
+    var m = url.match(/.*#!\/(.+)/);
+    var route = m ? m[1] : 'route=common/home';
+    url = baseUrl + 'index.php?' + route;
+    //url = url.replace(/.*#!\//, baseUrl + 'index.php?');
     $.ajax({url: url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
       type: type, data: data, dataType: "jsonp",
       complete:
@@ -53,7 +56,7 @@ var baseUrl = '../../../';
   }
   
   setLocation = function(new_location) {
-    new_location = new_location.replace(/.*index.php\?(route=.+?)(&.*|$)/, "#!\/$1");
+    new_location = new_location.replace(/.*index.php\?(route=.+)/, "#!\/$1");
       if (false && /^([^#\/]|$)/.test(new_location)) { // non-prefixed url
         if (_has_history) {
           new_location = '/' + new_location;
@@ -115,7 +118,7 @@ var baseUrl = '../../../';
     e.preventDefault();
     var $form = $(e.target);
     var url = $form.attr('action');
-    url = url.replace(/.*index.php\?(route=.+?)(&.*|$)/, "#!\/$1");
+    url = url.replace(/.*index.php\?(route=.+)/, "#!\/$1");
     request(url, 'post', _parseFormParams($form));
     return false;
   });
