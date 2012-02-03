@@ -17,6 +17,10 @@ var baseUrl = '../../../';
       });
       destroyableDialogs = [];
       
+      html = html.replace(/(<img\s.*?src=")(index.php)/, '$1' + baseUrl + '$2');
+      html = html.replace(/(<img\s.*?src=")(catalog)/, '$1' + baseUrl + '$2');
+      html = html.replace(/(<script\s.*?src=")(catalog)/, '$1' + baseUrl + '$2');
+      
       $('div#eshop').html(html)
     });
   }
@@ -24,7 +28,7 @@ var baseUrl = '../../../';
   doRequest = function(url, type, data, success) {
     var m = url.match(/.*#!\/(.+)/);
     var route = m ? m[1] : 'route=common/home';
-    url = baseUrl + 'index.php?' + route;
+    url = 'index.php?' + route;
     //url = url.replace(/.*#!\//, baseUrl + 'index.php?');
     $.ajax({url: url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
       type: type, data: data, dataType: "jsonp",
@@ -69,6 +73,9 @@ var baseUrl = '../../../';
         history.pushState({ path: new_location }, window.title, new_location);
         locationChanged();
       } else {
+        if (window.location.hash == new_location) {
+          setTimeout(locationChanged, 0); // force reload
+        }
         return (window.location = new_location);
       }
   }
@@ -123,11 +130,16 @@ var baseUrl = '../../../';
     return false;
   });
   
-  // Override .load() method to prefix with baseUrl
-  var originalLoadMethod = jQuery.fn.load;
-  jQuery.fn.load = function(){
-    arguments[0] = baseUrl + arguments[0];
-    originalLoadMethod.apply( this, arguments );
+  // Override .ajax() method to prefix with baseUrl
+  var originalAjaxMethod = jQuery['ajax'];
+  jQuery['ajax'] = function() {
+    if ( typeof arguments[0] === 'string' ) {
+      arguments[0] = jQuery.extend({url: arguments[0]}, arguments[1]);
+    }
+    if (arguments[0] && !/^https?:/.test(arguments[0]['url'])) {
+      arguments[0]['url'] = baseUrl + arguments[0]['url'];
+    }
+    originalAjaxMethod.apply( this, arguments );
   }
 
 })(jQuery);

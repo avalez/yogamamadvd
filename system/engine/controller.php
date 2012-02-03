@@ -74,14 +74,21 @@ abstract class Controller {
 		
         if (isset($this->request->get['partial']) && $this->children) {
 
+      		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+      			$base = $this->config->get('config_ssl');
+      		} else {
+      			$base = $this->config->get('config_url');
+      		}
+
             foreach ($this->document->getLinks() as $link) {
+              // no base
               $this->output .= '<link rel="' . $link['rel'] . '" href="' . $link['href'] . '" />' . "\n";
             }
             foreach ($this->document->getStyles() as $style) {
-              $this->output .= '<link rel="' . $style['rel'] . '" type="text/css" href="' . $style['href'] . '" media="' . $style['media'] . '" />' . "\n";
+              $this->output .= '<link rel="' . $style['rel'] . '" type="text/css" href="' . $base . $style['href'] . '" media="' . $style['media'] . '" />' . "\n";
             }
             foreach ($this->document->getScripts() as $script) {
-              $this->output .= '<script type="text/javascript" src="' . $script . '"></script>' . "\n";
+              $this->output .= '<script type="text/javascript" src="' . $base . $script . '"></script>' . "\n";
             }
 
             $this->output .= '<title>' . $this->document->getTitle() . '</title>' . "\n";
