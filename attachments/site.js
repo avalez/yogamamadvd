@@ -41,7 +41,9 @@ var param = function(a) {
 
 function nil() {}
 
-var app = {baseURL: document.location.pathname.match(/.+\//)[0]};
+var m = document.location.pathname.match(/.+\//);
+var baseUrl = m ? '' : 'api/dummy/dummy/';
+var app = {baseURL: baseUrl};
 
 var cache = [];
 
@@ -57,7 +59,7 @@ app.uuid = function (callback) {
 }
 
 app.view = function (view_id, params, callback) {
-  request({url: app.baseURL + '_view/' + view_id + '?' + param(params)}, callback);
+  request({url: '_view/' + view_id + '?' + param(params)}, callback);
 }
 
 app.create = function(doc, callback) {
