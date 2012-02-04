@@ -1,7 +1,14 @@
 var destroyableDialogs = [];
-var baseUrl = '../../../';
+var baseUrl = 'http://localhost/~azhdanov/opencart_v1.5.1.3.1/upload/';
 
 (function($) {
+  $(function() {
+    //request('#!/route=account/login');
+    var m = window.location.toString().match(/test.html(#!.*)$/);
+    var l = m ? m[1] : '#!/route=common/home';
+    request(l);
+  });
+
   var _has_history = !!(window.history && history.pushState);
   
   if (_has_history) {
@@ -9,6 +16,9 @@ var baseUrl = '../../../';
       locationChanged();
     });
   }
+  
+  var toLoad = 0;
+  var onLoad = new Array();
   
   request = function(url, type, data) {
     doRequest(url, type, data, function(html) {
@@ -21,15 +31,45 @@ var baseUrl = '../../../';
       html = html.replace(/(<img\s.*?src=")(catalog)/, '$1' + baseUrl + '$2');
       html = html.replace(/(<script\s.*?src=")(catalog)/, '$1' + baseUrl + '$2');
       
-      $('div#eshop').html(html)
+      //$('div#eshop').html(html)
+      // strip inner div#content, and eval scripts and styles in order of appearance
+      var $el = $('#eshop');
+      $el.html(''); // clean
+      var wait = new Array();
+      $(html).each(function(i, piece) {
+        if (piece.nodeName == 'DIV' && piece.id == 'content') {
+          $el.append(piece.innerHTML); // div#content
+        } else if (piece.nodeName == 'TITLE') {
+          document.title = piece.innerHTML;
+        } else if (piece.nodeName == 'SCRIPT' && piece.attributes['src']) {
+          toLoad++;
+          $el.append(piece); // scripts/styles/links
+        } else {
+          // TODO: browser not supports inline scripts
+          $el.append(piece); // scripts/styles/links
+        }
+      });
+      $('script').bind('load', function() {
+        console.log('loaded');
+        if (toLoad > 0) {
+          toLoad--;
+        } else {
+          for (fn in onLoad) {
+            console.log('onLoad');
+            fn.apply(this, new Array());
+          }
+        }
+      });
+
     });
   }
   
+  
   doRequest = function(url, type, data, success) {
-    var m = url.match(/.*#!\/(.+)/);
-    var route = m ? m[1] : 'route=common/home';
-    url = 'index.php?' + route;
-    //url = url.replace(/.*#!\//, baseUrl + 'index.php?');
+    url = url.replace(/.*#!\//, 'index.php?');
+    if (!/index\.php\?route=\w+/.test(url)) {
+      url = 'index.php?route=common/home'; // CAUTION: may request catalog
+    }
     $.ajax({url: url + (url.indexOf('?') > 0 ? '&' : '?') + 'partial',
       type: type, data: data, dataType: "jsonp",
       complete:
@@ -130,6 +170,26 @@ var baseUrl = '../../../';
     return false;
   });
   
+  // Override .ready() method to fire later
+  var originalReadyMethod = jQuery.fn.ready;
+  jQuery.fn.ready = function() {
+    console.log('Ready');
+    //originalReadyMethod.apply( this, arguments );
+    onLoad.push(arguments[0]);
+  }
+
+  // Override .load() method to support jsonp
+  var originalLoadMethod = jQuery.fn.load;
+  jQuery.fn.load = function() {
+    if ( typeof arguments[0] === "string" ) {
+      var $el = this;
+      doRequest(arguments[0], 'get', arguments[1], function(html) {
+        $el.html(html);
+      });
+    } else {
+      originalLoadMethod.apply(this, arguments);
+    }
+  }
   // Override .ajax() method to prefix with baseUrl
   var originalAjaxMethod = jQuery['ajax'];
   jQuery['ajax'] = function() {
