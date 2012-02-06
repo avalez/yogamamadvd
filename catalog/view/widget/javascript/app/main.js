@@ -60,7 +60,11 @@ $(function () {
     });
 
     this.get('#?$', function(context) {
-      context.partial(templateUrl('main'));
+      addStyleSheet(baseUrl + 'catalog/view/theme/default/stylesheet/slideshow.css');
+      $.getScript(baseUrl + 'catalog/view/javascript/jquery/nivo-slider/jquery.nivo.slider.pack.js');
+      context.partial(templateUrl('main')).then(function() {
+          $('#slideshow0').nivoSlider();
+      });
     });
     
   });
@@ -77,9 +81,9 @@ $(function () {
   };
 
   // run app, when i18n loaded
-  //i18nLoaded.always(function() {
+  i18nLoad(function() {
       app.run();
-  //})
+  })
 
 });
 
