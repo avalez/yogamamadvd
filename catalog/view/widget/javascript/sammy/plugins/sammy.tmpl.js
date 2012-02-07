@@ -17,7 +17,6 @@
     // * `template` A String template. '${ }' tags are evaluated as Javascript and replaced with the elements in data.
     // * `data` An Object containing the replacement values for the template.
     //   data is extended with the <tt>EventContext</tt> allowing you to call its methods within the template.
-    // * `name` An optional String name to cache the template.
     // * `partials` Additional templates.
     //
     var template = function(template, data, partials) {

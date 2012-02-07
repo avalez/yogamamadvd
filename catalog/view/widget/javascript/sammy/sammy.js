@@ -1549,6 +1549,7 @@
         }
       });
     },
+
     // Load partials
     //
     // ### Example
