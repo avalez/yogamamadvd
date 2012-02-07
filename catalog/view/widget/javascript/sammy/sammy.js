@@ -1549,15 +1549,6 @@
         }
       });
     },
-
-    next: function(any) {
-        var context = this;
-        return this.then(function() {
-            this.wait();
-            context.next(any);
-        })
-    },
-
     // Load partials
     //
     // ### Example
@@ -1592,23 +1583,30 @@
       if (_isFunction(location) && !data) {
         return this.then(location);
       } else {
-        return this.loadPartials(partials)
-                   .next(location)
-                   .interpolate(data, location)
-                   .then(callback);
+        if (typeof partials == 'object') {
+          return this.loadPartials(partials)
+              // pass through template name
+              .then(function() { return location})
+              .interpolate(data, location)
+              .then(callback);
+        } else {
+          return this.load(location)
+              .interpolate(data, location)
+              .then(callback);
+        }
       }
     },
 
     // `render()` the `location` with `data` and then `swap()` the
     // app's `$element` with the rendered content.
-    partial: function(location, data, callback) {
+    partial: function(location, data, callback, partials) {
       if (_isFunction(callback)) {
-        return this.render(location, data).swap(callback);
+        return this.render(location, data, undefined, partials).swap(callback);
       } else if (!callback && _isFunction(data)) {
         // invoked as partial(location, callback)
-        return this.render(location).swap(data);
+        return this.render(location, undefined, undefined, partials).swap(data);
       } else {
-        return this.render(location, data).swap();
+        return this.render(location, data, undefined, partials).swap();
       }
     },
 
@@ -1882,8 +1880,18 @@
 
     // `render()` the `location` with `data` and then `swap()` the
     // app's `$element` with the rendered content.
-    partial: function(location, data, callback) {
-      return new Sammy.RenderContext(this).partial(location, data, callback);
+    partial: function(location, data, callback, partials) {
+      if (typeof data == 'function') {
+        // called as partial(location, callback)
+        partials = callback;
+        callback = data;
+        data = undefined;
+      } else if (typeof callback == 'object') {
+        // called as partial(location, data, partials)
+        partials = callback;
+        callback = undefined;
+      }
+      return new Sammy.RenderContext(this).partial(location, data, callback, partials);
     },
 
     // create a new `Sammy.RenderContext` calling `send()` with an arbitrary
