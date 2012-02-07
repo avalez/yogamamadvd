@@ -1550,6 +1550,14 @@
       });
     },
 
+    next: function(any) {
+        var context = this;
+        return this.then(function() {
+            this.wait();
+            context.next(any);
+        })
+    },
+
     // Load partials
     //
     // ### Example
@@ -1585,7 +1593,7 @@
         return this.then(location);
       } else {
         return this.loadPartials(partials)
-                   .load(location)
+                   .next(location)
                    .interpolate(data, location)
                    .then(callback);
       }
