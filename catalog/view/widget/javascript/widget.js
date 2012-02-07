@@ -6,7 +6,7 @@
   }
 
   function messagesUrl(name) {
-    return baseUrl + 'index.php?route=common/source/messages/&name=' + name;
+    return baseUrl + 'index.php?route=common/source/messages&name=' + name;
     
   }
 

@@ -22,7 +22,7 @@ class ControllerCommonSource extends Controller
     function messages() {
       $name = $this->request->get['name'];
       $messages = '../widget/messages/' . $name . '.properties';
-      $this->resource($messages);
+      $this->source($messages);
     }
     
     function source($path) {

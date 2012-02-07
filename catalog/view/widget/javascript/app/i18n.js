@@ -33,7 +33,7 @@
 
   // TODO: for browser language   
   i18nLoad = function(callback) {
-    $.ajax('catalog/language/russian/messages.properties', {
+    $.ajax(messagesUrl('russian'), {
       success: function(data) {
         // excerpt form jquery-i18n-properties plugin
         var parameters = data.split( /\n/ );
