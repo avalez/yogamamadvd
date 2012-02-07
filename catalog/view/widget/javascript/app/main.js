@@ -62,8 +62,7 @@ $(function () {
     this.get('#?$', function(context) {
       addStyleSheet(baseUrl + 'catalog/view/theme/default/stylesheet/slideshow.css');
       $.getScript(baseUrl + 'catalog/view/javascript/jquery/nivo-slider/jquery.nivo.slider.pack.js');
-      context.partial('main', {}, {'main': templateUrl('main'),
-              'account/account': templateUrl('account/account')}).then(function() {
+      context.partial('main', 'account/account').then(function() {
           $('#slideshow0').nivoSlider();
       });
     });

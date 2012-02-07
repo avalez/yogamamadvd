@@ -39,4 +39,21 @@
       $("head").append($("<link rel='stylesheet' href='" + styleSheet + "' type='text/css' media='screen' />"));
     }
   }
+
+  // override for context.partial('main', 'child1', 'childN', data)  
+  var originalPartialMethod = Sammy.EventContext.prototype.partial;
+  Sammy.EventContext.prototype.partial = function() {
+    var partials = {};
+    var data;
+    for (i in arguments) {
+      var partial = arguments[i];
+      if (typeof partial == 'string') {
+        partials[partial] = templateUrl(partial);
+      } else {
+        data = partial;
+      }
+    }
+    var args = new Array(arguments[0], data, partials);
+    return originalPartialMethod.apply(this, args);
+  }
 //});
