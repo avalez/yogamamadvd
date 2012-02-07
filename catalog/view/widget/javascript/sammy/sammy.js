@@ -1585,16 +1585,14 @@
         return this.then(location);
       } else {
         if (typeof partials == 'object') {
-          return this.loadPartials(partials)
+          this.loadPartials(partials)
               // pass through template name
-              .then(function() { return location})
-              .interpolate(data, location)
-              .then(callback);
+              .then(function() { return location});
         } else {
-          return this.load(location)
-              .interpolate(data, location)
-              .then(callback);
+          this.load(location);
         }
+        return this.interpolate(data, location)
+            .then(callback);
       }
     },
 
