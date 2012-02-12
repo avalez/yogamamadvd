@@ -12,32 +12,30 @@ abstract class Resource extends Controller
      */
     function index() {
         // Overwrite response!
-        $response = new Response();
-        $response->setCompression($this->config->get('config_compression'));
-        $response->addHeader('Content-Type: application/json; charset=utf-8');
-        $this->response = $response;
+        //$this->response = new Response();
+        //$this->response->setCompression($this->config->get('config_compression'));
+        $this->response->addHeader('Content-Type: application/json; charset=utf-8');
 
-        $request = $this->request;
-        $requestMethod = $request->server['REQUEST_METHOD'];
+        $requestMethod = $this->request->server['REQUEST_METHOD'];
 
-        $etag = md5($request->server['REQUEST_URI']);
+        $etag = md5($this->request->server['REQUEST_URI']);
         if (in_array($etag, $this->etags)) {
 
             notModified();
 
         } elseif (method_exists($this, $requestMethod)) {
 
-            $response->addHeader('Etag: "' . $etag . '"');
+            $this->response->addHeader('Etag: "' . $etag . '"');
 
             $methodReflection = new ReflectionMethod($this, $requestMethod);
             $requestParametersReflection = new ReflectionProperty('Request', strtolower($requestMethod));
-            $requestParameters = $requestParametersReflection->getValue($request);
+            $requestParameters = $requestParametersReflection->getValue($this->request);
             $parameters = array();
             foreach ($methodReflection->getParameters() as $param) {
                 if ($param->name == 'request') {
-                    $parameters[] = $request;
+                    $parameters[] = $this->request;
                 } elseif ($param->name == 'response') {
-                    $parameters[] = $response;
+                    $parameters[] = $this->response;
                 } else {
                     $parameters[] = $requestParameters[$param->name];
                 }
@@ -51,11 +49,15 @@ abstract class Resource extends Controller
         }
 
         // Overwrite response!
-        $response->output();
+        //$this->response->output();
     }
 
     protected function renderJson($object) {
-        $this->response->setOutput(json_encode($object));
+        $json = json_encode($object);
+        if (isset($_GET['callback'])) {
+          $json = 'callback(' . $json . ');';
+        }
+        $this->response->setOutput($json);
     }
 
     protected function forbidden($message) {

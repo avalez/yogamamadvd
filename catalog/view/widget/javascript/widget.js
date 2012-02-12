@@ -2,12 +2,13 @@
   var baseUrl = 'http://localhost/~azhdanov/opencart_v1.5.1.3.1/upload/';
 
   function templateUrl(name) {
-    return baseUrl + 'index.php?route=common/source&name=' + name;
+    //return baseUrl + 'index.php?route=common/source&name=' + name;
+    return baseUrl + 'index.php?route=widget/template&name=' + name;
   }
 
   function messagesUrl(name) {
-    return baseUrl + 'index.php?route=common/source/messages&name=' + name;
-    
+    //return baseUrl + 'index.php?route=common/source/messages&name=' + name;
+    return baseUrl + 'index.php?route=widget/messages&name=' + name;
   }
 
   // Override .ajax() method for jsonp

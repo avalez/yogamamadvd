@@ -235,7 +235,7 @@ if (isset($request->get['route'])) {
 $controller->dispatch($action, new Action('error/not_found'));
 
 // Output
-if (isset($_GET['callback'])) {
+if (false && isset($_GET['callback'])) {
   $json = array();
   $json['output'] = $response->getOutput();
   echo $_GET['callback'] . '(' .  json_encode($json) . ');';
