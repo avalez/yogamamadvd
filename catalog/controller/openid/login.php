@@ -24,7 +24,7 @@ class ControllerOpenidLogin extends Controller
 
       // No auth request means we can't begin OpenID.
       if (!$auth_request) {
-          displayError("Authentication error; not a valid OpenID.");
+          displayError($this, "Authentication error; not a valid OpenID.");
       }
 
       $sreg_request = Auth_OpenID_SRegRequest::build(
@@ -60,7 +60,7 @@ class ControllerOpenidLogin extends Controller
           // If the redirect URL can't be built, display an error
           // message.
           if (Auth_OpenID::isFailure($redirect_url)) {
-              displayError("Could not redirect to server: " . $redirect_url->message);
+              displayError($this, "Could not redirect to server: " . $redirect_url->message);
           } else {
               // Send redirect.
               header("Location: ".$redirect_url);
@@ -75,7 +75,7 @@ class ControllerOpenidLogin extends Controller
           // Display an error if the form markup couldn't be generated;
           // otherwise, render the HTML.
           if (Auth_OpenID::isFailure($form_html)) {
-              displayError("Could not redirect to server: " . $form_html->message);
+              displayError($this, "Could not redirect to server: " . $form_html->message);
           } else {
               $this->response->setOutput($form_html);
           }
@@ -93,7 +93,9 @@ class ControllerOpenidLogin extends Controller
       // Complete the authentication process using the server's
       // response.
       $return_to = getReturnTo();
-      $response = $consumer->complete($return_to);
+      //Auth_OpenID::log("QUERY_STRING0: %s", $_SERVER['QUERY_STRING']);
+      $query = Auth_OpenID::params_from_string(html_entity_decode($_SERVER['QUERY_STRING']));
+      $response = $consumer->complete($return_to, $query);
 
       // Check the response status.
       if ($response->status == Auth_OpenID_CANCEL) {
