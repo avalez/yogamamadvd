@@ -2,9 +2,9 @@ package models
 
 import play.api.db._
 import play.api.Play.current
-
 import anorm._
 import anorm.SqlParser._
+import anorm.Pk
 
 case class Address(address_id: Pk[Long], user_email: String, company: String, address_1: String, address_2: String,
     city: String, postcode: String, zone: String, country: String, country_code: String)
@@ -17,16 +17,16 @@ object Address {
    * Parse a Project from a ResultSet
    */
   val simple = {
-    get[Pk[Long]]("address.id") ~/
-    get[String]("address.user_email") ~/
-    get[String]("company") ~/
-    get[String]("address.address_1") ~/
-    get[String]("address.address_2") ~/
-    get[String]("address.city") ~/
-    get[String]("address.postcode") ~/
-    get[String]("address.zone") ~/
-    get[String]("address.country") ~/
-    get[String]("address.country_code") ^^ {
+    get[Pk[Long]]("address.id") ~
+    get[String]("address.user_email") ~
+    get[String]("company") ~
+    get[String]("address.address_1") ~
+    get[String]("address.address_2") ~
+    get[String]("address.city") ~
+    get[String]("address.postcode") ~
+    get[String]("address.zone") ~
+    get[String]("address.country") ~
+    get[String]("address.country_code") map {
       case id~user_email~company~address_1~address_2~city~postcode~zone~country~country_code =>
         Address(id, user_email, company, address_1, address_2, city, postcode, zone, country, country_code)
     }
@@ -50,7 +50,7 @@ object Address {
     DB.withConnection { implicit connection =>
       SQL("select * from address where id = {id}").on(
         'id -> id
-      ).as(simple ?)
+      ).as(simple *).headOption
     }
   }
 

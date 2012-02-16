@@ -4,9 +4,11 @@ import models.Cart
 import models.Gateway
 import models.Product
 import models.User
+import play.api.data._
 import play.api.data.Form
-import play.api.data.of
-import play.api.data.requiredText
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
+import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.Request
 import play.api.mvc.SimpleResult
@@ -43,8 +45,10 @@ object Checkout extends ApplicationBase {
   }
 
   def updateShipment = WithCart { cart => implicit request =>
-    request.body.urlFormEncoded.get("shipment").map{
-      shipment => cart.shipment = shipment.head
+    request.body.asFormUrlEncoded.map {  
+      _.get("shipment").map(_.head).map {
+         cart.shipment = _;
+      }
     }
     val gateways = Gateway.findAll
     Ok(views.html.tags.total(cart, gateways))
@@ -79,9 +83,9 @@ object Checkout extends ApplicationBase {
   }
   
   val gatewayForm = Form(
-    of(
-      "gateway" -> requiredText,
-      "_category" -> requiredText
+    tuple(
+      "gateway" -> nonEmptyText,
+      "_category" -> nonEmptyText
     )
   )
 
@@ -94,7 +98,7 @@ object Checkout extends ApplicationBase {
         cart._category = form._2
         Redirect(routes.Checkout.product)
       }
-    )
+    ).asInstanceOf[SimpleResult[AnyContent]]
   }
 
   def updatePayment = WithCart { cart => implicit request =>
@@ -117,18 +121,20 @@ object Checkout extends ApplicationBase {
   }
   
   def setproduct = WithCart { cart => implicit request =>
-    val f = request.body.urlFormEncoded
-    val productsOption = f.get("products").orElse(f.get("products[]"))
-    productsOption.map { products =>
-      cart.clear
-      for (product <- Product.findByIds(products.map(_.toLong))) {
-        f.get("qties." + product.product_id).map { qties =>
-          cart += (product, qties.head.toLong)
+    request.body.asFormUrlEncoded.map { f => 
+      val productsOption = f.get("products").orElse(f.get("products[]"))
+      productsOption.map { products =>
+        cart.clear
+        for (product <- Product.findByIds(products.map(_.toLong))) {
+          f.get("qties." + product.product_id).map { qties =>
+            cart += (product, qties.head.toLong)
+          }
         }
       }
-      Redirect(routes.Checkout.checkout)
-    }.getOrElse(Redirect(routes.Checkout.product).flashing(
-        "error" -> "Select product"))
+    }
+    // TODO .getOrElse(Redirect(routes.Checkout.product).flashing(
+    //      "error" -> "Select product"))
+    Redirect(routes.Checkout.checkout)
   }
 
   // checkout
@@ -140,20 +146,23 @@ object Checkout extends ApplicationBase {
   }
   
   def removeFromCart = WithCart { cart => implicit request =>
-    request.body.urlFormEncoded.get("productId").map(_.head).map { productId =>
-      cart -= productId.toLong
+    request.body.asFormUrlEncoded.map {  
+      _.get("productId").map(_.head).map {
+         cart -= _.toLong
+      }
     }
     val gateways = Gateway.findAll
     Ok(views.html.tags.total(cart, gateways))
   }
   
   def addToCart = WithCart { cart => implicit request =>
-    val f = request.body.urlFormEncoded 
-    (f.get("productId"), f.get("quantity")) match {
-      case (Some(productId), Some(quantity)) => Product.findById(productId.head.toLong).map { product =>
-        cart += (product, quantity.head.toLong)
+    request.body.asFormUrlEncoded.map { f =>
+      (f.get("productId"), f.get("quantity")) match {
+        case (Some(productId), Some(quantity)) => Product.findById(productId.head.toLong).map { product =>
+          cart += (product, quantity.head.toLong)
+        }
+        case _ => Some(cart) // ignore
       }
-      case _ => Some(cart) // ignore
     }
     val gateways = Gateway.findAll
     Ok(views.html.tags.total(cart, gateways))
@@ -165,7 +174,7 @@ object Checkout extends ApplicationBase {
 
   // wrapper
 
-  def WithCart[A](action: Cart => Request[AnyContent] => SimpleResult[A]) = Action{ implicit request =>
+  def WithCart[A](action: Cart => Request[AnyContent] => SimpleResult[A]) = Action { implicit request =>
     val cart = Cart.decodeFromCookie
     action(cart)(request).withCookies(Cart.encodeAsCookie(cart)) 
   }

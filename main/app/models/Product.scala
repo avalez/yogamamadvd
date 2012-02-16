@@ -15,11 +15,11 @@ object Product {
    * Parse a Product from a ResultSet
    */
   val simple = {
-    get[Pk[Long]]("product.id") ~/
-    get[String]("product.name") ~/
-    get[String]("product.thumb") ~/
-    get[String]("product.description") ~/
-    get[Double]("product.price") ^^ {
+    get[Pk[Long]]("product.id") ~
+    get[String]("product.name") ~
+    get[String]("product.thumb") ~
+    get[String]("product.description") ~
+    get[Double]("product.price") map {
       case id~name~thumb~description~price => Product(id, name, thumb, description, price)
     }
   }
@@ -33,7 +33,7 @@ object Product {
     DB.withConnection { implicit connection =>
       SQL("select * from product where id = {id}").on(
         'id -> id
-      ).as(simple ?)
+      ).as(simple *).headOption
     }
   }
 

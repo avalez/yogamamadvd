@@ -2,6 +2,7 @@ package controllers;
 
 import play.api.mvc._
 import play.api.data._
+import play.api.data.Forms._
 import play.api.libs.Crypto
 import anorm.NotAssigned
 import models._
@@ -19,9 +20,9 @@ object Account extends ApplicationBase {
   // -- Authentication
 
   val loginForm = Form(
-    of(
+    tuple(
       "username" -> email,
-      "password" -> requiredText,
+      "password" -> nonEmptyText,
       "remember" -> boolean
     ) verifying ("secure.error", result => result match {
       case (email, password, remember) => User.authenticate(email, password).isDefined
@@ -68,38 +69,38 @@ object Account extends ApplicationBase {
   // see http://groups.google.com/group/play-framework/browse_thread/thread/64993b444f35e197
   // and satisfy registration through checkout wizar
   private def registerMapping(implicit request: Request[AnyContent], _type: String = "account") = 
-    mapping(NotAssigned, requestParam("email"), _type)
+    userMapping(NotAssigned, requestParam("email"), _type)
   
   // user_emal 'call by name' is for static registerFormDownload when request is null
-  private def mapping(addressId: Pk[Long], user_email: => String, _type: String)(implicit request: Request[AnyContent]) = of(User.apply _)(
-    "firstname" -> requiredText,
-    "lastname" -> requiredText,
+  private def userMapping(addressId: Pk[Long], user_email: => String, _type: String)(implicit request: Request[AnyContent]) = mapping(
+    "firstname" -> nonEmptyText,
+    "lastname" -> nonEmptyText,
     "email" -> email,
-    "address" -> {if (_type != "download") {optional(addressMapping(addressId, user_email))} else {ignored(None)}},
-    "password" -> {if (_type == "account") { requiredText
+    "address" -> {if (_type != "download") {optional(addressMapping(addressId, user_email))} else {ignored(None.asInstanceOf[Option[Address]])}},
+    "password" -> {if (_type == "account") { nonEmptyText
       } else { /* TODO: generate password: */ ignored("password")}},
     "confirm" -> {if (_type == "account") {
-      requiredText.verifying(Constraint[String]("constraint.equals") { o =>
+      nonEmptyText.verifying(Constraint[String]("constraint.equals") { o =>
           if (o == requestParam("password")) Valid
           else Invalid("error.equals")
       })
-    } else { ignored(null)}}
-  ) verifying ("error_exists", result => result match {
+    } else { ignored("")}}
+  )(User.apply)(User.unapply) verifying ("error_exists", result => result match {
       case (user) => _type == "update" || User.findByEmail(user.email).isEmpty
   })
 
-  private def addressMapping(addressId: Pk[Long], email: String) = of(Address.apply _)(
+  private def addressMapping(addressId: Pk[Long], email: String) = mapping(
     "id" -> ignored(addressId),
     "user_email" -> ignored(email),
     "company" -> text,
-    "address_1" -> requiredText,
+    "address_1" -> nonEmptyText,
     "address_2" -> text,
-    "city" -> requiredText,
-    "postcode" -> requiredText,
-    "zone" -> requiredText,
-    "country" -> requiredText,
+    "city" -> nonEmptyText,
+    "postcode" -> nonEmptyText,
+    "zone" -> nonEmptyText,
+    "country" -> nonEmptyText,
     "country_code" -> text
-  )
+  )(Address.apply)(Address.unapply)
 
   /**
    * Register page.
@@ -138,7 +139,7 @@ object Account extends ApplicationBase {
    */
   def addressForm(user: User)(implicit request: Request[AnyContent]) = {
     val addressId = user.address.map(_.address_id).getOrElse(NotAssigned)
-    Form(mapping(addressId, user.email, "update")).fill(user)
+    Form(userMapping(addressId, user.email, "update")).fill(user)
   }
 
   /** Default formatter for the `Pk[Long]` type.

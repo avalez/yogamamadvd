@@ -5,7 +5,7 @@
 
 <tr>
   <td>@if(!field.constraints.isEmpty) {<span class="required">*</span>}@Messages("entry_" + name)</td>
-  <td><input id="@name" type="@_type(args)" name="@field.name" value="@field.value" @toHtmlArgs(args)/>
+  <td><input id="@name" type="@_type(args)" name="@field.name" value="@field.value" @toHtmlArgs(args.toMap)/>
     @field.error.map { _ =>
       <br/><span class="error">@Messages("error_" + name)</span>
     }

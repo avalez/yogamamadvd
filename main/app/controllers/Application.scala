@@ -45,7 +45,7 @@ trait ApplicationBase extends Controller {
   /**
    * Transparent support for partial redirect.
    */
-  def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.Empty] = Redirect(call.url)
+  def Redirect(call: Call)(implicit request: RequestHeader): SimpleResult[Results.EmptyContent] = Redirect(call.url)
   
   /**
    * Wraps another action, allowing only authenticated HTTP requests.
@@ -88,7 +88,7 @@ trait ApplicationBase extends Controller {
   /**
    * Retrieves form or query parameter from implicit request.
    */
-  def requestParam(name: String, default: String = null)(implicit request: Request[AnyContent]) = (request.body.urlFormEncoded ++
+  def requestParam(name: String, default: String = null)(implicit request: Request[AnyContent]) = (request.body.asFormUrlEncoded.getOrElse(Map.empty) ++
       request.queryString).get(name).map(_.head).getOrElse(default)
 
 }

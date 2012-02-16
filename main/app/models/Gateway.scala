@@ -15,8 +15,8 @@ object Gateway {
    * Parse a Project from a ResultSet
    */
   val simple = {
-    get[String]("gateway.name") ~/
-    get[String]("gateway.categories") ^^ {
+    get[String]("gateway.name") ~
+    get[String]("gateway.categories") map {
       case name~categories => Gateway(name, categories)
     }
   }
