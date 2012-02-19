@@ -2,33 +2,31 @@
     height: 60px;
     font: 14px/20px arial,sans-serif;
     text-align: center;
+    float: right;
+    margin-top: 30px;
 }
 
 #menu ul {
-    border: #CCC 1px solid;
-    border-top: 0;
+    border: #CCC 1px dotted;
+    border-left: 0px;
+    border-right: 0px;
     float: right;
-    background-color: #d8e7f3;
-    -moz-border-radius-bottomleft:5px;
-    border-bottom-left-radius:5px;
-    -moz-border-radius-bottomright:5px;
-    border-bottom-right-radius:5px;
     padding: 2px;
     margin: 0;
     list-style: none;
 }
 
 #menu ul li:nth-child(1) {
-    border-right: #CCC 1px solid;
+    border-right: #CCC 1px dotted;
     color: white;
     float: left;
     padding: 5px;
-    width: 100px;
+    width: 80px;
     cursor: pointer;
     vertical-align: center;
 }
 #menu ul li:nth-child(2), #menu ul li:nth-child(3) {
-    border-right: #CCC 1px solid;
+    border-right: #CCC 1px dotted;
     float: left;
     padding: 5px;
     width: 100px;

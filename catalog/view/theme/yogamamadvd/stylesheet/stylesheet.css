@@ -8,7 +8,7 @@ body {
 	font-family: "Lucida Grande","Lucida Sans Unicode",Helvetica,Arial,Verdana,sans-serif;
 	margin: 0px;
 	padding: 0px;
-  background: #FFFFFF url('../image/background.png') top center repeat-y;
+  background: #E9F3C8;
 }
 body, td, th, input, textarea, select, a {
 	font-size: 12px;
@@ -55,14 +55,19 @@ label {
 }
 /* layout */
 #logo {
-    width: 0;
-    float: left;
+  float: left;
 }
 #container {
+  -moz-box-shadow: 0 0 5px 2px #CCC;
+  -webkit-box-shadow: 0 0 5px 2px #CCC;
+  background: #FFF;
 	width: 1064px;
+	height: 100%;
 	margin-left: auto;
 	margin-right: auto;
 	text-align: left;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
 }
 #column-left {
 	float: left;
@@ -74,7 +79,7 @@ label {
 	margin-right: 95px;
 }
 #content {
-	min-height: 400px;
+	min-height: 500px;
 	margin-bottom: 25px;
 	width: 875px;
 	margin: auto;
@@ -88,8 +93,8 @@ label {
 	width: 675px;
 }
 #header {
-	margin-bottom: 7px;
-	padding-bottom: 4px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 	position: relative;
 	z-index: 99;
 	width: 880px;
@@ -97,9 +102,8 @@ label {
 	height: 95px;
 }
 #header #product {
-	width: 400px;
+	width: 320px;
 	float: left;
-	margin-left: 20px;
 }
 #header #welcome {
     float: right;
@@ -248,27 +252,40 @@ table.list .desc {
 }
 /* button */
 a.button {
-	display: inline-block;
-	padding-left: 6px;
-	background: url('../image/button-left.png') top left no-repeat;
-	text-decoration: none;
-	cursor: pointer;
+    background: #6EAC2C; /* fallback for any browser that doesn't do gradients */
+    background: -webkit-gradient(linear, center, top, from(#EDEDED), to(#6EAC2C))  no-repeat scroll 0 0 #6EAC2C; /* Saf4+, Chrome */
+    background: -webkit-linear-gradient(center top, #EDEDED, #6EAC2C) no-repeat scroll 0 0 #6EAC2C; /* Chrome 10+, Saf5.1+ */
+    background: -moz-linear-gradient(center top , #EDEDED 5%, #6EAC2C 100%) repeat scroll 0 0 #6EAC2C; /* FF3.6+ */
+    background: -ms-linear-gradient(center top, #EDEDED, #6EAC2C)  no-repeat scroll 0 0 #6EAC2C; /* IE10 */
+    background: -o-linear-gradient(center top, #EDEDED, #6EAC2C)  no-repeat scroll 0 0 #6EAC2C; /* Opera 11.10+ */
+    background: linear-gradient(center top, #EDEDED, #6EAC2C)  no-repeat scroll 0 0 #6EAC2C; /* W3C */
+    border: 1px solid #CCC;
+    -webkit-border-radius: 3px 3px 3px 3px;
+    -moz-border-radius: 3px 3px 3px 3px;
+    -khtml-border-radius: 3px 3px 3px 3px;
+    border-radius: 3px 3px 3px 3px;
+    -webkit-box-shadow: 0px 1px 0px 0px #FFFFFF;
+    -moz-box-shadow: 0px 1px 0px 0px #FFFFFF;
+    box-shadow: 0px 1px 0px 0px #FFFFFF inset;
+    color: #333333;
+    display: inline-block;
+    padding: 4px 24px 3px;
+    text-decoration: none;
+    text-shadow: 1px 1px 0 #DDDDDD;
 }
-a.button span {
-	color: #FFFFFF;
-	line-height: 12px;
-	font-size: 12px;
-	font-weight: bold;
-	display: inline-block;
-	padding: 6px 12px 8px 5px;
-	background: url('../image/button-right.png') top right no-repeat;
+.button:hover {
+    background: #ACDD4A; /* fallback for any browser that doesn't do gradients */
+    background: -webkit-gradient(linear, center, top, from(#FDFDFD), to(#ACDD4A))  no-repeat scroll 0 0 #ACDD4A; /* Saf4+, Chrome */
+    background: -webkit-linear-gradient(center top, #FDFDFD 5%, #ACDD4A) no-repeat scroll 0 0 #ACDD4A; /* Chrome 10+, Saf5.1+ */
+    background: -moz-linear-gradient(center top , #FDFDFD 5%, #ACDD4A 100%) repeat scroll 0 0 #ACDD4A;
+    background: -ms-linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* IE10 */
+    background: -o-linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* Opera 11.10+ */
+    background: linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* W3C */
+    text-shadow: 1px 1px 0 #FFFFFF;
 }
-a.button:hover {
-	background: url('../image/button-left-active.png') top left no-repeat;
-}
-a.button:hover span {
-	color: #FFFFFF;
-	background: url('../image/button-right-active.png') top right no-repeat;
+.button:active {
+    position: relative;
+    top: 1px;
 }
 .buttons {
 	background: #FFFFFF;
@@ -1364,4 +1381,9 @@ a.off, a.on {
     padding-top: 8px;
     text-indent: 0;
     text-decoration: none;
+}
+div.separator {
+    height: 30px;
+    width: 100%;
+    background: url("../image/separator.png") right center repeat-x;
 }

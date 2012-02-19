@@ -84,11 +84,11 @@ DD_belatedPNG.fix('#logo img');
 </head>
 <body onLoad="MM_preloadImages('catalog/view/theme/yogamamadvd/image/button-left.png', 'catalog/view/theme/yogamamadvd/image/button-right.png', 'catalog/view/theme/yogamamadvd/image/button-left-active.png', 'catalog/view/theme/yogamamadvd/image/button-right-active.png')">
 <div id="container">
-  <?php if ($logo) { ?>
-  <div id="logo"><img src="<?php echo $logo; ?>" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
-  <?php } ?>
   <div id="header">
         <div id="product"><img src="catalog/view/theme/yogamamadvd/image/product.png" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
+        <?php if ($logo) { ?>
+        <div id="logo"><img src="<?php echo $logo; ?>" alt="<?php echo $name; ?>" title="<?php echo $name; ?>"/></div>
+        <?php } ?>
         <div id="menu">
           <ul>
             <li><a href="#"><?php echo $text_home; ?></a></li>
@@ -97,7 +97,7 @@ DD_belatedPNG.fix('#logo img');
             <li><a href="index.php?route=information/faq"><?php echo $text_faq; ?></a></li>
           </ul>
         </div>
-        <div id="welcome">
+        <!--div id="welcome">
           <?php if (!$logged) { ?>
           <?php echo $text_welcome; ?>
           <?php } else { ?>
@@ -105,7 +105,7 @@ DD_belatedPNG.fix('#logo img');
           <?php } ?>
         </div>
         <div class="heading">
-          <a href="#"><span id="cart_total">&nbsp;</span></a>
-        </div>
+          <a href="#"><span id="cart_total"></span></a>
+        </div-->
     </div>
     <div id="notification"></div>
