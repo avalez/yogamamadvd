@@ -173,6 +173,9 @@ if (isset($request->get['language']) && array_key_exists($request->get['language
 	$code = $config->get('config_language');
 }
 
+/* FIXME: multilanguage */
+$code = $config->get('config_language');
+
 if (!isset($session->data['language']) || $session->data['language'] != $code) {
 	$session->data['language'] = $code;
 }
