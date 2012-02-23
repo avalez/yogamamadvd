@@ -22,7 +22,7 @@
   {{each(i, product) products}}
   {{var selected = app.cart("items") ? app.cart("items")[product.product_id] : undefined }}
     <div>
-      <input id="product-${product.product_id}" type="checkbox" value="${product.product_id}" name="products" style="display: none"
+      <input id="product-${product.product_id}" type="checkbox" value="${product.product_id}" name="products"
        {{if selected }}checked="true"{{/if}}>
       <label for="product-${product.product_id}" style="padding: 20px; margin-top: 30px; float: left;"></label>
         <div>
@@ -52,7 +52,6 @@
             <div class="description">${product.description}</div>
           </div>
         </div>
-      </label>
     </div>
   {{/each}}
   </div>

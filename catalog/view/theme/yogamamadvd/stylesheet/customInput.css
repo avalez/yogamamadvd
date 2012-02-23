@@ -11,6 +11,11 @@
     z-index: 0;
 }
 
+.custom-checkbox input {
+  left: 5px;
+  top: 35px;
+  
+}
 .custom-checkbox label, 
 .custom-radio label {
     display: block;
