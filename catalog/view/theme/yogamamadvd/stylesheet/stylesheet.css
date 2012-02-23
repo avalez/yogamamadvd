@@ -255,11 +255,11 @@ table.list .desc {
 a.button {
     background: #6EAC2C; /* fallback for any browser that doesn't do gradients */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #EDEDED), color-stop(1, #6EAC2C))  no-repeat scroll 0 0 #6EAC2C; /* Saf4+, Chrome */
-    background: -webkit-linear-gradient(center, #EDEDED, #6EAC2C) no-repeat scroll 0 0 #6EAC2C; /* Chrome 10+, Saf5.1+ */
+    background: -webkit-linear-gradient(center, #EDEDED 5%, #6EAC2C 100%) no-repeat scroll 0 0 #6EAC2C; /* Chrome 10+, Saf5.1+ */
     background: -moz-linear-gradient(center top , #EDEDED 5%, #6EAC2C 100%) repeat scroll 0 0 #6EAC2C; /* FF3.6+ */
-    background: -ms-linear-gradient(center, #EDEDED, #6EAC2C)  no-repeat scroll 0 0 #6EAC2C; /* IE10 */
-    background: -o-linear-gradient(center, #EDEDED, #6EAC2C)  no-repeat scroll 0 0 #6EAC2C; /* Opera 11.10+ */
-    background: linear-gradient(center, #EDEDED, #6EAC2C)  no-repeat scroll 0 0 #6EAC2C; /* W3C */
+    background: -ms-linear-gradient(center, #EDEDED 5%, #6EAC2C 100%)  no-repeat scroll 0 0 #6EAC2C; /* IE10 */
+    background: -o-linear-gradient(center, #EDEDED 5%, #6EAC2C 100%)  no-repeat scroll 0 0 #6EAC2C; /* Opera 11.10+ */
+    background: linear-gradient(center, #EDEDED 5%, #6EAC2C 100%)  no-repeat scroll 0 0 #6EAC2C; /* W3C */
     border: 1px solid #CCC;
     -webkit-border-radius: 3px 3px 3px 3px;
     -moz-border-radius: 3px 3px 3px 3px;
@@ -278,8 +278,8 @@ a.button {
     background: #ACDD4A; /* fallback for any browser that doesn't do gradients */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #FDFDFD), color-stop(1, #ACDD4A))  no-repeat scroll 0 0 #6EAC2C; /* Saf4+, Chrome */
     background: -webkit-linear-gradient(center top, #FDFDFD 5%, #ACDD4A) no-repeat scroll 0 0 #ACDD4A; /* Chrome 10+, Saf5.1+ */
-    background: -moz-linear-gradient(center top , #FDFDFD 5%, #ACDD4A 100%) repeat scroll 0 0 #ACDD4A;
-    background: -ms-linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* IE10 */
+    background: -moz-linear-gradient(center top , #FDFDFD 5%, #ACDD4A 100%) repeat scroll 0 0 #ACDD4A; /* FF3.6+ */
+    background: -ms-linear-gradient(center, #FDFDFD 5%, #ACDD4A 100%)  no-repeat scroll 0 0 #ACDD4A; /* IE10 */
     background: -o-linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* Opera 11.10+ */
     background: linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* W3C */
     text-shadow: 1px 1px 0 #FFFFFF;
@@ -1382,9 +1382,4 @@ a.off, a.on {
     padding-top: 8px;
     text-indent: 0;
     text-decoration: none;
-}
-div.separator {
-    height: 30px;
-    width: 100%;
-    background: url("../image/separator.png") right center repeat-x;
 }

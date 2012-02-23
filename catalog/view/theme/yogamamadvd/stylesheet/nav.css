@@ -40,7 +40,7 @@
   width: 245px;
 }
 
-#nav ul li:first-child {
+#nav ul li.first-child {
   background: url("../image/nav-bg_gloss-wave_50_6eac2c_500x100.png") right center;
   -moz-border-radius-bottomleft: 5px;
   -moz-border-radius-topleft: 5px;
@@ -52,15 +52,15 @@
   margin: 0;
 }
 
-#nav ul li:nth-child(2) {
+#nav ul li.second-child {
   z-index: 3;
 }
 
-#nav ul li:nth-child(3) {
+#nav ul li.third-child {
   z-index: 2;
 }
 
-#nav ul li:last-child {
+#nav ul li.last-child {
   z-index: 1;
   background: url("../image/ui-bg_gloss-wave_50_6eac2c_500x100.png") -250px center;
   -moz-border-radius-bottomright: 5px;
@@ -77,7 +77,7 @@
   background: url("../image/nav-bg_gloss-wave_75_2191c0_500x100.png") right center;
 }
 
-#nav ul li:last-child.disabled {
+#nav ul li.last-child.disabled {
   background: url("../image/ui-bg_gloss-wave_75_2191c0_500x100.png") -250px center;
 }
 

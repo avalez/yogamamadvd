@@ -10,7 +10,6 @@
 <div id="content"><?php echo $content_top; ?>
 <h1 style="display: none;"><?php echo $heading_title; ?></h1>
 <?php echo $content_bottom; ?>
-<div class="separator">&nbsp;</div>
 <div class="fb-like" data-href="http://www.facebook.com/yogamamadvdru" data-send="false" data-width="450" data-show-faces="true"></div>
 </div>
 <?php echo $footer; ?>
