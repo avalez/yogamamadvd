@@ -1,42 +1,49 @@
-# The Genesis 1.7 Translation Master File
-# Copyright (C) 2011 StudioPress
-# This file is distributed under the same license as the Genesis package.
-"Project-Id-Version: Genesis 1.7\n"
-"Last-Translator: Nathan Rice <nathan@copyblogger.com>\n"
-"Language-Team: StudioPress <b@copyblogger.com>\n"
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Andriy Zhdanov <azhdanov@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# The Genesis 1.7 Translation Master File
+# Copyright (C) 2011 StudioPress
+# This file is distributed under the same license as the Genesis package.
 #: 404.php:25
 msgid "Not Found, Error 404"
 msgstr ""
 
 #: 404.php:27
 #, php-format
-msgid ""
-"The page you are looking for no longer exists. Perhaps you can return back "
-"to the site's <a href=\"%s\">homepage</a> and see if you can find what you "
-"are looking for. Or, you can try finding it with the information below."
+msgid "The page you are looking for no longer exists. Perhaps you can return back to the site's <a href=\"%s\">homepage</a> and see if you can find what you are looking for. Or, you can try finding it with the information below."
 msgstr ""
 
-#: 404.php:31 page_archive.php:27 lib/structure/post.php:141
+#: 404.php:31
+#: page_archive.php:27
+#: lib/structure/post.php:141
 msgid "Pages:"
 msgstr ""
 
-#: 404.php:36 page_archive.php:32
+#: 404.php:36
+#: page_archive.php:32
 msgid "Categories:"
 msgstr ""
 
-#: 404.php:45 page_archive.php:41
+#: 404.php:45
+#: page_archive.php:41
 msgid "Authors:"
 msgstr ""
 
-#: 404.php:50 page_archive.php:46
+#: 404.php:50
+#: page_archive.php:46
 msgid "Monthly:"
 msgstr ""
 
-#: 404.php:55 page_archive.php:51
+#: 404.php:55
+#: page_archive.php:51
 msgid "Recent Posts:"
 msgstr ""
 
@@ -53,9 +60,7 @@ msgid "Import Genesis Settings File"
 msgstr ""
 
 #: lib/admin/import-export.php:24
-msgid ""
-"Upload the data file (<code>.json</code>) from your computer and we'll "
-"import your settings."
+msgid "Upload the data file (<code>.json</code>) from your computer and we'll import your settings."
 msgstr ""
 
 #: lib/admin/import-export.php:25
@@ -76,15 +81,11 @@ msgid "Export Genesis Settings File"
 msgstr ""
 
 #: lib/admin/import-export.php:41
-msgid ""
-"When you click the button below, Genesis will generate a data file (<code>."
-"json</code>) for you to save to your computer."
+msgid "When you click the button below, Genesis will generate a data file (<code>.json</code>) for you to save to your computer."
 msgstr ""
 
 #: lib/admin/import-export.php:42
-msgid ""
-"Once you have saved the download file, you can use the import function on "
-"another site to import this data."
+msgid "Once you have saved the download file, you can use the import function on another site to import this data."
 msgstr ""
 
 #: lib/admin/import-export.php:50
@@ -99,11 +100,13 @@ msgstr ""
 msgid "There was a problem importing your settings. Please try again."
 msgstr ""
 
-#: lib/admin/import-export.php:97 lib/admin/menu.php:41
+#: lib/admin/import-export.php:97
+#: lib/admin/menu.php:41
 msgid "Theme Settings"
 msgstr ""
 
-#: lib/admin/import-export.php:98 lib/admin/menu.php:45
+#: lib/admin/import-export.php:98
+#: lib/admin/menu.php:45
 msgid "SEO Settings"
 msgstr ""
 
@@ -111,7 +114,8 @@ msgstr ""
 msgid "No export options available."
 msgstr ""
 
-#: lib/admin/inpost-metaboxes.php:26 lib/admin/term-meta.php:72
+#: lib/admin/inpost-metaboxes.php:26
+#: lib/admin/term-meta.php:72
 #: lib/admin/user-meta.php:100
 msgid "Genesis SEO Settings"
 msgstr ""
@@ -120,7 +124,8 @@ msgstr ""
 msgid "Custom Document Title"
 msgstr ""
 
-#: lib/admin/inpost-metaboxes.php:36 lib/admin/inpost-metaboxes.php:39
+#: lib/admin/inpost-metaboxes.php:36
+#: lib/admin/inpost-metaboxes.php:39
 #, php-format
 msgid "Characters Used: %s"
 msgstr ""
@@ -141,11 +146,13 @@ msgstr ""
 msgid "Custom Redirect URI"
 msgstr ""
 
-#: lib/admin/inpost-metaboxes.php:53 lib/admin/seo-settings.php:114
+#: lib/admin/inpost-metaboxes.php:53
+#: lib/admin/seo-settings.php:114
 msgid "Robots Meta Settings"
 msgstr ""
 
-#: lib/admin/inpost-metaboxes.php:57 lib/admin/inpost-metaboxes.php:60
+#: lib/admin/inpost-metaboxes.php:57
+#: lib/admin/inpost-metaboxes.php:60
 #: lib/admin/inpost-metaboxes.php:63
 #, php-format
 msgid "Apply %s to this post/page"
@@ -155,12 +162,14 @@ msgstr ""
 msgid "Custom Tracking/Conversion Code"
 msgstr ""
 
-#: lib/admin/inpost-metaboxes.php:154 lib/admin/term-meta.php:130
+#: lib/admin/inpost-metaboxes.php:154
+#: lib/admin/term-meta.php:130
 #: lib/admin/user-meta.php:152
 msgid "Genesis Layout Settings"
 msgstr ""
 
-#: lib/admin/inpost-metaboxes.php:166 lib/admin/term-meta.php:137
+#: lib/admin/inpost-metaboxes.php:166
+#: lib/admin/term-meta.php:137
 #: lib/admin/user-meta.php:160
 #, php-format
 msgid "Default Layout set in <a href=\"%s\">Theme Settings</a>"
@@ -186,11 +195,13 @@ msgstr ""
 msgid "Genesis - README.txt Theme File"
 msgstr ""
 
-#: lib/admin/seo-settings.php:84 lib/admin/theme-settings.php:177
+#: lib/admin/seo-settings.php:84
+#: lib/admin/theme-settings.php:177
 msgid "Settings reset."
 msgstr ""
 
-#: lib/admin/seo-settings.php:86 lib/admin/theme-settings.php:179
+#: lib/admin/seo-settings.php:86
+#: lib/admin/theme-settings.php:179
 msgid "Settings saved."
 msgstr ""
 
@@ -214,34 +225,32 @@ msgstr ""
 msgid "Genesis - SEO Settings"
 msgstr ""
 
-#: lib/admin/seo-settings.php:148 lib/admin/seo-settings.php:163
-#: lib/admin/theme-settings.php:255 lib/admin/theme-settings.php:272
+#: lib/admin/seo-settings.php:148
+#: lib/admin/seo-settings.php:163
+#: lib/admin/theme-settings.php:255
+#: lib/admin/theme-settings.php:272
 msgid "Save Settings"
 msgstr ""
 
-#: lib/admin/seo-settings.php:149 lib/admin/seo-settings.php:165
-#: lib/admin/theme-settings.php:256 lib/admin/theme-settings.php:273
+#: lib/admin/seo-settings.php:149
+#: lib/admin/seo-settings.php:165
+#: lib/admin/theme-settings.php:256
+#: lib/admin/theme-settings.php:273
 msgid "Reset Settings"
 msgstr ""
 
-#: lib/admin/seo-settings.php:149 lib/admin/seo-settings.php:164
+#: lib/admin/seo-settings.php:149
+#: lib/admin/seo-settings.php:164
 #: lib/admin/theme-settings.php:256
 msgid "Are you sure you want to reset?"
 msgstr ""
 
 #: lib/admin/seo-settings.php:190
-msgid ""
-"The Document Title is the single most important SEO tag in your document "
-"source. It succinctly informs search engines of what information is "
-"contained in the document. The doctitle changes from page to page, but these "
-"options will help you control what it looks by default."
+msgid "The Document Title is the single most important SEO tag in your document source. It succinctly informs search engines of what information is contained in the document. The doctitle changes from page to page, but these options will help you control what it looks by default."
 msgstr ""
 
 #: lib/admin/seo-settings.php:192
-msgid ""
-"<b>By default</b>, the homepage doctitle will contain the site title, the "
-"single post and page doctitle will contain the post/page title, archive "
-"pages will contain the archive type, etc."
+msgid "<b>By default</b>, the homepage doctitle will contain the site title, the single post and page doctitle will contain the post/page title, archive pages will contain the archive type, etc."
 msgstr ""
 
 #: lib/admin/seo-settings.php:194
@@ -260,14 +269,16 @@ msgstr ""
 msgid "Determines what side the appended doctitle text will go on."
 msgstr ""
 
-#: lib/admin/seo-settings.php:202 lib/widgets/featured-page-widget.php:158
+#: lib/admin/seo-settings.php:202
+#: lib/widgets/featured-page-widget.php:158
 #: lib/widgets/featured-post-widget.php:242
 #: lib/widgets/featured-post-widget.php:265
 #: lib/widgets/user-profile-widget.php:135
 msgid "Left"
 msgstr ""
 
-#: lib/admin/seo-settings.php:204 lib/widgets/featured-page-widget.php:159
+#: lib/admin/seo-settings.php:204
+#: lib/widgets/featured-page-widget.php:159
 #: lib/widgets/featured-post-widget.php:243
 #: lib/widgets/featured-post-widget.php:266
 #: lib/widgets/user-profile-widget.php:136
@@ -279,9 +290,7 @@ msgid "Doctitle (<code>&lt;title&gt;</code>) Separator"
 msgstr ""
 
 #: lib/admin/seo-settings.php:209
-msgid ""
-"If the doctitle consists of two parts (Title &amp; Appended Text), then the "
-"Doctitle Separator will go between them."
+msgid "If the doctitle consists of two parts (Title &amp; Appended Text), then the Doctitle Separator will go between them."
 msgstr ""
 
 #: lib/admin/seo-settings.php:216
@@ -291,9 +300,7 @@ msgstr ""
 
 #: lib/admin/seo-settings.php:217
 #, php-format
-msgid ""
-"The %s tag is, arguably, the second most important SEO tag in the document "
-"source. Choose wisely."
+msgid "The %s tag is, arguably, the second most important SEO tag in the document source. Choose wisely."
 msgstr ""
 
 #: lib/admin/seo-settings.php:220
@@ -313,9 +320,7 @@ msgid "Home Doctitle"
 msgstr ""
 
 #: lib/admin/seo-settings.php:229
-msgid ""
-"If you leave the doctitle field blank, your site&rsquo;s title will be used "
-"instead."
+msgid "If you leave the doctitle field blank, your site&rsquo;s title will be used instead."
 msgstr ""
 
 #: lib/admin/seo-settings.php:231
@@ -323,9 +328,7 @@ msgid "Home META Description"
 msgstr ""
 
 #: lib/admin/seo-settings.php:234
-msgid ""
-"The META Description can be used to determine the text used under the title "
-"on search engine results pages."
+msgid "The META Description can be used to determine the text used under the title on search engine results pages."
 msgstr ""
 
 #: lib/admin/seo-settings.php:236
@@ -340,7 +343,8 @@ msgstr ""
 msgid "Homepage Robots Meta Tags:"
 msgstr ""
 
-#: lib/admin/seo-settings.php:244 lib/admin/seo-settings.php:245
+#: lib/admin/seo-settings.php:244
+#: lib/admin/seo-settings.php:245
 #: lib/admin/seo-settings.php:246
 #, php-format
 msgid "Apply %s to the homepage?"
@@ -348,12 +352,7 @@ msgstr ""
 
 #: lib/admin/seo-settings.php:254
 #, php-format
-msgid ""
-"By default, WordPress places several tags in your document %1$s. Most of "
-"these tags are completely unnecessary, and provide no SEO value whatsoever. "
-"They just make your site slower to load. Choose which tags you would like "
-"included in your document %1$s. If you do not know what something is, leave "
-"it unchecked."
+msgid "By default, WordPress places several tags in your document %1$s. Most of these tags are completely unnecessary, and provide no SEO value whatsoever. They just make your site slower to load. Choose which tags you would like included in your document %1$s. If you do not know what something is, leave it unchecked."
 msgstr ""
 
 #: lib/admin/seo-settings.php:256
@@ -397,48 +396,46 @@ msgid "Include Shortlink tag?"
 msgstr ""
 
 #: lib/admin/seo-settings.php:273
-msgid ""
-"The shortlink tag might have some use for 3rd party service discoverability, "
-"but it has no SEO value whatsoever."
+msgid "The shortlink tag might have some use for 3rd party service discoverability, but it has no SEO value whatsoever."
 msgstr ""
 
 #: lib/admin/seo-settings.php:280
-msgid ""
-"Depending on your situation, you may or may not want the following archive "
-"pages to be indexed by search engines. Only you can make that determination."
+msgid "Depending on your situation, you may or may not want the following archive pages to be indexed by search engines. Only you can make that determination."
 msgstr ""
 
-#: lib/admin/seo-settings.php:282 lib/admin/seo-settings.php:292
+#: lib/admin/seo-settings.php:282
+#: lib/admin/seo-settings.php:292
 #, php-format
 msgid "Apply %s to Category Archives?"
 msgstr ""
 
-#: lib/admin/seo-settings.php:283 lib/admin/seo-settings.php:293
+#: lib/admin/seo-settings.php:283
+#: lib/admin/seo-settings.php:293
 #, php-format
 msgid "Apply %s to Tag Archives?"
 msgstr ""
 
-#: lib/admin/seo-settings.php:284 lib/admin/seo-settings.php:294
+#: lib/admin/seo-settings.php:284
+#: lib/admin/seo-settings.php:294
 #, php-format
 msgid "Apply %s to Author Archives?"
 msgstr ""
 
-#: lib/admin/seo-settings.php:285 lib/admin/seo-settings.php:295
+#: lib/admin/seo-settings.php:285
+#: lib/admin/seo-settings.php:295
 #, php-format
 msgid "Apply %s to Date Archives?"
 msgstr ""
 
-#: lib/admin/seo-settings.php:286 lib/admin/seo-settings.php:296
+#: lib/admin/seo-settings.php:286
+#: lib/admin/seo-settings.php:296
 #, php-format
 msgid "Apply %s to Search Archives?"
 msgstr ""
 
 #: lib/admin/seo-settings.php:288
 #, php-format
-msgid ""
-"Some search engines will cache pages in your site (e.g Google Cache). The %1"
-"$s tag will prevent them from doing so. Choose what archives you want to %1"
-"$s."
+msgid "Some search engines will cache pages in your site (e.g Google Cache). The %1$s tag will prevent them from doing so. Choose what archives you want to %1$s."
 msgstr ""
 
 #: lib/admin/seo-settings.php:290
@@ -448,14 +445,11 @@ msgstr ""
 
 #: lib/admin/seo-settings.php:298
 #, php-format
-msgid ""
-"Occasionally, search engines use resources like the Open Directory Project "
-"and the Yahoo! Directory to find titles and descriptions for your content. "
-"Generally, you will not want them to do this. The %s and %s tags prevent "
-"them from doing so."
+msgid "Occasionally, search engines use resources like the Open Directory Project and the Yahoo! Directory to find titles and descriptions for your content. Generally, you will not want them to do this. The %s and %s tags prevent them from doing so."
 msgstr ""
 
-#: lib/admin/seo-settings.php:301 lib/admin/seo-settings.php:302
+#: lib/admin/seo-settings.php:301
+#: lib/admin/seo-settings.php:302
 #, php-format
 msgid "Apply %s to your site?"
 msgstr ""
@@ -465,9 +459,7 @@ msgid "Canonical Paginated Archives"
 msgstr ""
 
 #: lib/admin/seo-settings.php:312
-msgid ""
-"This option points search engines to the first page of an archive, if "
-"viewing a paginated page. If you do not know what this means, leave it on."
+msgid "This option points search engines to the first page of an archive, if viewing a paginated page. If you do not know what this means, leave it on."
 msgstr ""
 
 #: lib/admin/term-meta.php:32
@@ -488,37 +480,46 @@ msgstr ""
 msgid "Display %s description at the top of archive pages?"
 msgstr ""
 
-#: lib/admin/term-meta.php:76 lib/admin/user-meta.php:105
+#: lib/admin/term-meta.php:76
+#: lib/admin/user-meta.php:105
 #, php-format
 msgid "Custom Document %s"
 msgstr ""
 
-#: lib/admin/term-meta.php:82 lib/admin/user-meta.php:110
+#: lib/admin/term-meta.php:82
+#: lib/admin/user-meta.php:110
 #, php-format
 msgid "%s Description"
 msgstr ""
 
-#: lib/admin/term-meta.php:87 lib/admin/user-meta.php:115
+#: lib/admin/term-meta.php:87
+#: lib/admin/user-meta.php:115
 #, php-format
 msgid "%s Keywords"
 msgstr ""
 
-#: lib/admin/term-meta.php:89 lib/admin/user-meta.php:117
+#: lib/admin/term-meta.php:89
+#: lib/admin/user-meta.php:117
 msgid "Comma separated list"
 msgstr ""
 
-#: lib/admin/term-meta.php:93 lib/admin/user-meta.php:121
+#: lib/admin/term-meta.php:93
+#: lib/admin/user-meta.php:121
 msgid "Robots Meta"
 msgstr ""
 
-#: lib/admin/term-meta.php:95 lib/admin/term-meta.php:96
-#: lib/admin/term-meta.php:97 lib/admin/user-meta.php:123
-#: lib/admin/user-meta.php:124 lib/admin/user-meta.php:125
+#: lib/admin/term-meta.php:95
+#: lib/admin/term-meta.php:96
+#: lib/admin/term-meta.php:97
+#: lib/admin/user-meta.php:123
+#: lib/admin/user-meta.php:124
+#: lib/admin/user-meta.php:125
 #, php-format
 msgid "Apply %s to this archive?"
 msgstr ""
 
-#: lib/admin/term-meta.php:134 lib/admin/user-meta.php:157
+#: lib/admin/term-meta.php:134
+#: lib/admin/user-meta.php:157
 msgid "Choose Layout"
 msgstr ""
 
@@ -580,9 +581,7 @@ msgstr ""
 
 #: lib/admin/theme-settings.php:302
 #, php-format
-msgid ""
-"This can be helpful for diagnosing problems with your theme when seeking "
-"assistance in the <a href=\"%s\" target=\"_blank\">support forums</a>."
+msgid "This can be helpful for diagnosing problems with your theme when seeking assistance in the <a href=\"%s\" target=\"_blank\">support forums</a>."
 msgstr ""
 
 #: lib/admin/theme-settings.php:304
@@ -598,9 +597,7 @@ msgid "when updates are available"
 msgstr ""
 
 #: lib/admin/theme-settings.php:309
-msgid ""
-"If you provide an email address above, your blog can email you when a new "
-"version of Genesis is available."
+msgid "If you provide an email address above, your blog can email you when a new version of Genesis is available."
 msgstr ""
 
 #: lib/admin/theme-settings.php:329
@@ -623,7 +620,8 @@ msgstr ""
 msgid "Include Primary Navigation Menu?"
 msgstr ""
 
-#: lib/admin/theme-settings.php:346 lib/admin/theme-settings.php:376
+#: lib/admin/theme-settings.php:346
+#: lib/admin/theme-settings.php:376
 msgid "Enable Fancy Dropdowns?"
 msgstr ""
 
@@ -669,16 +667,15 @@ msgstr ""
 
 #: lib/admin/theme-settings.php:382
 #, php-format
-msgid ""
-"In order to use the navigation menus, you must build a <a href=\"%s\">custom "
-"menu</a>, then assign it to the proper Menu Location."
+msgid "In order to use the navigation menus, you must build a <a href=\"%s\">custom menu</a>, then assign it to the proper Menu Location."
 msgstr ""
 
 #: lib/admin/theme-settings.php:389
 msgid "Enter your custom feed URI:"
 msgstr ""
 
-#: lib/admin/theme-settings.php:390 lib/admin/theme-settings.php:393
+#: lib/admin/theme-settings.php:390
+#: lib/admin/theme-settings.php:393
 msgid "Redirect Feed?"
 msgstr ""
 
@@ -687,20 +684,20 @@ msgid "Enter your custom comments feed URI:"
 msgstr ""
 
 #: lib/admin/theme-settings.php:395
-msgid ""
-"If your custom feed(s) are not handled by Feedburner, we do not recommend "
-"that you use the redirect options."
+msgid "If your custom feed(s) are not handled by Feedburner, we do not recommend that you use the redirect options."
 msgstr ""
 
 #: lib/admin/theme-settings.php:401
 msgid "Enable Comments"
 msgstr ""
 
-#: lib/admin/theme-settings.php:402 lib/admin/theme-settings.php:408
+#: lib/admin/theme-settings.php:402
+#: lib/admin/theme-settings.php:408
 msgid "on posts?"
 msgstr ""
 
-#: lib/admin/theme-settings.php:404 lib/admin/theme-settings.php:410
+#: lib/admin/theme-settings.php:404
+#: lib/admin/theme-settings.php:410
 msgid "on pages?"
 msgstr ""
 
@@ -709,9 +706,7 @@ msgid "Enable Trackbacks"
 msgstr ""
 
 #: lib/admin/theme-settings.php:413
-msgid ""
-"Comments and Trackbacks can also be disabled on a per post/page basis when "
-"creating/editing posts/pages."
+msgid "Comments and Trackbacks can also be disabled on a per post/page basis when creating/editing posts/pages."
 msgstr ""
 
 #: lib/admin/theme-settings.php:420
@@ -722,7 +717,8 @@ msgstr ""
 msgid "Front Page"
 msgstr ""
 
-#: lib/admin/theme-settings.php:424 lib/structure/menu.php:142
+#: lib/admin/theme-settings.php:424
+#: lib/structure/menu.php:142
 msgid "Posts"
 msgstr ""
 
@@ -739,10 +735,7 @@ msgid "404 Page"
 msgstr ""
 
 #: lib/admin/theme-settings.php:433
-msgid ""
-"Breadcrumbs are a great way of letting your visitors find out where they are "
-"on your site with just a glance. You can enable/disable them on certain "
-"areas of your site."
+msgid "Breadcrumbs are a great way of letting your visitors find out where they are on your site with just a glance. You can enable/disable them on certain areas of your site."
 msgstr ""
 
 #: lib/admin/theme-settings.php:438
@@ -757,26 +750,26 @@ msgstr ""
 msgid "Display post excerpts"
 msgstr ""
 
-#: lib/admin/theme-settings.php:445 lib/widgets/featured-post-widget.php:293
+#: lib/admin/theme-settings.php:445
+#: lib/widgets/featured-post-widget.php:293
 msgid "Limit content to"
 msgstr ""
 
-#: lib/admin/theme-settings.php:445 lib/widgets/featured-post-widget.php:293
+#: lib/admin/theme-settings.php:445
+#: lib/widgets/featured-post-widget.php:293
 msgid "characters"
 msgstr ""
 
 #: lib/admin/theme-settings.php:447
-msgid ""
-"Using this option will limit the text and strip all formatting from the text "
-"displayed. To use this option, choose \"Display post content\" in the select "
-"box above."
+msgid "Using this option will limit the text and strip all formatting from the text displayed. To use this option, choose \"Display post content\" in the select box above."
 msgstr ""
 
 #: lib/admin/theme-settings.php:450
 msgid "Include the Featured Image?"
 msgstr ""
 
-#: lib/admin/theme-settings.php:453 lib/widgets/featured-page-widget.php:144
+#: lib/admin/theme-settings.php:453
+#: lib/widgets/featured-page-widget.php:144
 #: lib/widgets/featured-post-widget.php:251
 msgid "Image Size"
 msgstr ""
@@ -798,16 +791,15 @@ msgid "Numeric"
 msgstr ""
 
 #: lib/admin/theme-settings.php:470
-msgid ""
-"These options will affect any blog listings page, including archive, author, "
-"blog, category, search, and tag pages."
+msgid "These options will affect any blog listings page, including archive, author, blog, category, search, and tag pages."
 msgstr ""
 
 #: lib/admin/theme-settings.php:475
 msgid "Display which category:"
 msgstr ""
 
-#: lib/admin/theme-settings.php:476 lib/widgets/featured-post-widget.php:202
+#: lib/admin/theme-settings.php:476
+#: lib/widgets/featured-post-widget.php:202
 msgid "All Categories"
 msgstr ""
 
@@ -819,7 +811,8 @@ msgstr ""
 msgid "Comma separated - 1,2,3 for example"
 msgstr ""
 
-#: lib/admin/theme-settings.php:482 lib/widgets/featured-post-widget.php:204
+#: lib/admin/theme-settings.php:482
+#: lib/widgets/featured-post-widget.php:204
 #: lib/widgets/featured-post-widget.php:306
 msgid "Number of Posts to Show"
 msgstr ""
@@ -829,9 +822,7 @@ msgid "Enter scripts/code you would like output to <code>wp_head()</code>:"
 msgstr ""
 
 #: lib/admin/theme-settings.php:492
-msgid ""
-"The <code>wp_head()</code> hook executes immediately before the closing "
-"<code>&lt;/head&gt;</code> tag in the document source."
+msgid "The <code>wp_head()</code> hook executes immediately before the closing <code>&lt;/head&gt;</code> tag in the document source."
 msgstr ""
 
 #: lib/admin/theme-settings.php:496
@@ -839,9 +830,7 @@ msgid "Enter scripts/code you would like output to <code>wp_footer()</code>:"
 msgstr ""
 
 #: lib/admin/theme-settings.php:500
-msgid ""
-"The <code>wp_footer()</code> hook executes immediately before the closing "
-"<code>&lt;/body&gt;</code> tag in the document source."
+msgid "The <code>wp_footer()</code> hook executes immediately before the closing <code>&lt;/body&gt;</code> tag in the document source."
 msgstr ""
 
 #: lib/admin/user-meta.php:24
@@ -880,7 +869,8 @@ msgstr ""
 msgid "Genesis Author Archive Settings"
 msgstr ""
 
-#: lib/admin/user-meta.php:64 lib/admin/user-meta.php:101
+#: lib/admin/user-meta.php:64
+#: lib/admin/user-meta.php:101
 #: lib/admin/user-meta.php:153
 msgid "These settings apply to this author's archive pages."
 msgstr ""
@@ -902,19 +892,23 @@ msgstr ""
 msgid "This text will be the first paragraph, and display on the first page"
 msgstr ""
 
-#: lib/classes/breadcrumb.php:51 lib/functions/menu.php:39
+#: lib/classes/breadcrumb.php:51
+#: lib/functions/menu.php:39
 #: lib/widgets/menu-categories-widget.php:58
 #: lib/widgets/menu-pages-widget.php:60
 msgid "Home"
-msgstr ""
+msgstr "Главная"
 
 #: lib/classes/breadcrumb.php:60
 msgid "You are here: "
 msgstr ""
 
-#: lib/classes/breadcrumb.php:61 lib/classes/breadcrumb.php:62
-#: lib/classes/breadcrumb.php:63 lib/classes/breadcrumb.php:64
-#: lib/classes/breadcrumb.php:66 lib/classes/breadcrumb.php:67
+#: lib/classes/breadcrumb.php:61
+#: lib/classes/breadcrumb.php:62
+#: lib/classes/breadcrumb.php:63
+#: lib/classes/breadcrumb.php:64
+#: lib/classes/breadcrumb.php:66
+#: lib/classes/breadcrumb.php:67
 msgid "Archives for "
 msgstr ""
 
@@ -926,19 +920,24 @@ msgstr ""
 msgid "Not found: "
 msgstr ""
 
-#: lib/classes/breadcrumb.php:115 lib/classes/breadcrumb.php:207
+#: lib/classes/breadcrumb.php:115
+#: lib/classes/breadcrumb.php:207
 #: lib/classes/breadcrumb.php:298
 #, php-format
 msgid "View %s"
 msgstr ""
 
-#: lib/classes/breadcrumb.php:241 lib/classes/breadcrumb.php:245
-#: lib/classes/breadcrumb.php:250 lib/shortcodes/post.php:313
-#: lib/structure/post.php:128 lib/widgets/featured-page-widget.php:76
+#: lib/classes/breadcrumb.php:241
+#: lib/classes/breadcrumb.php:245
+#: lib/classes/breadcrumb.php:250
+#: lib/shortcodes/post.php:313
+#: lib/structure/post.php:128
+#: lib/widgets/featured-page-widget.php:76
 msgid "(Edit)"
-msgstr ""
+msgstr "(Редактировать)"
 
-#: lib/classes/breadcrumb.php:257 lib/classes/breadcrumb.php:263
+#: lib/classes/breadcrumb.php:257
+#: lib/classes/breadcrumb.php:263
 #, php-format
 msgid "View archives for %s"
 msgstr ""
@@ -1013,17 +1012,12 @@ msgid "Click here to complete the upgrade"
 msgstr ""
 
 #: lib/functions/upgrade.php:344
-msgid ""
-"Upgrading Genesis will overwrite the current installed version of Genesis. "
-"Are you sure you want to upgrade?. \"Cancel\" to stop, \"OK\" to upgrade."
+msgid "Upgrading Genesis will overwrite the current installed version of Genesis. Are you sure you want to upgrade?. \"Cancel\" to stop, \"OK\" to upgrade."
 msgstr ""
 
 #: lib/functions/upgrade.php:347
 #, php-format
-msgid ""
-"Genesis %s is available. <a href=\"%s\" class=\"thickbox thickbox-preview"
-"\">Check out what's new</a> or <a href=\"%s\" onclick=\"return "
-"genesis_confirm('%s');\">update now</a>."
+msgid "Genesis %s is available. <a href=\"%s\" class=\"thickbox thickbox-preview\">Check out what's new</a> or <a href=\"%s\" onclick=\"return genesis_confirm('%s');\">update now</a>."
 msgstr ""
 
 #: lib/functions/upgrade.php:381
@@ -1033,10 +1027,7 @@ msgstr ""
 
 #: lib/functions/upgrade.php:382
 #, php-format
-msgid ""
-"Genesis %s is now available. We have provided 1-click updates for this "
-"theme, so please log into your dashboard and update at your earliest "
-"convenience."
+msgid "Genesis %s is now available. We have provided 1-click updates for this theme, so please log into your dashboard and update at your earliest convenience."
 msgstr ""
 
 #: lib/functions/widgetize.php:39
@@ -1052,9 +1043,7 @@ msgid "Primary Sidebar"
 msgstr ""
 
 #: lib/functions/widgetize.php:46
-msgid ""
-"This is the primary sidebar if you are using a 2 or 3 column site layout "
-"option"
+msgid "This is the primary sidebar if you are using a 2 or 3 column site layout option"
 msgstr ""
 
 #: lib/functions/widgetize.php:51
@@ -1062,8 +1051,7 @@ msgid "Secondary Sidebar"
 msgstr ""
 
 #: lib/functions/widgetize.php:52
-msgid ""
-"This is the secondary sidebar if you are using a 3 column site layout option"
+msgid "This is the secondary sidebar if you are using a 3 column site layout option"
 msgstr ""
 
 #: lib/functions/widgetize.php:79
@@ -1078,11 +1066,11 @@ msgstr ""
 
 #: lib/js/load-scripts.php:38
 msgid "Select / Deselect All"
-msgstr ""
+msgstr "Выбрать все / Отменить все"
 
 #: lib/shortcodes/footer.php:24
 msgid "Return to top of page"
-msgstr ""
+msgstr "На верх"
 
 #: lib/shortcodes/footer.php:129
 msgid "by "
@@ -1105,15 +1093,18 @@ msgstr ""
 msgid "Visit %s&#8217;s website"
 msgstr ""
 
-#: lib/shortcodes/post.php:177 lib/widgets/featured-page-widget.php:74
+#: lib/shortcodes/post.php:177
+#: lib/widgets/featured-page-widget.php:74
 msgid "Leave a Comment"
-msgstr ""
+msgstr "Оставить свой комментарий"
 
-#: lib/shortcodes/post.php:178 lib/widgets/featured-page-widget.php:74
+#: lib/shortcodes/post.php:178
+#: lib/widgets/featured-page-widget.php:74
 msgid "1 Comment"
-msgstr ""
+msgstr "1 Комментарий"
 
-#: lib/shortcodes/post.php:179 lib/widgets/featured-page-widget.php:74
+#: lib/shortcodes/post.php:179
+#: lib/widgets/featured-page-widget.php:74
 msgid "% Comments"
 msgstr ""
 
@@ -1121,9 +1112,10 @@ msgstr ""
 msgid "Tagged With: "
 msgstr ""
 
-#: lib/shortcodes/post.php:249 lib/shortcodes/post.php:278
+#: lib/shortcodes/post.php:249
+#: lib/shortcodes/post.php:278
 msgid "Filed Under: "
-msgstr ""
+msgstr "Рубрика: "
 
 #: lib/structure/comments.php:50
 msgid "<h3>Comments</h3>"
@@ -1155,7 +1147,8 @@ msgstr ""
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: lib/structure/comments.php:219 lib/widgets/menu-categories-widget.php:117
+#: lib/structure/comments.php:219
+#: lib/widgets/menu-categories-widget.php:117
 msgid "Name"
 msgstr ""
 
@@ -1171,11 +1164,13 @@ msgstr ""
 msgid "Speak Your Mind"
 msgstr ""
 
-#: lib/structure/footer.php:89 lib/structure/footer.php:94
+#: lib/structure/footer.php:89
+#: lib/structure/footer.php:94
 msgid "Copyright"
 msgstr ""
 
-#: lib/structure/footer.php:89 lib/structure/footer.php:93
+#: lib/structure/footer.php:89
+#: lib/structure/footer.php:93
 msgid "on"
 msgstr ""
 
@@ -1198,9 +1193,10 @@ msgstr ""
 
 #: lib/structure/menu.php:143
 msgid "Comments"
-msgstr ""
+msgstr "Комментарии"
 
-#: lib/structure/post.php:136 lib/structure/post.php:138
+#: lib/structure/post.php:136
+#: lib/structure/post.php:138
 msgid "[Read more...]"
 msgstr ""
 
@@ -1208,10 +1204,11 @@ msgstr ""
 msgid "Sorry, no posts matched your criteria."
 msgstr ""
 
-#: lib/structure/post.php:169 lib/widgets/featured-post-widget.php:52
+#: lib/structure/post.php:169
+#: lib/widgets/featured-post-widget.php:52
 #: lib/widgets/featured-post-widget.php:182
 msgid "By"
-msgstr ""
+msgstr "От"
 
 #: lib/structure/post.php:228
 msgid "About"
@@ -1256,10 +1253,7 @@ msgstr ""
 
 #: lib/structure/sidebar.php:21
 #, php-format
-msgid ""
-"This is the Primary Sidebar Widget Area. You can add content to this area by "
-"visiting your <a href=\"%s\">Widgets Panel</a> and adding new widgets to "
-"this area."
+msgid "This is the Primary Sidebar Widget Area. You can add content to this area by visiting your <a href=\"%s\">Widgets Panel</a> and adding new widgets to this area."
 msgstr ""
 
 #: lib/structure/sidebar.php:39
@@ -1268,10 +1262,7 @@ msgstr ""
 
 #: lib/structure/sidebar.php:42
 #, php-format
-msgid ""
-"This is the Secondary Sidebar Widget Area. You can add content to this area "
-"by visiting your <a href=\"%s\">Widgets Panel</a> and adding new widgets to "
-"this area."
+msgid "This is the Secondary Sidebar Widget Area. You can add content to this area by visiting your <a href=\"%s\">Widgets Panel</a> and adding new widgets to this area."
 msgstr ""
 
 #: lib/tools/post-templates.php:110
@@ -1287,9 +1278,7 @@ msgid "Default"
 msgstr ""
 
 #: lib/tools/post-templates.php:134
-msgid ""
-"Some themes have custom templates you can use for single posts that might "
-"have additional features or custom layouts. If so, you will see them above."
+msgid "Some themes have custom templates you can use for single posts that might have additional features or custom layouts. If so, you will see them above."
 msgstr ""
 
 #: lib/widgets/enews-widget.php:22
@@ -1300,13 +1289,15 @@ msgstr ""
 msgid "Genesis - eNews and Updates"
 msgstr ""
 
-#: lib/widgets/enews-widget.php:89 lib/widgets/featured-page-widget.php:134
+#: lib/widgets/enews-widget.php:89
+#: lib/widgets/featured-page-widget.php:134
 #: lib/widgets/featured-post-widget.php:194
 #: lib/widgets/featured-post-widget.php:213
 #: lib/widgets/featured-post-widget.php:303
 #: lib/widgets/latest-tweets-widget.php:151
 #: lib/widgets/menu-categories-widget.php:107
-#: lib/widgets/menu-pages-widget.php:109 lib/widgets/menu-pages-widget.php:119
+#: lib/widgets/menu-pages-widget.php:109
+#: lib/widgets/menu-pages-widget.php:119
 #: lib/widgets/user-profile-widget.php:115
 msgid "Title"
 msgstr ""
@@ -1516,9 +1507,7 @@ msgid "More Text (if applicable)"
 msgstr ""
 
 #: lib/widgets/featured-post-widget.php:301
-msgid ""
-"To display an unordered list of more posts from this category, please fill "
-"out the information below"
+msgid "To display an unordered list of more posts from this category, please fill out the information below"
 msgstr ""
 
 #: lib/widgets/featured-post-widget.php:312
@@ -1542,15 +1531,11 @@ msgid "The Twitter API is taking too long to respond. Please try again later."
 msgstr ""
 
 #: lib/widgets/latest-tweets-widget.php:64
-msgid ""
-"There was an error while attempting to contact the Twitter API. Please try "
-"again."
+msgid "There was an error while attempting to contact the Twitter API. Please try again."
 msgstr ""
 
 #: lib/widgets/latest-tweets-widget.php:67
-msgid ""
-"The Twitter API returned an error while processing your request. Please try "
-"again."
+msgid "The Twitter API returned an error while processing your request. Please try again."
 msgstr ""
 
 #: lib/widgets/latest-tweets-widget.php:83
@@ -1645,9 +1630,7 @@ msgid "Term Group"
 msgstr ""
 
 #: lib/widgets/menu-categories-widget.php:124
-msgid ""
-"Use the checklist below to choose which categories (and subcategories) you "
-"want to include in your Navigation Menu"
+msgid "Use the checklist below to choose which categories (and subcategories) you want to include in your Navigation Menu"
 msgstr ""
 
 #: lib/widgets/menu-pages-widget.php:22
@@ -1679,9 +1662,7 @@ msgid "Author"
 msgstr ""
 
 #: lib/widgets/menu-pages-widget.php:127
-msgid ""
-"Use the checklist below to choose which pages (and subpages) you want to "
-"include in your Navigation Menu"
+msgid "Use the checklist below to choose which pages (and subpages) you want to include in your Navigation Menu"
 msgstr ""
 
 #: lib/widgets/user-profile-widget.php:25
@@ -1702,9 +1683,7 @@ msgid "View My Blog Posts"
 msgstr ""
 
 #: lib/widgets/user-profile-widget.php:118
-msgid ""
-"Select a user. The email address for this account will be used to pull the "
-"Gravatar image."
+msgid "Select a user. The email address for this account will be used to pull the Gravatar image."
 msgstr ""
 
 #: lib/widgets/user-profile-widget.php:125
@@ -1736,11 +1715,10 @@ msgid "Custom Text (below)"
 msgstr ""
 
 #: lib/widgets/user-profile-widget.php:147
-msgid ""
-"Choose your extended \"About Me\" page from the list below. This will be the "
-"page linked to at the end of the about me section."
+msgid "Choose your extended \"About Me\" page from the list below. This will be the page linked to at the end of the about me section."
 msgstr ""
 
 #: lib/widgets/user-profile-widget.php:150
 msgid "Show Author Archive Link?"
 msgstr ""
+
