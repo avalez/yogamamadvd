@@ -258,7 +258,8 @@ a.button {
     background: -webkit-linear-gradient(center, #EDEDED 5%, #6EAC2C 100%) no-repeat scroll 0 0 #6EAC2C; /* Chrome 10+, Saf5.1+ */
     background: -moz-linear-gradient(center top , #EDEDED 5%, #6EAC2C 100%) repeat scroll 0 0 #6EAC2C; /* FF3.6+ */
     background: -ms-linear-gradient(center, #EDEDED 5%, #6EAC2C 100%)  no-repeat scroll 0 0 #6EAC2C; /* IE10 */
-    background: -o-linear-gradient(center, #EDEDED 5%, #6EAC2C 100%)  no-repeat scroll 0 0 #6EAC2C; /* Opera 11.10+ */
+    filter : progid:DXImageTransform.Microsoft.gradient(startColorstr='#EDEDED', endColorstr='#6EAC2C'); /* MSIE */    
+    background-image: -o-linear-gradient(center, #EDEDED 5%, #6EAC2C 100%)  no-repeat scroll 0 0 #6EAC2C; /* Opera 11.10+ */
     background: linear-gradient(center, #EDEDED 5%, #6EAC2C 100%)  no-repeat scroll 0 0 #6EAC2C; /* W3C */
     border: 1px solid #CCC;
     -webkit-border-radius: 3px 3px 3px 3px;
@@ -280,7 +281,8 @@ a.button {
     background: -webkit-linear-gradient(center top, #FDFDFD 5%, #ACDD4A) no-repeat scroll 0 0 #ACDD4A; /* Chrome 10+, Saf5.1+ */
     background: -moz-linear-gradient(center top , #FDFDFD 5%, #ACDD4A 100%) repeat scroll 0 0 #ACDD4A; /* FF3.6+ */
     background: -ms-linear-gradient(center, #FDFDFD 5%, #ACDD4A 100%)  no-repeat scroll 0 0 #ACDD4A; /* IE10 */
-    background: -o-linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* Opera 11.10+ */
+    filter : progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#ACDD4A'); /* MSIE */    
+    background-image: -o-linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* Opera 11.10+ */
     background: linear-gradient(center top, #FDFDFD 5%, #ACDD4A)  no-repeat scroll 0 0 #ACDD4A; /* W3C */
     text-shadow: 1px 1px 0 #FFFFFF;
 }
@@ -550,22 +552,6 @@ a.button {
 	text-decoration: none;
 	font-weight: bold;
 }
-.pgw div div {
-    float: right;
-    margin-top: 7px;
-    color: #333333;
-    vertical-align: bottom;
-}
-.pgw:nth-child(n+2) {
-    padding-top: 13.2px;
-    border-top: 1px solid #EEEEEE;
-}
-.pgw:nth-child(n) {
-    padding-bottom: 13.2px;
-}
-.pgw:last-child {
-    padding-bottom: 0px;
-}
 .product-list > div {
 	overflow: hidden;
 	padding-top: 16px;
@@ -576,7 +562,7 @@ a.button {
 	margin-left: 15px;
 }
 .product-list > div + div {
-    border-top: 1px solid #EEEEEE;
+  border-top: 1px solid #EEEEEE;
 }
 .product-list .image {
 	float: left;

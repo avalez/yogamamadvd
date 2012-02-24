@@ -23,16 +23,16 @@
   {{each(i, category) categories}}
   {{if app.cart('shipment') != 'download' || category != 'ondelivery'}}
   <h3><a name="${category}">${i18n('pgwc_' + category)}</strong></a></h3>
-  <div class="checkout-content">
+  <div class="checkout-content product-list">
     {{each(j, gateway) gateways}}
     {{if $.inArray(category, gateway.categories) >= 0}}
     {{var payment = app.cart("payment") }}
-      <div class="pgw">
+      <div>
       <input id="radio-${category}-${gateway.name}" type="radio" value="${gateway.name}" name="gateway"
        {{if payment == gateway.name }}checked="true"{{/if}}>
       <label for="radio-${category}-${gateway.name}">${i18n('pgw_' + gateway.name)}
         <img alt="подсказка" src="catalog/view/theme/yogamamadvd/image/help.gif" class="tip_help" title="${i18n('pgw_' + gateway.name + '_tooltip')}">
-        <div><img alt="картинка" src="catalog/view/theme/yogamamadvd/image/${gateway.name}.png"></div>
+        <div class="right"><img alt="картинка" src="catalog/view/theme/yogamamadvd/image/${gateway.name}.png"></div>
       </label>
       </div>
     {{/if}}
