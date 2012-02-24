@@ -25,12 +25,12 @@ body {
 /***** Hyperlinks ********************/
 
 a, a:visited {
-	color: #60B5BF;
+	color: #618ab1;
 	text-decoration: none;
 	}
 	
 a:hover {
-	color: #60B5BF;
+	color: #618ab1;
 	text-decoration: underline;
 	}
 	
@@ -79,19 +79,19 @@ a:focus, a:hover, a:active {
 	}
 	
 #title-area #title a {
-	color: #60B5BF;
+	color: #618ab1;
 	margin: 0; 
 	padding: 0;
 	text-decoration: none;
 	}
 	
 #title-area #title a:hover {
-	color: #60B5BF;
+	color: #618ab1;
 	text-decoration: none;
 	}
 	
 #title-area #description {
-	color: #60B5BF;
+	color: #618ab1;
 	font-size: 12px;
 	font-style: italic;
 	font-weight: normal;
@@ -112,7 +112,7 @@ a:focus, a:hover, a:active {
 	}
 	
 #header .widget-area h4 {
-	color: #60B5BF;
+	color: #618ab1;
 	font-size: 14px;
 	font-weight: normal;
 	margin: 10px 0 0 0; 
@@ -160,6 +160,7 @@ a:focus, a:hover, a:active {
 .header-full-width #title-area, .header-full-width #title-area #title, .header-full-width #title-area #title a {
 	background: url(images/header.png);
 	width: 960px;
+        height: 254px;
 	}
 	
 /***** Header Right Navigation ********************/
@@ -270,7 +271,7 @@ a:focus, a:hover, a:active {
 
 #nav {
 	clear: both;
-	background: #60B5BF;
+	background: #618ab1;
 	width: 960px;
 	height: 40px;
 	color: #FFFFFF;
@@ -307,9 +308,9 @@ a:focus, a:hover, a:active {
 	position: relative;
 	}
 
-#nav li a:hover, #nav li a:active, #nav .current_page_item a {
+#nav li a:hover, #nav li a:active, #nav .current_page_item a, #nav .current-menu-item a {
 	background: #FFFFFF;
-	color: #60B5BF;
+	color: #618ab1;
 	}
 	
 #nav li a.sf-with-ul {
@@ -334,14 +335,14 @@ a:focus, a:hover, a:active {
 	
 #nav li li a, #nav li li a:link, #nav li li a:visited {
 	background: #FFFFFF;
-	color: #60B5BF;
+	color: #618ab1;
 	width: 163px; 
 	font-size: 12px;
 	margin: 0;
 	padding: 6px 10px 6px 10px;
-	border-left: 1px solid #60B5BF;
-	border-right: 1px solid #60B5BF;
-	border-bottom: 1px solid #60B5BF;
+	border-left: 1px solid #618ab1;
+	border-right: 1px solid #618ab1;
+	border-bottom: 1px solid #618ab1;
 	position: relative;
 	}
 	
@@ -508,7 +509,7 @@ a:focus, a:hover, a:active {
 	}
 	
 #subnav li li a:hover, #subnav li li a:active {
-	color: #60B5BF;
+	color: #618ab1;
 	}
 
 #subnav li li a .sf-sub-indicator, #subnav li li a:hover .sf-sub-indicator {
@@ -812,7 +813,7 @@ a:focus, a:hover, a:active {
 	}
 	
 #content h2 a:hover {
-	color: #60B5BF;
+	color: #618ab1;
 	text-decoration: none;
 	}
 	
@@ -964,13 +965,13 @@ img.wp-smiley, img.wp-wink {
 	}
 
 .navigation li a {
-	color: #60B5BF;
+	color: #618ab1;
 	padding: 5px 8px 5px 8px;
 	border: 1px solid #E6E6E6;
 	}
 
 .navigation li a:hover {
-	background: #60B5BF;
+	background: #618ab1;
 	color: #FFFFFF;
 	border: 1px solid #E6E6E6;
 	text-decoration: none;
@@ -983,7 +984,7 @@ img.wp-smiley, img.wp-wink {
 	}
 
 .navigation li.active a {
-	background: #60B5BF;
+	background: #618ab1;
 	color: #FFFFFF;
 	font-weight: bold;
 	border: 1px solid #E6E6E6;
@@ -1033,7 +1034,7 @@ img.wp-smiley, img.wp-wink {
 	}
 	
 #sidebar h2 a:hover, #sidebar-alt h2 a:hover {
-	color: #60B5BF;
+	color: #618ab1;
 	text-decoration: none;
 	}
 
@@ -1083,7 +1084,7 @@ img.wp-smiley, img.wp-wink {
 	}
 	
 #sidebar li a, #sidebar li a:visited, #sidebar-alt li a, #sidebar-alt li a:visited {
-	color: #60B5BF;
+	color: #618ab1;
 	font-size: 12px;
 	text-decoration: none;
 	}
@@ -1221,7 +1222,7 @@ img.wp-smiley, img.wp-wink {
 	}
 
 .searchsubmit {
-	background: #60B5BF;
+	background: #618ab1;
 	color: #FFFFFF;
 	font-size: 11px;
 	font-family: Century Gothic, Verdana, Arial;
@@ -1288,7 +1289,7 @@ img.wp-smiley, img.wp-wink {
 	}
 	
 .enews #subbutton {
-	background: #60B5BF;
+	background: #618ab1;
 	color: #FFFFFF;
 	font-size: 11px;
 	font-family: Century Gothic, Verdana, Arial;
@@ -1416,7 +1417,7 @@ img.wp-smiley, img.wp-wink {
 /***** Contact Form ********************/
 	
 .gform_footer .button {
-	background: #60B5BF;
+	background: #618ab1;
 	color: #FFFFFF;
 	font-size: 11px;
 	font-family: Century Gothic, Verdana, Arial;
@@ -1500,7 +1501,7 @@ img.wp-smiley, img.wp-wink {
 /***** Footer Widgeted ********************/
 	
 #footer-widgeted {
-	background: #60B5BF;
+	background: #618ab1;
 	width: 960px;
 	color: #FFFFFF;
 	font-size: 14px;
@@ -1616,7 +1617,7 @@ img.wp-smiley, img.wp-wink {
 	}
 	
 #submit {
-	background: #60B5BF;
+	background: #618ab1;
 	color: #FFFFFF;
 	font-size: 11px;
 	text-decoration: none;
@@ -1711,7 +1712,7 @@ img.wp-smiley, img.wp-wink {
 	}
 	
 .reply a, .reply a:visited {
-	background: #60B5BF;
+	background: #618ab1;
 	font-size: 11px;
 	color: #FFFFFF;
 	text-decoration: none;

@@ -22,3 +22,7 @@ The lightbox effect for the client page gallery is using the jQuery Lightbox for
 
 SUPPORT
 If you are looking for theme support, please visit http://www.studiopress.com/support.
+
+CONFIGURE
+Параметры->Чтение: На главное странице отображать Статичекую страницу Главная
+Внешний вид->Меню: Страницы: Главная, Рубрики: Новости, +Автоматически добавлять новые страницы верхнего уровня (а дочерние?)
