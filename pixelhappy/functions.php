@@ -58,7 +58,45 @@ genesis_register_sidebar(array(
 
 // Copyright
 add_filter( 'genesis_footer_creds_text', 'child_footer_creds_text', 10, 1);
-/**Modifies the footer text */
 function child_footer_creds_text( $creds_text ){ 
     return sprintf( '%1$s ' . g_ent( '&copy;' ) . ' ' . date( 'Y' ) . ' %2$s <a href="http://maklerblog.ru">maklerblog.ru</a> %2$s [footer_loginout]', __( 'Copyright', 'genesis' ), g_ent( '&middot;' ) );
 }
+
+// Authors list
+// http://theme.fm/2011/08/how-to-create-an-authors-list-shortcode-in-wordpress-1534/
+add_shortcode('authors-list', 'my_authors_list_shortcode');
+function my_authors_list_shortcode( $atts = array() ) {
+
+  	$query_args = array(
+  		'orderby' => 'name', 'order' => 'ASC', 'number' => ''
+  	);
+
+    $users = get_users( $query_args );
+
+    $content = "<ul class='authors-list'>";
+    foreach( $users as $user ) {
+    		if (/* $exclude_admin && */ 'admin' == $user->display_name ) {
+      			continue;
+    		}
+
+        $content .= "<li>";
+        // http://wordpress.org/extend/plugins/user-photo/
+        if(function_exists('userphoto_exists') && userphoto_exists($user)) {
+        		ob_start();
+        		userphoto($user);
+            $content .= ob_get_contents();
+        		ob_end_clean();
+        } else {
+            $content .= get_avatar($user->ID, 96);
+        }
+        $content .= "<h3>" . $user->display_name . "</h3>";
+        $content .= "<p class='author-description'>" . get_user_meta( $user->ID, 'description', true ) . "</p>";
+        $content .= "</li>";
+    }
+    $content .= "</ul>";
+    return $content;
+}
+
+// Allow HTML in WordPress Author Bios
+// http://www.zachgraeve.com/2009/02/18/allow-html-in-wordpress-author-bios/
+remove_all_filters('pre_user_description');

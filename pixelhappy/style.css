@@ -1752,3 +1752,35 @@ img.wp-smiley, img.wp-wink {
 	margin: 0;
 	padding: 0;
 	}
+
+ul.authors-list {
+    list-style-type: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+ul.authors-list li {
+    list-style: none !important;
+    margin: 0 30px 0 0 !important;
+}
+
+ul.authors-list img {
+    float: left;
+    margin-right: 10px;
+}
+
+ul.authors-list p,
+ul.authors-list h3,
+ul.authors-list h5 {
+    display: block;
+    margin-left: 105px !important;
+    margin-bottom: 0;
+}
+
+ul.authors-list a.twitter-icon {
+    background: url(twitter_icon.gif) 0 0 no-repeat;
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+    text-indent: -3000px;
+}

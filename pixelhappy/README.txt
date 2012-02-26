@@ -26,3 +26,5 @@ If you are looking for theme support, please visit http://www.studiopress.com/su
 CONFIGURE
 Параметры->Чтение: На главное странице отображать Статичекую страницу Главная
 Внешний вид->Меню: Страницы: Главная, Рубрики: Новости, +Автоматически добавлять новые страницы верхнего уровня (а дочерние?)
+Вненший вид->Темы: Genesis/pixelhappy
+Плагины->Добавить новый: jQuery Lightbox For Native Galleries (genesis/pixelhappy), User photo
