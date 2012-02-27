@@ -667,24 +667,14 @@ class Auth_OpenID_Message {
             $form_tag_attrs = array();
         }
         
-        $post_args = $this->toPostArgs();
-        $post_args['openid_trust'] = 'true';
-
-        if (isset($form_tag_attrs['_wpnonce'])) {
-          $post_args['_wpnonce'] = $form_tag_attrs['_wpnonce'];
-        }
-        unset($form_tag_attrs['_wpnonce']);
-        
         $sep = '?';
         if (strpos($action_url, '?') !== false) {
             $sep = '&';
         }
-        $http_referer = $action_url . $sep . 'openid_trust=true';
-        if (isset($post_args['_wpnonce'])) {
-          $http_referer .= '&' . '_wpnonce=' . urlencode($post_args['_wpnonce']);
+        if (isset($form_tag_attrs['_wpnonce']) && !empty($form_tag_attrs['_wpnonce'])) {
+          $action_url .= $sep . 'openid_trust=true&include_sreg=on&_wpnonce=' . urlencode($form_tag_attrs['_wpnonce']);
+          unset($form_tag_attrs['_wpnonce']);
         }
-        //BAD $action_url .= $sep . '_wp_http_referer=' . urlencode($http_referer);
-        //USELESS $action_url .= $sep . 'openid_trust=true&_wpnonce=' . urlencode($post_args['_wpnonce']);
 
         $form_tag_attrs['action'] = $action_url;
         $form_tag_attrs['method'] = 'post';
@@ -700,7 +690,7 @@ class Auth_OpenID_Message {
 
         $form .= ">\n";
 
-        foreach ($post_args as $name => $value) {
+        foreach ($this->toPostArgs() as $name => $value) {
             $form .= sprintf(
                         "<input type=\"hidden\" name=\"%s\" value=\"%s\" />\n",
                         $name, urldecode($value));
