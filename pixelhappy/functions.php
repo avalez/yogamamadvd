@@ -100,3 +100,54 @@ function my_authors_list_shortcode( $atts = array() ) {
 // Allow HTML in WordPress Author Bios
 // http://www.zachgraeve.com/2009/02/18/allow-html-in-wordpress-author-bios/
 remove_all_filters('pre_user_description');
+
+add_filter( 'genesis_footer_backtotop_text', 'my_add_ratings', 10, 1);
+function my_add_ratings( $backtotop_text ){ 
+    $content = $backtotop_text . "</div>";
+    $content .= '<div class="rating">';
+    $content .= mail_ru();
+    $content .= '</div><div class="rating">';
+    $content .= liveinternet();
+    return $content;
+}
+
+function mail_ru() {
+  $content = '<!--Rating@Mail.ru counter-->' . "\n";
+  $content .= '<script language="javascript"><!--' . "\n";
+  $content .= "d=document;var a='';a+=';r='+escape(d.referrer);js=10;//--></script>" . "\n";
+  $content .= '<script language="javascript1.1"><!--' . "\n";
+  $content .= "a+=';j='+navigator.javaEnabled();js=11;//--></script>" . "\n";
+  $content .= '<script language="javascript1.2"><!--' . "\n";
+  $content .= "s=screen;a+=';s='+s.width+'*'+s.height;" . "\n";
+  $content .= "a+=';d='+(s.colorDepth?s.colorDepth:s.pixelDepth);js=12;//--></script>" . "\n";
+  $content .= '<script language="javascript1.3"><!--' . "\n";
+  $content .= 'js=13;//--></script><script language="javascript" type="text/javascript"><!--' . "\n";
+  $content .= "d.write('<a href=\"http://top.mail.ru/jump?from=2172758\" target=\"_top\">'+" . "\n";
+  $content .= "'<img src=\"http://d7.c2.b1.a2.top.mail.ru/counter?id=2172758;t=233;js='+js+" . "\n";
+  $content .= "a+';rand='+Math.random()+'\" alt=\"Рейтинг@Mail.ru\" border=\"0\" '+" . "\n";
+  $content .= "'height=\"31\" width=\"88\"><\/a>');if(11<js)d.write('<'+'!-- ');//--></script>" . "\n";
+  $content .= '<noscript><a target="_top" href="http://top.mail.ru/jump?from=2172758">' . "\n";
+  $content .= '<img src="http://d7.c2.b1.a2.top.mail.ru/counter?js=na;id=2172758;t=109" ' . "\n";
+  $content .= 'height="18" width="88" border="0" alt="Рейтинг@Mail.ru"></a></noscript>' . "\n";
+  $content .= '<script language="javascript" type="text/javascript"><!--' . "\n";
+  $content .= "if(11<js)d.write('--'+'>');//--></script>" . "\n";
+  $content .= '<!--// Rating@Mail.ru counter-->' . "\n";
+
+  return $content;
+}
+
+function liveinternet() {
+  $content = '<!--LiveInternet counter--><script type="text/javascript"><!--' . "\n";
+  $content .= "document.write(\"<a href='http://www.liveinternet.ru/click' \"+" . "\n";
+  $content .= "\"target=_blank><img src='//counter.yadro.ru/hit?t57.16;r\"+" . "\n";
+  $content .= 'escape(document.referrer)+((typeof(screen)=="undefined")?"":' . "\n";
+  $content .= '";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?' . "\n";
+  $content .= 'screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+' . "\n";
+  $content .= '";h"+escape(document.title.substring(0,80))+";"+Math.random()+' . "\n";
+  $content .= "\"' alt='' title='LiveInternet' \"+" . "\n";
+  $content .= "\"border='0' width='88' height='31'><\/a>\")" . "\n";
+  $content .= '//--></script><!--/LiveInternet-->' . "\n";
+  
+  return $content;
+}
+

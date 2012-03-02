@@ -1478,7 +1478,7 @@ img.wp-smiley, img.wp-wink {
 	}
 
 #footer .gototop {
-	width: 220px;
+	width: 120px;
 	float: left;
 	margin: 0;
 	padding: 10px 0 0 10px;
@@ -1489,9 +1489,16 @@ img.wp-smiley, img.wp-wink {
 	padding: 0 0 0 18px;
 	background: url(images/footer-top.png) no-repeat left center;
 	}
-	
+
+#footer .rating {
+	width: 100px;
+	float: left;
+	margin: 0;
+	padding-top: 5px;
+}
+
 #footer .creds {
-	width: 710px;
+	width: 610px;
 	float: right;
 	margin: 0;
 	padding: 10px 10px 0 0;
