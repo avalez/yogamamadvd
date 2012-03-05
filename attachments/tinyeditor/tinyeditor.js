@@ -1,3 +1,7 @@
+// http://www.scriptiny.com/2010/02/javascript-wysiwyg-editor/
+// http://perplexed.co.uk/993_contenteditable_cross_browser_wysiwyg.htm
+// http://nicedit.com/
+// clickable links (instead of edit) - contenteditable=true on edit icon click, false on blur
 TINY={};
 
 function T$(i){return document.getElementById(i)}
@@ -31,16 +35,23 @@ TINY.editor=function(){
 	c['unformat']=[24,'Remove Formatting','a','removeformat'];
 	c['print']=[25,'Print','a','print'];
 	function edit(n,obj){
-		this.n=n; window[n]=this; this.t=T$(obj.id); this.obj=obj; this.xhtml=obj.xhtml;
-		var p=document.createElement('div'), w=document.createElement('div'), h=document.createElement('div'),
+		this.n=n; window[n]=this; this.t=obj.el; this.obj=obj; this.xhtml=obj.xhtml;
+		var p=this.t.parentNode/*document.createElement('div')*/, w=document.createElement('div'), h=document.createElement('div'),
 		l=obj.controls.length, i=0;
-		this.i=document.createElement('iframe'); this.i.frameBorder=0;
-		this.i.width=obj.width||'500'; this.i.height=obj.height||'250'; this.ie=T$$$();
-		h.className=obj.rowclass||'teheader'; p.className=obj.cssclass||'te'; p.style.width=this.i.width+'px'; p.appendChild(h);
+		//this.t.parentNode.insertBefore(p, this.t);
+		//this.i=document.createElement('iframe'); this.i.frameBorder=0;
+		//this.i.width=obj.width||'500'; this.i.height=obj.height||'250';
+		h.width=this.t.width||'500'; h.height=this.t.height||'250';
+		this.ie=T$$$();
+		h.className=obj.rowclass||'teheader'; p.className=obj.cssclass||'te'; p.style.width=this.t.width+'px';
+		//p.appendChild(h);
+		p.insertBefore(h, this.t);
 		for(i;i<l;i++){
 			var id=obj.controls[i];
 			if(id=='n'){
-				h=document.createElement('div'); h.className=obj.rowclass||'teheader'; p.appendChild(h)
+				h=document.createElement('div'); h.className=obj.rowclass||'teheader';
+				//p.appendChild(h)
+				p.insertBefore(h, this.t);
 			}else if(id=='|'){
 				var d=document.createElement('div'); d.className=obj.dividerclass||'tedivider'; h.appendChild(d)
 			}else if(id=='font'){
@@ -79,12 +90,17 @@ TINY.editor=function(){
 				div.onclick=new Function(this.n+(id=='print'?'.print()':ex));
 				div.onmouseover=new Function(this.n+'.hover(this,'+pos+',1)');
 				div.onmouseout=new Function(this.n+'.hover(this,'+pos+',0)');
+				// contenteditable and non button elements
+				// http://stackoverflow.com/questions/1479784/contenteditable-and-non-button-elements
+				div.unselectable='on'; // prevents selection in MSIE
+				div.onmousedown=new Function('e', 'e.preventDefault()'); // prevents selection in all but MSIE        
 				h.appendChild(div);
 				if(this.ie){div.unselectable='on'}
 			}
 		}
-		this.t.parentNode.insertBefore(p,this.t); this.t.style.width=this.i.width+'px';
-		w.appendChild(this.t); w.appendChild(this.i); p.appendChild(w); this.t.style.display='none';
+		//this.t.parentNode.insertBefore(p,this.t); this.t.style.width=this.i.width+'px';
+		//w.appendChild(this.t); w.appendChild(this.i);
+		// p.appendChild(w); //this.t.style.display='none';
 		if(obj.footer){
 			var f=document.createElement('div'); f.className=obj.footerclass||'tefooter';
 			if(obj.toggle){
@@ -101,14 +117,15 @@ TINY.editor=function(){
 			}
 			p.appendChild(f)
 		}
-		this.e=this.i.contentWindow.document; this.e.open();
-		var m='<html><head>', bodyid=obj.bodyid?" id=\""+obj.bodyid+"\"":"";
-		if(obj.cssfile){m+='<link rel="stylesheet" href="'+obj.cssfile+'" />'}
-		if(obj.css){m+='<style type="text/css">'+obj.css+'</style>'}
-		m+='</head><body'+bodyid+'>'+(obj.content||this.t.value);
-		m+='</body></html>';
-		this.e.write(m);
-		this.e.close(); this.e.designMode='on'; this.d=1;
+		this.e=window.document;//this.i.contentWindow.document; this.e.open();
+		//var m='<html><head>', bodyid=obj.bodyid?" id=\""+obj.bodyid+"\"":"";
+		//if(obj.cssfile){m+='<link rel="stylesheet" href="'+obj.cssfile+'" />'}
+		//if(obj.css){m+='<style type="text/css">'+obj.css+'</style>'}
+		//m+='</head><body'+bodyid+'>'+(obj.content||this.t.value);
+		//m+='</body></html>';
+		//this.e.write(m);
+		//this.e.close();
+		//this.e.designMode='on'; this.d=1;
 		if(this.xhtml){
 			try{this.e.execCommand("styleWithCSS",0,0)}
 			catch(e){try{this.e.execCommand("useCSS",0,1)}catch(e){}}

@@ -167,7 +167,7 @@ app.changes = function(since, options) {
     getChangesSince();
   } else {
     request({url: app.baseURL + '../../'}, function(error, info) {
-      since = info.update_seq;
+      // UNCOMMENT: since = info.update_seq;
       getChangesSince();
     });
   }
@@ -176,23 +176,86 @@ app.changes = function(since, options) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+function edit(ko, event) {
+  var t = document.elementFromPoint(event.clientX, event.clientY);
+  if (t.nodeName == 'DIV' && !ko.editing()) {
+    console.log(t);
+    ko.editing(true);
+    return false;
+  } else {
+    return true;
+  }
+}
+
+// http://stackoverflow.com/questions/6987132/knockoutjs-html-binding
+ko.bindingHandlers.htmlValue = {
+    init: function(element, valueAccessor, allBindingsAccessor) {
+        new TINY.editor.edit('editor',{
+            el:element,
+            id:'input', // (required) ID of the textarea
+            width:584, // (optional) width of the editor
+            height:175, // (optional) heightof the editor
+            cssclass:'te', // (optional) CSS class of the editor
+            controlclass:'tecontrol', // (optional) CSS class of the buttons
+            rowclass:'teheader', // (optional) CSS class of the button rows
+            dividerclass:'tedivider', // (optional) CSS class of the button diviers
+            controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
+            footer:true, // (optional) show the footer
+            fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
+            xhtml:true, // (optional) generate XHTML vs HTML
+            cssfile:'style.css', // (optional) attach an external CSS file to the editor
+            content:'starting content', // (optional) set the starting content else it will default to the textarea content
+            css:'body{background-color:#ccc}', // (optional) attach CSS to the editor
+            bodyid:'editor', // (optional) attach an ID to the editor body
+            footerclass:'tefooter', // (optional) CSS class of the footer
+            toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
+            resize:{cssclass:'resize'} // (optional) display options for the editor resize
+        });
+        ko.utils.registerEventHandler(element, "click", function() {
+          //element.contentEditable = 'true';
+          //element.focus();
+          //document.designMode='on'
+        });
+        ko.utils.registerEventHandler(element, "focus", function() {
+          //element.contentEditable = 'true';
+          //document.designMode='on'
+        });
+        ko.utils.registerEventHandler(element, "blur", function() {
+          //element.contentEditable = 'false';
+          //document.designMode='off'
+            var modelValue = valueAccessor();
+            var elementValue = element.innerHTML;
+            if (ko.isWriteableObservable(modelValue)) {
+                modelValue(elementValue);
+            }
+            else { //handle non-observable one-way binding
+                var allBindings = allBindingsAccessor();
+                if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers'].htmlValue) allBindings['_ko_property_writers'].htmlValue(elementValue);
+            }
+        })
+    },
+    update: function(element, valueAccessor) {
+        var value = ko.utils.unwrapObservable(valueAccessor()) || "";
+        element.innerHTML = value;
+    }
+};
+
 ko.bindingHandlers.editing = {
     init: function(element, valueAccessor, allBindingsAccessor) {
         $(element).focus(function() {
             var value = valueAccessor();
-            value(true);
+            //value(true);
         });
         $(element).blur(function() {
             var value = valueAccessor();
-            value(false);
+            //value(false);
         });
         $(element).keypress(function(event) {
             if (event.which == 13) {
-                element.blur();
+                //element.blur();
             } else if (event.keyCode == 27) {
-                var allBindings = allBindingsAccessor();
-                var oldValue = allBindings.value();
-                element.value = oldValue;
+                var value = valueAccessor()
+                value(!value());
                 element.blur();
             }
         });
@@ -200,13 +263,15 @@ ko.bindingHandlers.editing = {
     update: function(element, valueAccessor) {
         var value = valueAccessor();
         if (ko.utils.unwrapObservable(value)) {
+            element.contentEditable = 'true';
             element.focus();
             // position cursor to text end
-            var $tmp = element.value;
-            element.value = '';
-            element.value = $tmp;
+            //var $tmp = element.value;
+            //element.value = '';
+            //element.value = $tmp;
         } else {
             element.blur();
+            element.contentEditable = 'false';
         }
     }
 }
@@ -491,6 +556,9 @@ var load = function(callback) {
                 //viewModel.completed(completed);
                 callback();
             } else {
+                viewModel.parent.syncing = true;
+                viewModel.children.push(observable({name: 'test item'}));
+                delete viewModel.parent['syncing'];
                 $('div#not-found').show();
                 callback();
             }
@@ -498,26 +566,4 @@ var load = function(callback) {
     }
 }
 
-if (typeof $.sammy == 'function') {
-
-    $(function () {
-        app.s = $.sammy(function () {
-            // Index of all databases
-            this.get('#?/', function() {
-                this.redirect("#/root")
-                //viewModel.create('root', 'Li', function() {
-                //})
-            });
-            this.get(/#\/[\w\d]+$/, function() {
-                load(function() {
-                })
-            })
-        })
-        app.s.run();
-        run();
-    });
-
-} else {
-    load(run);
-}
-
+$(function() {load(run)})
