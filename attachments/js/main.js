@@ -77,8 +77,8 @@ app.read = function(doc_id, callback) {
 
 app.update = function(doc, callback) {
   request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
-    doc._rev = data.rev;
-    callback(error, data);
+    //doc._rev = data.rev;
+    callback(error, {});
   })
 }
 
@@ -176,11 +176,11 @@ app.changes = function(since, options) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-function edit(ko, event) {
+function edit(ko_element, event) {
   var t = document.elementFromPoint(event.clientX, event.clientY);
-  if (t.nodeName == 'DIV' && !ko.editing()) {
+  if (t.nodeName == 'DIV' && !ko_element.editing()) {
     console.log(t);
-    ko.editing(true);
+    ko_element.editing(true);
     return false;
   } else {
     return true;
@@ -221,8 +221,10 @@ ko.bindingHandlers.htmlValue = {
           //document.designMode='on'
         });
         ko.utils.registerEventHandler(element, "blur", function() {
-          //element.contentEditable = 'false';
-          //document.designMode='off'
+            if (element.preventblur) {
+              return;
+            }
+            //document.designMode='off'
             var modelValue = valueAccessor();
             var elementValue = element.innerHTML;
             if (ko.isWriteableObservable(modelValue)) {
@@ -232,6 +234,7 @@ ko.bindingHandlers.htmlValue = {
                 var allBindings = allBindingsAccessor();
                 if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers'].htmlValue) allBindings['_ko_property_writers'].htmlValue(elementValue);
             }
+            allBindingsAccessor().editing(false);
         })
     },
     update: function(element, valueAccessor) {

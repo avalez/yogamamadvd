@@ -149,8 +149,10 @@ TINY.editor=function(){
 		}
 	},
 	edit.prototype.insert=function(pro,msg,cmd){
+	  this.t.preventblur = true;
 		var val=prompt(pro,msg);
 		if(val!=null&&val!=''){this.e.execCommand(cmd,0,val)}
+	  this.t.preventblur = false;
 	},
 	edit.prototype.setfont=function(){
 		execCommand('formatblock',0,hType)
