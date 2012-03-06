@@ -176,11 +176,11 @@ app.changes = function(since, options) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-function edit(ko_element, event) {
+function edit(object, event) {
   var t = document.elementFromPoint(event.clientX, event.clientY);
-  if (t.nodeName == 'DIV' && !ko_element.editing()) {
+  if (t.nodeName != 'A' && !object.editing()) {
     console.log(t);
-    ko_element.editing(true);
+    object.editing(true);
     return false;
   } else {
     return true;
@@ -199,7 +199,7 @@ ko.bindingHandlers.htmlValue = {
             controlclass:'tecontrol', // (optional) CSS class of the buttons
             rowclass:'teheader', // (optional) CSS class of the button rows
             dividerclass:'tedivider', // (optional) CSS class of the button diviers
-            controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
+            controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
             footer:true, // (optional) show the footer
             fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
             xhtml:true, // (optional) generate XHTML vs HTML
@@ -209,7 +209,9 @@ ko.bindingHandlers.htmlValue = {
             bodyid:'editor', // (optional) attach an ID to the editor body
             footerclass:'tefooter', // (optional) CSS class of the footer
             toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
-            resize:{cssclass:'resize'} // (optional) display options for the editor resize
+            resize:{cssclass:'resize'}, // (optional) display options for the editor resize
+            done: function() {element.blur()}
+            
         });
         ko.utils.registerEventHandler(element, "click", function() {
           //element.contentEditable = 'true';
@@ -257,9 +259,9 @@ ko.bindingHandlers.editing = {
             if (event.which == 13) {
                 //element.blur();
             } else if (event.keyCode == 27) {
-                var value = valueAccessor()
+                var value = valueAccessor();
                 value(!value());
-                element.blur();
+                //element.blur();
             }
         });
     },

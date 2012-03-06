@@ -84,9 +84,6 @@
 
 <script type="text/html" id="todo-template">
     <div data-bind="css: {completed:completed, editing:editing}">
-        <a click="document.execCommand('bold',null,false);">
-        <b>Bold</b>
-        </a>
         <div id="editor" data-bind="htmlValue: name, editing: editing, click: edit"/>
         <ul class="tokens"></ul>
         <div class="actions">

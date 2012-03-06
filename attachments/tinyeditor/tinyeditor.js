@@ -34,6 +34,8 @@ TINY.editor=function(){
 	c['unlink']=[23,'Remove Hyperlink','a','unlink'];
 	c['unformat']=[24,'Remove Formatting','a','removeformat'];
 	c['print']=[25,'Print','a','print'];
+	c['done']=[26,'Done','d','done'];
+	c['delete']=[27,'Delete','d','delete'];
 	function edit(n,obj){
 		this.n=n; window[n]=this; this.t=obj.el; this.obj=obj; this.xhtml=obj.xhtml;
 		var p=this.t.parentNode/*document.createElement('div')*/, w=document.createElement('div'), h=document.createElement('div'),
@@ -86,7 +88,7 @@ TINY.editor=function(){
 				div.className=obj.controlclass;
 				div.style.backgroundPosition='0px '+pos+'px';
 				div.title=x[1];
-				ex=func=='a'?'.action("'+x[3]+'",0,'+(x[4]||0)+')':'.insert("'+x[4]+'","'+x[5]+'","'+x[3]+'")';
+				ex=func=='a'?'.action("'+x[3]+'",0,'+(x[4]||0)+')':func=='i'?'.insert("'+x[4]+'","'+x[5]+'","'+x[3]+'")':'.direct("'+x[3]+'")';
 				div.onclick=new Function(this.n+(id=='print'?'.print()':ex));
 				div.onmouseover=new Function(this.n+'.hover(this,'+pos+',1)');
 				div.onmouseout=new Function(this.n+'.hover(this,'+pos+',0)');
@@ -221,6 +223,9 @@ TINY.editor=function(){
 	edit.prototype.post=function(){
 		if(this.d){this.toggle(1)}
 	};
+	edit.prototype.direct=function(cmd){
+		if (typeof this.obj[cmd] == 'function') this.obj[cmd]();
+	}
 	return{edit:edit}
 }();
 
