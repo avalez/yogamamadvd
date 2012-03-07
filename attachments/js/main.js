@@ -199,7 +199,7 @@ ko.bindingHandlers.htmlValue = {
             controlclass:'tecontrol', // (optional) CSS class of the buttons
             rowclass:'teheader', // (optional) CSS class of the button rows
             dividerclass:'tedivider', // (optional) CSS class of the button diviers
-            controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
+            controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'source', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
             footer:true, // (optional) show the footer
             fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
             xhtml:true, // (optional) generate XHTML vs HTML

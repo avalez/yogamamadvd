@@ -34,8 +34,9 @@ TINY.editor=function(){
 	c['unlink']=[23,'Remove Hyperlink','a','unlink'];
 	c['unformat']=[24,'Remove Formatting','a','removeformat'];
 	c['print']=[25,'Print','a','print'];
-	c['done']=[26,'Done','d','done'];
-	c['delete']=[27,'Delete','d','delete'];
+	c['source']=[26,'Source','d','source'];
+	c['done']=[27,'Done','d','done'];
+	c['delete']=[28,'Delete','d','delete'];
 	function edit(n,obj){
 		this.n=n; window[n]=this; this.t=obj.el; this.obj=obj; this.xhtml=obj.xhtml;
 		var p=this.t.parentNode/*document.createElement('div')*/, w=document.createElement('div'), h=document.createElement('div'),
