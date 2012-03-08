@@ -176,110 +176,78 @@ app.changes = function(since, options) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-function edit(object, event) {
-  var t = document.elementFromPoint(event.clientX, event.clientY);
-  if (t.nodeName != 'A' && !object.editing()) {
-    console.log(t);
-    object.editing(true);
-    return false;
-  } else {
-    return true;
-  }
-}
+var editor;
 
 // http://stackoverflow.com/questions/6987132/knockoutjs-html-binding
 ko.bindingHandlers.htmlValue = {
-    init: function(element, valueAccessor, allBindingsAccessor) {
-        new TINY.editor.edit('editor',{
-            el:element,
-            id:'input', // (required) ID of the textarea
-            width:584, // (optional) width of the editor
-            height:175, // (optional) heightof the editor
-            cssclass:'te', // (optional) CSS class of the editor
-            controlclass:'tecontrol', // (optional) CSS class of the buttons
-            rowclass:'teheader', // (optional) CSS class of the button rows
-            dividerclass:'tedivider', // (optional) CSS class of the button diviers
-            controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'source', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
-            footer:true, // (optional) show the footer
-            fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
-            xhtml:true, // (optional) generate XHTML vs HTML
-            cssfile:'style.css', // (optional) attach an external CSS file to the editor
-            content:'starting content', // (optional) set the starting content else it will default to the textarea content
-            css:'body{background-color:#ccc}', // (optional) attach CSS to the editor
-            bodyid:'editor', // (optional) attach an ID to the editor body
-            footerclass:'tefooter', // (optional) CSS class of the footer
-            toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
-            resize:{cssclass:'resize'}, // (optional) display options for the editor resize
-            done: function() {element.blur()}
-            
-        });
-        ko.utils.registerEventHandler(element, "click", function() {
-          //element.contentEditable = 'true';
-          //element.focus();
-          //document.designMode='on'
-        });
-        ko.utils.registerEventHandler(element, "focus", function() {
-          //element.contentEditable = 'true';
-          //document.designMode='on'
-        });
-        ko.utils.registerEventHandler(element, "blur", function() {
-            if (element.preventblur) {
-              return;
-            }
-            //document.designMode='off'
-            var modelValue = valueAccessor();
-            var elementValue = element.innerHTML;
-            if (ko.isWriteableObservable(modelValue)) {
-                modelValue(elementValue);
-            }
-            else { //handle non-observable one-way binding
-                var allBindings = allBindingsAccessor();
-                if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers'].htmlValue) allBindings['_ko_property_writers'].htmlValue(elementValue);
-            }
-            allBindingsAccessor().editing(false);
-        })
+  init: function(element, valueAccessor, allBindingsAccessor) {
+      ko.utils.registerEventHandler(element, "click", function(event) {
+        var t = document.elementFromPoint(event.clientX, event.clientY);
+        if (!t || (t.nodeName != 'A' && element.contentEditable != 'true')) {
+          console.log('edit: ' + element.innerHTML);
+          element.contentEditable = 'true';
+          element.focus();
+          editor = new TINY.editor.edit('editor',{
+              el:element,
+              id:'input', // (required) ID of the textarea
+              width:584, // (optional) width of the editor
+              height:175, // (optional) heightof the editor
+              cssclass:'te', // (optional) CSS class of the editor
+              controlclass:'tecontrol', // (optional) CSS class of the buttons
+              //rowclass:'teheader', // (optional) CSS class of the button rows
+              dividerclass:'tedivider', // (optional) CSS class of the button diviers
+              controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'source', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
+              footer:false, // (optional) show the footer
+              fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
+              xhtml:true, // (optional) generate XHTML vs HTML
+              cssfile:'style.css', // (optional) attach an external CSS file to the editor
+              content:'starting content', // (optional) set the starting content else it will default to the textarea content
+              css:'body{background-color:#ccc}', // (optional) attach CSS to the editor
+              bodyid:'editor', // (optional) attach an ID to the editor body
+              footerclass:'tefooter', // (optional) CSS class of the footer
+              toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
+              resize:{cssclass:'resize'}, // (optional) display options for the editor resize
+              done: function() {element.blur()}
+          });
+        }
+      });
+      ko.utils.registerEventHandler(element, "blur", function() {
+        if (!element.preventblur) {
+          element.contentEditable = 'false';
+          var htmlValue = valueAccessor();
+          var elementValue = element.innerHTML;
+          console.log('done: ' + elementValue);
+          if (ko.isWriteableObservable(htmlValue)) {
+              htmlValue(elementValue);
+          }
+          else { //handle non-observable one-way binding
+              if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers'].htmlValue) allBindings['_ko_property_writers'].htmlValue(elementValue);
+          }
+          if (editor) editor.destroy();
+        }
+      });
+      $(element).keypress(function(event) {
+        if (event.keyCode == 27) {
+          var value = valueAccessor();
+          element.innerHTML = value();
+          element.blur();
+          console.log('cancel: ' + element.innerHTML);
+        }
+      });
     },
     update: function(element, valueAccessor) {
         var value = ko.utils.unwrapObservable(valueAccessor()) || "";
         element.innerHTML = value;
+        console.log('update: ' + element.innerHTML);
     }
 };
 
-ko.bindingHandlers.editing = {
-    init: function(element, valueAccessor, allBindingsAccessor) {
-        $(element).focus(function() {
-            var value = valueAccessor();
-            //value(true);
-        });
-        $(element).blur(function() {
-            var value = valueAccessor();
-            //value(false);
-        });
-        $(element).keypress(function(event) {
-            if (event.which == 13) {
-                //element.blur();
-            } else if (event.keyCode == 27) {
-                var value = valueAccessor();
-                value(!value());
-                //element.blur();
-            }
-        });
-    },
-    update: function(element, valueAccessor) {
-        var value = valueAccessor();
-        if (ko.utils.unwrapObservable(value)) {
-            element.contentEditable = 'true';
-            element.focus();
-            // position cursor to text end
-            //var $tmp = element.value;
-            //element.value = '';
-            //element.value = $tmp;
-        } else {
-            element.blur();
-            element.contentEditable = 'false';
-        }
-    }
+edit = function(object, event) {
+  $('.editable', event.target.parent).click();
+  console.log(object);
+  
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

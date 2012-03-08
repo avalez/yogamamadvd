@@ -114,37 +114,38 @@ input[type="checkbox"] {
     padding: 0;
     width: 800px;
 }
-#page #list > li {
+#page #list > div {
     background-color: #FAFAFA;
-    border-color: transparent transparent #DDDDDD;
-    border-style: solid solid dotted;
-    border-width: 0 1px 1px;
+    //border-color: transparent transparent #DDDDDD;
+    //border-style: solid solid dotted;
+    //border-width: 0 1px 1px;
     cursor: default;
     font-family: Georgia,'Times New Roman',serif;
     font-size: 22px;
     height: auto;
     overflow: hidden;
-    padding: 0 5px;
-    width: 788px;
+    padding: 0;
+    width: 798px;
 }
-#page #list > li a {
+#page #list > div a {
     color: #707D8F;
     cursor: pointer;
 }
-#page #list > li a:hover {
+#page #list > div a:hover {
     text-decoration: underline;
 }
-#page #list > li:hover {
+#page #list > div {
     background-color: #FEFEF1;
 }
-#page #list > li:hover .actions {
-    visibility: visible;
+#page #list > div .editable {
+    width: 720px;
+    float: left;
 }
-#page #list > li:hover label:after {
+#page #list > div:hover label:after {
     background-color: #FEFEF1;
     box-shadow: -15px 0 30px #FEFEF1;
 }
-#page #list > li.editing {
+#page #list > div.editing {
     background-color: white;
     border: 1px dashed #DDDDDD !important;
     margin-top: -1px;
@@ -152,13 +153,10 @@ input[type="checkbox"] {
 #page #list > li.editing .tags {
     display: none;
 }
-#page #list > li.editing .actions {
-    visibility: visible;
-}
-#page #list > li.editing [data-action="edit"] {
+#page #list > div.editing [data-action="edit"] {
     color: #EE8167;
 }
-#page #list > li.editing:last-child {
+#page #list > div.editing:last-child {
     margin-bottom: -1px;
 }
 #page #list > li input[type="text"] {
@@ -181,7 +179,7 @@ input[type="checkbox"] {
     background-color: #FAFAFA;
     color: #BCBC9A;
 }
-#page #list > li.editing .token {
+#page #list > div.editing .token {
     color: #A7A77B !important;
 }
 #page #list > li .tags {
@@ -220,27 +218,28 @@ input[type="checkbox"] {
 #page #list > li .tags li:first-child {
     margin-left: 0;
 }
-#page #list > li .actions {
+#page #list > div .actions {
     float: right;
     font-size: 14px;
     height: 48px;
     line-height: 48px;
     visibility: hidden;
 }
-#page #list > li .actions a {
+#page #list > div .actions a {
     border: 0 none !important;
     color: #CCCCCC;
     font-family: Arial,sans-serif;
     padding: 8px;
     text-decoration: none;
 }
-#page #list > li .actions a:hover {
+#page #list > div:hover .actions a {
     border: 0 none !important;
+    visibility: visible;
 }
-#page #list > li .actions a:last-child {
+#page #list > div .actions a:last-child {
     margin-right: 10px;
 }
-#page #list > li .actions a:hover {
+#page #list > div .actions a:hover {
     color: #EE8167;
 }
 #page #list > li:last-child {

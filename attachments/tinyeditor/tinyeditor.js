@@ -49,12 +49,14 @@ TINY.editor=function(){
 		h.className=obj.rowclass||'teheader'; p.className=obj.cssclass||'te'; p.style.width=this.t.width+'px';
 		//p.appendChild(h);
 		p.insertBefore(h, this.t);
+		this.obj.h = [h];
 		for(i;i<l;i++){
 			var id=obj.controls[i];
 			if(id=='n'){
 				h=document.createElement('div'); h.className=obj.rowclass||'teheader';
 				//p.appendChild(h)
 				p.insertBefore(h, this.t);
+    		this.obj.h.push(h);
 			}else if(id=='|'){
 				var d=document.createElement('div'); d.className=obj.dividerclass||'tedivider'; h.appendChild(d)
 			}else if(id=='font'){
@@ -226,6 +228,13 @@ TINY.editor=function(){
 	};
 	edit.prototype.direct=function(cmd){
 		if (typeof this.obj[cmd] == 'function') this.obj[cmd]();
+	};
+	edit.prototype.destroy=function(){
+    this.t.parentNode.className='';
+    var e = document.getElementsByTagName('DIV');
+    for (i in this.obj.h) {
+      this.t.parentNode.removeChild(this.obj.h[i]);
+    }
 	}
 	return{edit:edit}
 }();

@@ -83,11 +83,11 @@
 </footer>
 
 <script type="text/html" id="todo-template">
-    <div data-bind="css: {completed:completed, editing:editing}">
-        <div id="editor" data-bind="htmlValue: name, editing: editing, click: edit"/>
+    <div>
+        <div class="editable" data-bind="htmlValue: name"/>
         <ul class="tokens"></ul>
         <div class="actions">
-            <a data-action="edit" data-bind="click: function() { editing(!editing()) }">&#x270E;</a>
+            <a data-action="edit" data-bind="click: edit">&#x270E;</a>
             <a data-action="remove" data-bind="click: remove">&#x2717;</a>
         </div>
         <ul class="tags"></ul>
