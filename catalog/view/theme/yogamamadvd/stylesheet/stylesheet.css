@@ -1369,3 +1369,62 @@ a.off, a.on {
     text-indent: 0;
     text-decoration: none;
 }
+div.video_wrap {
+  	border: 1px solid #DBDEE1;
+    box-shadow: 0 4px 17px rgba(0, 23, 60, 0.5);
+    width: 640px;
+    margin: auto;
+}
+.slide-to-message {
+    color: #FFFFFF;
+    width: 200px;
+    position: relative;
+    overflow: hidden;
+}
+.slide-to-mask {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background-image: url("../image/slide-to-text-mask-blue.png");
+    background-origin: padding-box;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: auto auto;
+    height: 35px;
+    left: -250px;
+    position: absolute;
+    top: 0;
+    width: 600px;
+}
+.freshbutton, .freshbutton-big, .freshbutton-blue, .freshbutton-lightblue {
+    border-radius: 3px 3px 3px 3px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    overflow: visible;
+    padding: 5px;
+    text-align: center;
+    width: 200px;
+}
+.freshbutton-big, .freshbutton-blue {
+    background: -moz-linear-gradient(center top , #33A0E8, #2180CE) repeat scroll 0 0 transparent;
+    border-color: #2270AB #18639A #0F568B;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px 0 #83C5F1 inset;
+    color: #FFFFFF;
+    text-shadow: 0 1px 2px #355782;
+}
+.freshbutton-big.hovered, .freshbutton-big:hover, .freshbutton-blue.hovered, .freshbutton-blue:hover {
+    border-color: #0070CC #006AC1 #005CA6;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 0 3px #35BFF4 inset;
+}
+.freshbutton-big.pressed, .freshbutton-big:active, .freshbutton-blue.pressed, .freshbutton-blue:active {
+    background: -moz-linear-gradient(center top , #1866A6, #2F97D7) repeat scroll 0 0 transparent;
+    border-color: #2270AB #186299 #0F568B;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 0 0 #000000, 0 2px 2px #3D65A4 inset;
+}
