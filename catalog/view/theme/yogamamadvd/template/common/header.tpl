@@ -25,6 +25,7 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
+<script type="text/javascript" src="catalog/view/javascript/jquery/jquery.cookie.min.js"></script>
 
 <!--
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery-1.6.1.min.js"></script>
@@ -79,6 +80,14 @@ $(function() {
 <script type="text/javascript">
 DD_belatedPNG.fix('#logo img');
 </script>
+<![endif]-->
+<link href="catalog/view/theme/yogamamadvd/stylesheet/bottom-panel.css" rel="stylesheet" type="text/css" />
+<!--[if lte IE 8]>
+<link href="catalog/view/theme/yogamamadvd/stylesheet/bottom-panel-ie.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<script type="text/javascript" src="catalog/view/javascript/bottom-panel.js"></script>
+<!--[if lte IE 9]>
+<script type="text/javascript" src="catalog/view/javascript/bottom-panel-placeholder.js"></script>
 <![endif]-->
 <?php echo $google_analytics; ?>
 </head>

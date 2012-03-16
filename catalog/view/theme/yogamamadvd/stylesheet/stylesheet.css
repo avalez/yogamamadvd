@@ -1311,7 +1311,6 @@ a.button {
 	margin-left: 185px;
 }
 #footer ul li {
-	position: relative;
 	float: left;
 	padding: 10px;
 }
@@ -1391,16 +1390,19 @@ div.video_wrap {
     background-repeat: no-repeat;
     background-size: auto auto;
     height: 35px;
-    left: -250px;
+    left: -300px;
     position: absolute;
     top: 0;
     width: 600px;
+}
+.slide-to-mask:hover {
+    opacity: 0;
 }
 .freshbutton, .freshbutton-big, .freshbutton-blue, .freshbutton-lightblue {
     border-radius: 3px 3px 3px 3px;
     cursor: pointer;
     font-size: 13px;
-    font-weight: bold;
+    font-weight: 700;
     overflow: visible;
     padding: 5px;
     text-align: center;

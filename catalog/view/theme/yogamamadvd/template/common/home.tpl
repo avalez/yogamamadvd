@@ -47,18 +47,39 @@
 <script type="text/javascript">
   var animate = function() {
     $('#slide-to-mask').animate({
-      left: '+=150'
-    }, 2000, function() {
-      $('#slide-to-mask').css({left: '-250px'});
+      left: '+=200'
+    }, 1500, function() {
+      $(this).css({left: '-300px'});
       setTimeout(animate, 2000);
-    });
+    });      
   }
-  $(animate);
+  $(function() {
+    animate();
+    if (sublimevideo.prepare) sublimevideo.prepare();
+    if (typeof showBottomPanel != 'undefined' && !$.cookie('bottomPanelHide')) 
+    {
+        setTimeout(showBottomPanel, 1500);
+    }
+    if (typeof FB != 'undefined') FB.XFBML.parse(); 
+  });
   
 </script>
 
 
-<?php echo $content_bottom; ?>
-<div class="fb-like" data-href="http://www.facebook.com/yogamamadvdru" data-send="false" data-width="450" data-show-faces="true"></div>
+<div id="bottomPanel">
+    <div id="bottomPanelConteiner">
+        <a id="closeBottomPanel" class="close" href="#"></a>
+        <img src="catalog/view/theme/yogamamadvd/image/bottom-panel-logo.png" id="bottomPanelLogo" />  
+        <form>
+            <span class="title">новые видеоуроки <span>бесплатно!</span> </span> 
+            <input class="placeholder" type="text" name="email" placeholder="Ваш email" />
+            <button type="submit">Подписаться</button>
+        </form> 
+        <div class="fb-like" data-href="http://www.facebook.com/yogamamadvdru" data-send="false" data-width="450" data-show-faces="true"></div>
+        </div>
+    </div>
 </div>
+<img id="showBottomPanel" src="catalog/view/theme/yogamamadvd/image/bottom-panel-show.png" />
+
+<?php echo $content_bottom; ?>
 <?php echo $footer; ?>

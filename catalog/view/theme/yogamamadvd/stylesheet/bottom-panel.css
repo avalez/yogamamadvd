@@ -1,0 +1,118 @@
+#bottomPanel
+{
+    height: 90px; width: 100%;
+    position: fixed;
+    bottom: -90px;
+    left:0; 
+    font-family: Arial;
+}
+
+#bottomPanelConteiner
+{
+    height:60px; 
+    border: solid 1px #ccc;
+    margin-top: 30px;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+    background: linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* W3C */    
+    box-shadow: 0 0 3px #999;  
+    position: relative;  
+}
+
+#bottomPanelLogo
+{
+    position: absolute;
+    top:-20px;
+    left:20px;
+}
+#bottomPanel .close
+{
+    position: absolute;
+    top:10px; right: 10px;
+    background: url(../image/bottom-panel-close.png) no-repeat;
+    height: 16px; width: 16px;
+    display: inline-block; cursor: pointer;
+}
+#bottomPanelConteiner form
+{
+    position: absolute;   
+    left:200px; top:12px;
+    font-size: 12px;
+    padding: 0;
+}
+
+#bottomPanelConteiner form input:-webkit-autofill{
+    color: #666 !important;
+    background: none !important;
+}
+#bottomPanelConteiner form input
+{
+    width: 200px;
+    height: 22px;
+    padding: 3px 5px;
+    display: inline;
+    vertical-align: middle;
+    border: solid 1px #2794cd;
+    border-radius:3px;
+    margin-right: 5px;
+}
+#bottomPanelConteiner form input:focus
+{
+    box-shadow:0 0 5px #2794cd;
+    outline: none;
+}
+#bottomPanelConteiner form button
+{
+    height: 30px; 
+    padding: 0 10px;
+    cursor: pointer;
+    color: #fff; font-weight: 700;
+    vertical-align: middle;
+    border: solid 1px #4db8f0;
+    border-radius:3px;
+    background: #4db8f0; /* Old browsers */
+    background: -moz-linear-gradient(top, #4db8f0 0%, #0958a7 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4db8f0), color-stop(100%,#0958a7)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #4db8f0 0%,#0958a7 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #4db8f0 0%,#0958a7 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #4db8f0 0%,#0958a7 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4db8f0', endColorstr='#0958a7',GradientType=0 ); /* IE6-9 */
+    background: linear-gradient(top, #4db8f0 0%,#0958a7 100%); /* W3C */
+}
+#bottomPanelConteiner form button:hover
+{
+    box-shadow:0 0 5px #2794cd;
+}
+#bottomPanelConteiner form .title
+{
+    text-transform: uppercase;
+    display: inline-block;
+    margin-right: 20px;
+    font-size: 16px;
+    color: #333;
+    font-weight: 700;
+    vertical-align: middle;
+}
+#bottomPanelConteiner form .title span
+{
+    color: #990000;
+}
+#showBottomPanel
+{
+    position: fixed;
+    bottom: 0; 
+    right: 100px;
+    cursor: pointer;
+    z-index: 999;
+}
+.fb-like {
+   float: right;
+   margin: 10px;
+   margin-right: 20px;
+}
+
