@@ -77,7 +77,7 @@ app.read = function(doc_id, callback) {
 
 app.update = function(doc, callback) {
   request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
-    //doc._rev = data.rev;
+    doc._rev = data.rev;
     callback(error, {});
   })
 }
@@ -167,7 +167,7 @@ app.changes = function(since, options) {
     getChangesSince();
   } else {
     request({url: app.baseURL + '../../'}, function(error, info) {
-      // UNCOMMENT: since = info.update_seq;
+      since = info.update_seq;
       getChangesSince();
     });
   }
