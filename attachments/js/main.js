@@ -435,15 +435,14 @@ function observableNewItem(options) {
     }
 
     var doc = this;
-    doc.name = doc.name(); // unwrap
-    viewModel.create(doc, function(error, new_doc) {
-      // updates inplace of children
-      doc._id = new_doc._id;
-      doc._rev = new_doc._rev;
-      observable(doc);
+    var doc_to_save = {parent_id: doc.parent_id, name: doc.name(), order: doc.order};
+    viewModel.create(doc_to_save, function(error, new_doc) {
+      doc.name('');
       // new newItem
-      viewModel.children.splice(options.index + 1, 0, observableNewItem(getOrder(viewModel.children, options.index + 1)));
-    })
+      viewModel.children.splice(options.index + 2, 0, observable(new_doc),
+        observableNewItem(getOrder(viewModel.children, options.index + 1)));
+    });
+    // TODO: new order
   }, doc);
   return doc;
 }
