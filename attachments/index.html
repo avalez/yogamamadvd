@@ -88,7 +88,10 @@
         <ul class="tokens"></ul>
         <div class="actions">
             <a data-action="edit" data-bind="click: edit">&#x270E;</a>
+            <!-- ko if: remove -->
             <a data-action="remove" data-bind="click: remove">&#x2717;</a>
+            <!-- /ko -->
+            <!--a data-action="add" data-bind="click: create">&#x271A;</a-->
         </div>
         <ul class="tags"></ul>
     </div>

@@ -243,7 +243,7 @@ ko.bindingHandlers.htmlValue = {
 };
 
 edit = function(object, event) {
-  $('.editable', event.target.parent).click();
+  $('.editable', event.target.parentNode.parentNode).click();
   console.log(object);
   
 }
@@ -289,12 +289,10 @@ viewModel.reset = function() {
   viewModel.children.splice(0, viewModel.children().length);
 }
 
-viewModel.create = function(parent_id, name, callback) {
-  var doc = {
-      parent_id: parent_id,
-      name: name,
-      completed: false
-  };
+viewModel.create = function(doc, callback) {
+  delete doc['editing'];
+  delete doc['index'];
+  delete doc['remove'];
   app.create(doc, function(error, doc) {
     if (!error) {
       myChanges.push(doc._id);
@@ -309,6 +307,10 @@ viewModel.create = function(parent_id, name, callback) {
   });
 }
 
+viewModel.add = function($data) {
+  console.log($data);
+}
+
 viewModel.read = function(doc_id, callback) {
   app.read(doc_id, function(error, data) {
     callback(data);
@@ -318,6 +320,7 @@ viewModel.read = function(doc_id, callback) {
 viewModel.save = function (doc, callback) {
     var doc_to_save = ko.toJS(doc);
     delete doc_to_save['editing'];
+    delete doc_to_save['index'];
     app.update(doc_to_save, function(error, data) {
       if (!error) {
         doc._rev = data.rev;
@@ -409,6 +412,65 @@ function observable(doc) {
     }
     
     return doc;
+}
+
+function getOrder(array, index) {
+  if (typeof array == 'function') {
+    array = array();
+  }
+  var parent_id = index == 0 ? array[index]._id : array[index].parent_id;
+  var prev_order = array[index].order;
+  var next_order = index == array.length - 1 ? 9007199254740992 : array[index + 1].order;  
+  return {parent_id: parent_id, prev_order: prev_order, next_order: next_order, index: index};
+}
+
+function observableNewItem(options) {
+  var order = Math.floor(Math.random() * (options.next_order - options.prev_order)) + options.prev_order;
+  var doc = {parent_id: options.parent_id, order: order};
+  doc.name = ko.observable('');
+  doc.remove = null;
+  doc.name.subscribe(function(newValue) {
+    if ($.trim(newValue) == '') {
+        return;
+    }
+
+    var doc = this;
+    doc.name = doc.name(); // unwrap
+    viewModel.create(doc, function(error, new_doc) {
+      // updates inplace of children
+      doc._id = new_doc._id;
+      doc._rev = new_doc._rev;
+      observable(doc);
+      // new newItem
+      viewModel.children.splice(options.index + 1, 0, observableNewItem(getOrder(viewModel.children, options.index + 1)));
+    })
+  }, doc);
+  return doc;
+}
+
+//attach index to items whenever array changes
+//http://stackoverflow.com/questions/6047713/bind-template-item-to-the-index-of-the-array-in-knockoutjs
+// TODO: check if it works with new observableArray too
+viewModel.children.subscribe(function() {
+    var children = this.children();
+    for (var i = 0, j = children.length; i < j; i++) {
+       var children = children[i];
+        if (!children.index) {
+           children.index = ko.observable(i);  
+        } else {
+           children.index(i);   
+        }
+    }
+}, viewModel);
+
+function observableArray(data) {
+  var array = [];
+  $(data.rows).each(function(i, row) {
+      row.value.index = i;
+      array.push(observable(row.value));
+      array.push(observableNewItem(getOrder(array, i*2)));
+  })  
+  return ko.observableArray(array);
 }
 
 // check if change has any modification from outside,
@@ -515,18 +577,13 @@ var load = function(callback) {
     var parent_id = window.location.hash.substring(2) || 'root'; // strip '#/'
     if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
         viewModel.reset();
-        app.view('items', {startkey: [parent_id], endkey: [parent_id, 2]}, function(error, data) {
+        app.view('items', {startkey: [parent_id], endkey: [parent_id, 9007199254740992]}, function(error, data) {
             if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
-                viewModel.parent.set(data.rows.shift().value);
+                viewModel.parent.set(data.rows[0].value);
                 viewModel.parent.syncing = true;
-                //var completed = viewModel.completed() || data.rows.length > 0;
-                $(data.rows).each(function(i, row) {
-                    //completed = completed && (row.value.completed || false);
-                    viewModel.children.push(observable(row.value));
-                })
+                viewModel.children = observableArray(data);
                 delete viewModel.parent['syncing'];
-                //viewModel.completed(completed);
                 callback();
             } else {
                 viewModel.parent.syncing = true;

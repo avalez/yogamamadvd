@@ -19,7 +19,7 @@ ddoc.views = {
   items : {
       map : function(doc){
           emit([doc._id, 0], doc);
-          emit([doc.parent_id, 1], doc);
+          emit([doc.parent_id, doc.order], doc);
       }
   },
   children : {
