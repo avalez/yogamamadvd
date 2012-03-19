@@ -221,6 +221,7 @@ ko.bindingHandlers.htmlValue = {
               htmlValue(elementValue);
           }
           else { //handle non-observable one-way binding
+              var allBindings = allBindingsAccessor();
               if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers'].htmlValue) allBindings['_ko_property_writers'].htmlValue(elementValue);
           }
           if (editor) editor.destroy();
@@ -290,10 +291,10 @@ viewModel.reset = function() {
 }
 
 viewModel.create = function(doc, callback) {
-  delete doc['editing'];
-  delete doc['index'];
-  delete doc['remove'];
-  app.create(doc, function(error, doc) {
+  var doc_to_save = ko.toJS(doc);
+  delete doc_to_save['editing'];
+  delete doc_to_save['index'];
+  app.create(doc_to_save, function(error, doc) {
     if (!error) {
       myChanges.push(doc._id);
       /*
@@ -305,10 +306,6 @@ viewModel.create = function(doc, callback) {
       callback(error, doc);
     }
   });
-}
-
-viewModel.add = function($data) {
-  console.log($data);
 }
 
 viewModel.read = function(doc_id, callback) {
@@ -375,6 +372,12 @@ viewModel.complete = function(doc, newValue) {
     }
 }
 
+// rather belong to doc, but to both new and existing, so bind it to viewModel
+viewModel.add = function($data) {
+  viewModel.children.splice($data.index() + 1, 0,
+    observableNewItem(getOrder(viewModel.children, $data.index())));
+}
+
 function observable(doc) {
     var $save = function() {
       if (!doc.syncing) {
@@ -418,31 +421,32 @@ function getOrder(array, index) {
   if (typeof array == 'function') {
     array = array();
   }
+  if (typeof index == 'function') {
+  	index = index();
+  }
   var parent_id = index == 0 ? array[index]._id : array[index].parent_id;
   var prev_order = array[index].order;
-  var next_order = index == array.length - 1 ? 9007199254740992 : array[index + 1].order;  
-  return {parent_id: parent_id, prev_order: prev_order, next_order: next_order, index: index};
+  var next_order = index == array.length - 1 ? 9007199254740992 : array[index + 1].order;
+  var new_order = Math.floor(Math.random() * (next_order - prev_order)) + prev_order;  
+  return {parent_id: parent_id, order: new_order};
 }
 
 function observableNewItem(options) {
-  var order = Math.floor(Math.random() * (options.next_order - options.prev_order)) + options.prev_order;
-  var doc = {parent_id: options.parent_id, order: order};
+  var doc = {parent_id: options.parent_id, order: options.order};
   doc.name = ko.observable('');
-  doc.remove = null;
+  doc.remove = function() {
+    // just remove it
+    viewModel.children.splice(this.index(), 1);
+  };
   doc.name.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
         return;
     }
 
-    var doc = this;
-    var doc_to_save = {parent_id: doc.parent_id, name: doc.name(), order: doc.order};
-    viewModel.create(doc_to_save, function(error, new_doc) {
-      doc.name('');
-      // new newItem
-      viewModel.children.splice(options.index + 2, 0, observable(new_doc),
-        observableNewItem(getOrder(viewModel.children, options.index + 1)));
+    viewModel.create(doc, function(error, new_doc) {
+      // convert to existing observable inplace
+      viewModel.children.splice(doc.index(), 1, observable(new_doc));
     });
-    // TODO: new order
   }, doc);
   return doc;
 }
@@ -450,24 +454,23 @@ function observableNewItem(options) {
 //attach index to items whenever array changes
 //http://stackoverflow.com/questions/6047713/bind-template-item-to-the-index-of-the-array-in-knockoutjs
 // TODO: check if it works with new observableArray too
-viewModel.children.subscribe(function() {
+var indexMaintainance = function() {
     var children = this.children();
     for (var i = 0, j = children.length; i < j; i++) {
-       var children = children[i];
-        if (!children.index) {
-           children.index = ko.observable(i);  
+       var child = children[i];
+        if (!child.index) {
+           child.index = ko.observable(i);  
         } else {
-           children.index(i);   
+           child.index(i);   
         }
     }
-}, viewModel);
+};
 
 function observableArray(data) {
   var array = [];
   $(data.rows).each(function(i, row) {
-      row.value.index = i;
+      row.value.index = ko.observable(i);
       array.push(observable(row.value));
-      array.push(observableNewItem(getOrder(array, i*2)));
   })  
   return ko.observableArray(array);
 }
@@ -582,6 +585,7 @@ var load = function(callback) {
                 viewModel.parent.set(data.rows[0].value);
                 viewModel.parent.syncing = true;
                 viewModel.children = observableArray(data);
+                viewModel.children.subscribe(indexMaintainance, viewModel);
                 delete viewModel.parent['syncing'];
                 callback();
             } else {
