@@ -405,6 +405,8 @@ function observable(doc) {
       doc._id = data._id;
       doc._rev = data._rev;
       doc.parent_id = data.parent_id;
+      doc.type = data.type;
+      doc.order = data.order;
       doc.syncing = true;
       if (typeof this.completed != 'function') {
         0 == 0;
@@ -434,6 +436,7 @@ function getOrder(array, index) {
 function observableNewItem(options) {
   var doc = {parent_id: options.parent_id, order: options.order};
   doc.name = ko.observable('');
+  doc.type = 'section';
   doc.remove = function() {
     // just remove it
     viewModel.children.splice(this.index(), 1);
