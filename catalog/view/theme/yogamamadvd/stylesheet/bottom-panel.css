@@ -1,6 +1,6 @@
 #bottomPanel
 {
-    height: 90px; width: 100%;
+    height: 110px; width: 100%;
     position: fixed;
     bottom: -90px;
     left:0; 
@@ -9,7 +9,7 @@
 
 #bottomPanelConteiner
 {
-    height:60px; 
+    height:80px; 
     border: solid 1px #ccc;
     margin-top: 30px;
     background: #ffffff; /* Old browsers */

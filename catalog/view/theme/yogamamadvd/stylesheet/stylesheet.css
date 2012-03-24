@@ -462,6 +462,8 @@ a.button {
 	padding: 10px;
 	overflow: auto;
 	border: 1px solid #EEEEEE;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 #content .content .left {
 	float: left;
@@ -1304,6 +1306,7 @@ a.button {
 	background: #F8F8F8;
 	width: 875px;
 	margin: auto;
+	margin-bottom: 55px;
 }
 #footer ul {
 	list-style: none;
@@ -1368,9 +1371,23 @@ a.off, a.on {
     text-indent: 0;
     text-decoration: none;
 }
-div.video_wrap {
+.content ul {
+   padding-left: 0px;
+}
+.content li {
+     list-style: none inside none;
+     padding-left: 35px;
+     background: url("../image/leaf-grean.png") no-repeat;
+     min-height: 50px;
+}
+img.image, div.video_wrap, div.slideshow {
   	border: 1px solid #DBDEE1;
     box-shadow: 0 4px 17px rgba(0, 23, 60, 0.5);
+}
+img.image {
+  margin: 5px;
+}
+div.video_wrap {
     width: 640px;
     margin: auto;
 }
@@ -1407,6 +1424,9 @@ div.video_wrap {
     padding: 5px;
     text-align: center;
     width: 200px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 .freshbutton-big, .freshbutton-blue {
     background: -moz-linear-gradient(center top , #33A0E8, #2180CE) repeat scroll 0 0 transparent;
@@ -1416,6 +1436,10 @@ div.video_wrap {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 1px 0 #83C5F1 inset;
     color: #FFFFFF;
     text-shadow: 0 1px 2px #355782;
+}
+.freshbutton-blue a {
+   color: #FFFFFF;
+   text-decoration: none;
 }
 .freshbutton-big.hovered, .freshbutton-big:hover, .freshbutton-blue.hovered, .freshbutton-blue:hover {
     border-color: #0070CC #006AC1 #005CA6;

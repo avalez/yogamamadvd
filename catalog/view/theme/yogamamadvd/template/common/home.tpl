@@ -10,6 +10,7 @@
 <script type="text/javascript" src="http://cdn.sublimevideo.net/js/3zkej3us.js"></script>
 <div id="content"><?php echo $content_top; ?>
 <h1 style="display: none;"><?php echo $heading_title; ?></h1>
+<div class="content">
 <ul>
 <li>Вы хотите провести яркую, одухотворенную, здоровую беременность и подготовиться к
 родам? Сделать все возможное, что есть в Ваших силах, чтобы роды прошли наиболее
@@ -28,6 +29,7 @@
 чтобы убедиться в его потресающей нежности, качественной неторопливой подаче
 материала и начать занятия уже сейчас...</li>
 </ul>
+</div>
 <div class="video_wrap">
 <!-- http://docs.sublimevideo.net/write-proper-video-elements -->
 <video id="myVideo" class="sublime" width="640" height="360" poster="http://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-e460322294501e1d5db9ab3859dd859a.jpg" preload="none">
@@ -37,13 +39,76 @@
   <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm"></source>
 </video>
 </div>
+<p/>
+<div class="content">
+  <div style="width: 550px; display: inline-block; min-height: 500px">
+<p>Почему именно мы? (подробное описание достоинств нашего продукта)</p>
+<ul>
+<li>преимущества регулярных занятий дома</li>
+<li>комплекс разбит на триместры</li>
+<li>квалифицированный и чуткий преподаватель</li>
+<li>потрясающие природные съемки</li>
+<li>курс легкий (подходит и для начинающих), тем не менее, при регулярных занятиях, очень эффективный</li>
+<li>релаксирующие практики</li>
+<li>практики позитивного настроя</li>
+<li>аккредитация/рецензии курса специалистами в области акушерства и йога-практики</li>
+<li>качество картинки- в HD</li>
+</ul></div>
+<div style="width: 50px; height: 50px; display: inline-block; vertical-align: top">
+  <img class="image" src="image/data/movie_1.png">
+  <img class="image" src="image/data/movie_2.png">
+  <img class="image" src="image/data/movie_3.png">
+</div>
+</div>
 
 <div class="freshbutton-blue">
   <div class="slide-to-message">
     <div id="slide-to-mask" class="slide-to-mask"></div>
-    ЗАКАЗАТЬ
+      <a href="index.php/checkout/shipment">ЗАКАЗАТЬ</a>
   </div>
 </div>
+
+<div class="content">
+  <div style="display: inline-block; vertical-align: top">
+    <img class="image" src="image/data/review_1.png">    
+  </div>
+  <div style="width: 550px; display: inline-block"><p>
+  Елена Сыроежина- – сертифицированный преподаватель йоги для
+  беременных, прошла обучение у ведущих тренеров Индии и России, Член
+  Федерации Йоги России, занимается преподавательской и научной
+  деятельностью в ведущем университете Физической Культуры страны,
+  защитила магистратуру с отличием, прошла повышение квалификации по
+  программе «Оздоровительная физическая культура с использованием
+  систем йоги».</p>
+  <p>«Тема оздоровления и поддержания отличного самочувствия с помощью
+  йоги увлекает и доминирует в моей жизни уже много лет. Мой жизненный
+  путь привел меня в преподаватели и в научную деятельность, связанную с
+  мудрым, древним знанием, которое приносит телесное и психологическое
+  здоровье, устойчивость, духовное развитие и имя которому ЙОГА. Мне
+  очень хочется помочь беременным женщинам в этот удивительный и
+  трогательный период их жизни открыть, ощутить и поддержать гармонию
+  и покой, внутреннюю силу и глубокое понимание себя. Именно для этого я
+  разработала курс специально подобранных комплексов упражнений и
+  дыхательных практик для 1(2/3) триместра беременности, а также
+  включила в курс техники направленные на релаксацию и позитивный
+  настрой ». Будьте здоровы и счастливы! Ваша Елена!</p></div>
+</div>
+<div class="content">
+  <div style="display: inline-block; vertical-align: top">
+    <img class="image" src="image/data/review_2.png">    
+  </div>
+  <div style="width: 550px; display: inline-block"><p>
+  Отзывы/рецензии акушеров-гинекологов и йога-преподавателей</p></div>
+</div>
+<div class="content">
+  <div style="display: inline-block; vertical-align: top">
+    <img class="image" src="image/data/review_3.png">    
+  </div>
+  <div style="width: 550px; display: inline-block"><p>
+  Отзывы беременных и родивших женщин</p></div>
+</div>
+
+
 <script type="text/javascript">
   var animate = function() {
     $('#slide-to-mask').animate({
