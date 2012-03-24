@@ -11,7 +11,7 @@
 {
     height:80px; 
     border: solid 1px #ccc;
-    margin-top: 30px;
+    margin-top: 40px;
     background: #ffffff; /* Old browsers */
     background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */

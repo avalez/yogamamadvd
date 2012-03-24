@@ -63,7 +63,7 @@
 
 <div class="freshbutton-blue">
   <div class="slide-to-message">
-    <div id="slide-to-mask" class="slide-to-mask"></div>
+    <div class="slide-to-mask"></div>
       <a href="index.php/checkout/shipment">ЗАКАЗАТЬ</a>
   </div>
 </div>
@@ -107,11 +107,73 @@
   <div style="width: 550px; display: inline-block"><p>
   Отзывы беременных и родивших женщин</p></div>
 </div>
-
-
+<div class="content">
+  <div style="width: 550px; display: inline-block">
+    Сколько стоит наш курс занятий йоги для будущих мам?
+    Обоснование стоимости продукта
+    <ul>
+    <li>стоимость аналогична стоимости других продуктов по данной
+    тематике, но качественно отличается от них</li>
+    <li>при заказе почтой +оплата почтового перевода</li>
+    <li>стоимость покупки всех трех видео-уроков - скидка</li>
+    <li>стоимость электронной версии ниже, т.к. издержки на печать и
+    изготовления дисков исключены из стоимости продукта -
+    СТОИМОСТЬ НИЖЕ, ДОСТАВКА БЫСТРЕЕ!</li>
+    <ul>
+  </div>
+  <div style="display: inline-block; vertical-align: top">
+    <img class="image" src="image/data/review_3.png">    
+  </div>
+</div>
+<div class="freshbutton-blue">
+  <div class="slide-to-message">
+    <div class="slide-to-mask"></div>
+      <a href="index.php/checkout/shipment" shipment="download">ЗАКАЗАТЬ</a>
+  </div>
+</div>
+<div class="content">
+  <div>
+    <p>Гарантии надежности нас как поставщиков</p>
+    <p>При заказах через Интернет часто есть сомнения в честности того, кто находится по ту сторону
+    монитора - никто не хочет быть обманутым.</p>
+    <p>В нашем случае Вы можете нам полностью доверять, потому что:</p>
+    <ul>
+    <li>-</li>
+    <li>-</li>
+    <ul>
+    <p>БОНУСЫ:</p>
+    <ul>
+    <li>релаксационные практики Йога-нидра (подробное описание)</li>
+    <li>обучение дыхательным практикам (подробное описание)</li>
+    <li>практика позитивного настроя (подробное описание)</li>
+    </ul>
+    <p>ПЛЮС КО ВСЕМУ:</p>
+    <ul>
+    <li>!личный кабинет с дополнительными материалами и бесплатным первым
+      уроком (+подробные противопоказания), даже если Вы не приобрели
+      курс!</li>
+    <ul>
+  </div>
+</div>
+<div class="content">
+  <div>
+    <p>Первый вводный урок Вы получите АБСОЛЮТНО БЕСПЛАТНО! ПРЯМО СЕЙЧАС!</p>
+    <p>Все, что Вам нужно сделать это всего лишь вписать имя и емейл-адрес в
+    форму ниже на странице и нажать на кнопку "личный кабинет будущей
+    мамы".</p>
+    <p>Доступ к первому уроку будет открыт Вам СРАЗУ в Вашем личном
+    кабинете!</p>
+  </div>
+</div>
+<div class="freshbutton-blue">
+  <div class="slide-to-message">
+    <div class="slide-to-mask"></div>
+      <a href="index.php/checkout/shipment">ЗАКАЗАТЬ</a>
+  </div>
+</div>
 <script type="text/javascript">
   var animate = function() {
-    $('#slide-to-mask').animate({
+    $('.slide-to-mask').animate({
       left: '+=200'
     }, 1500, function() {
       $(this).css({left: '-300px'});
@@ -119,6 +181,13 @@
     });      
   }
   $(function() {
+    $('.slide-to-mask').click(function(event) {
+      var $a  = $('a', $(event.target).parent());
+      if ($a.attr('shipment')) {
+        app.cart('shipment', $a.attr('shipment'));
+      }
+      $a.click();
+    });
     animate();
     if (sublimevideo.prepare) sublimevideo.prepare();
     if (typeof showBottomPanel != 'undefined' && !$.cookie('bottomPanelHide')) 

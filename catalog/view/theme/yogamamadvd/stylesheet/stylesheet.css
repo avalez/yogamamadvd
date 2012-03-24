@@ -1306,7 +1306,7 @@ a.button {
 	background: #F8F8F8;
 	width: 875px;
 	margin: auto;
-	margin-bottom: 55px;
+	margin-bottom: 40px;
 }
 #footer ul {
 	list-style: none;
@@ -1331,7 +1331,7 @@ a.button {
 	clear: both;
 	width: 875px;
 	margin: auto;
-	margin-top: 10px;
+	padding-bottom: 10px;
 }
 .ui-autocomplete-loading {
     background: url('../image/ui-anim_basic_16x16.gif') right center no-repeat;
