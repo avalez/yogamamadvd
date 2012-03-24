@@ -26,7 +26,7 @@ UPDATE `setting` SET `value` = 'azhdanov@gmail.com' WHERE `store_id` = 0 AND `gr
 UPDATE `setting` SET `value` = 'Rizska 1492/2' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_address';
 UPDATE `setting` SET `value` = 'Life Yoga Club' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_owner';
 UPDATE `setting` SET `value` = 'Йога для будущих мам' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_name';
-UPDATE `setting` SET `value` = 'a:1:{i:0;a:7:{s:9:"banner_id";s:1:"9";s:5:"width";s:3:"850";s:6:"height";s:3:"409";s:9:"layout_id";s:1:"1";s:8:"position";s:11:"content_top";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"1";}}' WHERE `store_id` = 0 AND `group` = 'slideshow' AND `key` = 'slideshow_module';
+UPDATE `setting` SET `value` = 'a:1:{i:0;a:7:{s:9:"banner_id";s:1:"9";s:5:"width";s:3:"873";s:6:"height";s:3:"421";s:9:"layout_id";s:1:"1";s:8:"position";s:11:"content_top";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"1";}}' WHERE `store_id` = 0 AND `group` = 'slideshow' AND `key` = 'slideshow_module';
 DELETE FROM `setting` WHERE `store_id` = 0 AND `group` = 'featured' AND `key` = 'featured_module';
 DELETE FROM `setting` WHERE `store_id` = 0 AND `group` = 'carousel' AND `key` = 'carousel_module';
 DELETE FROM `setting` WHERE `store_id` = 0 AND `group` = 'account' AND `key` = 'account_module';
