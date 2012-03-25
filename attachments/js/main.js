@@ -420,7 +420,7 @@ function observable(doc) {
     doc.remove = function() {
       viewModel.remove(doc._id, doc._rev);
       if (doc._id == viewModel.children()[0]._id) {
-        if (window.location.hash == '#/') {
+        if (window.location.hash == '#/' || !window.location.hash) {
           delete viewModel.parent['_id']; // force reload
           load();
         } else {
