@@ -34,7 +34,11 @@
         <input id="new" type="text" maxlength="256" data-bind="value: newItem, editing: editingNewItem"/>
         <ul class="tokens"></ul>
     </div>
-    <ul id="list" data-bind='template: {name: "todo-template", foreach: children}'></ul>
+    <div id="list" data-bind='template: {name: "todo-template", foreach: children}'></div>
+    <!--ul id="notes" data-bind='template: {name: "child-notes-template", foreach: notes}'/-->
+    <ul data-bind='foreach: notes'>
+      <li><a data-bind="text: name, attr: {href: '#/' + _id}"></a></li>
+    </ul>
 </div>
 
 <div id="not-found" style="display: none">

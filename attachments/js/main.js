@@ -254,11 +254,22 @@ edit = function(object, event) {
 
 var myChanges = [];
 
+// append array
+ko.observableArray.fn.pushAll = function(array) {
+  var underlyingArray = this();
+  this.valueWillMutate();
+  array.splice(0, 0, underlyingArray.length, 0);
+  var methodCallResult = underlyingArray['splice'].apply(underlyingArray, array);
+  this.valueHasMutated();
+  return methodCallResult;
+};
+
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
     parent: observable({name: '', completed: false}),
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
+    notes: ko.observableArray(),
     children: ko.observableArray()
 }
 
@@ -288,6 +299,7 @@ viewModel.reset = function() {
   viewModel.parent.name('');
   delete viewModel.parent['syncing'];
   viewModel.children.splice(0, viewModel.children().length);
+  viewModel.notes.splice(0, viewModel.notes().length);
 }
 
 viewModel.create = function(doc, callback) {
@@ -344,9 +356,9 @@ viewModel.remove = function(doc) {
       */
     })
     // cascade
-    app.view('children', {key: doc._id}, function(error, data) {
+    app.view('children', {key: doc._id, include_docs: true}, function(error, data) {
         $(data.rows).each(function(i, row) {
-            viewModel.remove(row.value); // recurse
+            viewModel.remove(row.doc); // recurse
         })
     })
 }
@@ -469,13 +481,15 @@ var indexMaintainance = function() {
     }
 };
 
+viewModel.children.subscribe(indexMaintainance, viewModel);
+
 function observableArray(data) {
   var array = [];
   $(data.rows).each(function(i, row) {
       row.value.index = ko.observable(i);
-      array.push(observable(row.value));
+      array.push(observable(row.doc))      
   })  
-  return ko.observableArray(array);
+  return array;
 }
 
 // check if change has any modification from outside,
@@ -572,34 +586,35 @@ var run = function() {
     ko.applyBindings(viewModel);
     $('footer').show();
     handleChanges();
-    $(window).hashchange(function() {
-        load(function() {
-        })
-    })
+    $(window).hashchange(load);
+    load()
 }
 
-var load = function(callback) {
+var load = function() {
     var parent_id = window.location.hash.substring(2) || 'root'; // strip '#/'
     if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
         viewModel.reset();
-        app.view('items', {startkey: [parent_id], endkey: [parent_id, 9007199254740992]}, function(error, data) {
+        app.view('note', {startkey: [parent_id], endkey: [parent_id, 9007199254740992], include_docs: true}, function(error, data) {
             if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
-                viewModel.parent.set(data.rows[0].value);
+                viewModel.parent.set(data.rows[0].doc);
                 viewModel.parent.syncing = true;
-                viewModel.children = observableArray(data);
-                viewModel.children.subscribe(indexMaintainance, viewModel);
+                viewModel.children.pushAll(observableArray(data, observable));
                 delete viewModel.parent['syncing'];
-                callback();
             } else {
-                viewModel.parent.syncing = true;
-                viewModel.children.push(observable({name: 'test item'}));
-                delete viewModel.parent['syncing'];
                 $('div#not-found').show();
-                callback();
+            }
+        });
+        app.view('childnotes', {key: parent_id}, function(error, data) {
+            if (!error && data.rows.length > 0) {
+                var array = [];
+                $(data.rows).each(function(i, row) {
+                    array.push({_id: row.id, name: row.value})      
+                })  
+                viewModel.notes.pushAll(array);
             }
         })
     }
 }
 
-$(function() {load(run)})
+$(run)

@@ -16,20 +16,25 @@ ddoc =
   ;
 
 ddoc.views = {
-  items : {
+  note : {
     map : function(doc){
       if (doc.type == 'note') {
-        emit([doc._id, 0], doc);
-      } else {
-        emit([doc.parent_id, doc.order], doc);
+        emit([doc._id, 0])
+      } else /* section */ {
+        emit([doc.parent_id, doc.order])
+      }
+    }
+  },
+  childnotes : {
+    map : function(doc) {
+      if (doc.type == 'note') {
+        emit(doc.parent_id, doc.name)
       }
     }
   },
   children : {
     map : function(doc) {
-      if (doc.type == 'note') {
-        emit(doc.parent_id, doc)
-      }
+        emit(doc.parent_id)
     }
   }
 };
