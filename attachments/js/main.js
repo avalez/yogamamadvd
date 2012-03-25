@@ -51,7 +51,7 @@ app.uuid = function (callback) {
     if (cache.length > 0) {
         callback(cache.pop());
     } else {
-        request({url: app.baseURL + '../../../_uuids?count=2'}, function(error, data) {
+        return request({url: app.baseURL + '../../../_uuids?count=2'}, function(error, data) {
             Array.prototype.push.apply(cache, data.uuids);
             callback(cache.pop());
         });
@@ -63,12 +63,22 @@ app.view = function (view_id, params, callback) {
 }
 
 app.create = function(doc, callback) {
-  app.uuid(function(uuid) {
-    doc._id = uuid;
-    app.update(doc, function(error, data) {
-      callback(error, doc);
+  if (typeof doc._id == 'undefined') {
+    app.uuid(function(uuid) {
+      doc._id = uuid;
+      app.update(doc, function(error, data) {
+        callback(error, doc)
+      })
     })
-  });
+  } else {
+    app.update(doc, function(error, data) {
+      callback(error, doc)
+    })
+  }
+}
+
+app.doCreate = function(doc, callback) {
+  
 }
 
 app.read = function(doc_id, callback) {
@@ -82,8 +92,8 @@ app.update = function(doc, callback) {
   })
 }
 
-app.remove = function(doc, callback) {
-  request({type: 'DELETE', url: app.baseURL + '../../' + doc._id + '?rev=' + doc._rev}, callback);
+app.remove = function(doc_id, doc_rev, callback) {
+  request({type: 'DELETE', url: app.baseURL + '../../' + doc_id + '?rev=' + doc_rev}, callback);
 }
 
 /**
@@ -258,8 +268,7 @@ var myChanges = [];
 ko.observableArray.fn.pushAll = function(array) {
   var underlyingArray = this();
   this.valueWillMutate();
-  array.splice(0, 0, underlyingArray.length, 0);
-  var methodCallResult = underlyingArray['splice'].apply(underlyingArray, array);
+  var methodCallResult = Array.prototype.push.apply(underlyingArray, array);
   this.valueHasMutated();
   return methodCallResult;
 };
@@ -267,6 +276,7 @@ ko.observableArray.fn.pushAll = function(array) {
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
     parent: observable({name: '', completed: false}),
+    root: observable({name: '', completed: false}),
     newItem: ko.observable(''),
     editingNewItem: ko.observable(false),
     notes: ko.observableArray(),
@@ -281,8 +291,9 @@ viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
         return;
     }
-    viewModel.create(viewModel.parent._id, newValue, function(error, doc) {
-        viewModel.children.push(observable(doc));
+    var parent_id = viewModel.children()[0] ? viewModel.children()[0]._id : 'root';
+    viewModel.create({parent_id: parent_id, name: newValue, type: 'note', order: 0}, function(error, doc) {
+        viewModel.notes.push(doc);
         viewModel.newItem(''); // clear
     })
 });
@@ -346,8 +357,8 @@ viewModel.save = function (doc, callback) {
     })
 }
 
-viewModel.remove = function(doc) {
-    app.remove(doc, function(error, data) {
+viewModel.remove = function(doc_id, doc_rev) {
+    app.remove(doc_id, doc_rev, function(error, data) {
       myChanges.push(data.id);
       /*
         changes = myChanges[data.id] || [];
@@ -356,9 +367,9 @@ viewModel.remove = function(doc) {
       */
     })
     // cascade
-    app.view('children', {key: doc._id, include_docs: true}, function(error, data) {
+    app.view('children', {key: doc_id}, function(error, data) {
         $(data.rows).each(function(i, row) {
-            viewModel.remove(row.doc); // recurse
+            viewModel.remove(row.id, row.value); // recurse
         })
     })
 }
@@ -407,8 +418,17 @@ function observable(doc) {
     });
     doc.editing = ko.observable(false);
     doc.remove = function() {
-      viewModel.remove(doc);
-      viewModel.children.remove(doc);
+      viewModel.remove(doc._id, doc._rev);
+      if (doc._id == viewModel.children()[0]._id) {
+        if (window.location.hash == '#/') {
+          delete viewModel.parent['_id']; // force reload
+          load();
+        } else {
+          window.location.hash = '#/';
+        }
+      } else {
+        viewModel.children.remove(doc);
+      }
     }
     doc.load = function() { 
       viewModel.read(this._id, doc.set);
@@ -487,6 +507,9 @@ function observableArray(data) {
   var array = [];
   $(data.rows).each(function(i, row) {
       row.doc.index = ko.observable(i);
+      if (typeof row.doc.order == 'undefined') {
+        row.doc.order = i; // TODO: getOrder
+      }
       array.push(observable(row.doc))      
   })  
   return array;
@@ -599,9 +622,14 @@ var load = function() {
                 $('div#not-found').hide();
                 viewModel.parent.set(data.rows[0].doc);
                 viewModel.parent.syncing = true;
+                // TODO: assert first item is note
                 viewModel.children.pushAll(observableArray(data, observable));
                 delete viewModel.parent['syncing'];
             } else {
+                viewModel.root.set({_id: parent_id, name: 'Untitled', type: 'note', order: 0});
+                if (parent_id != 'root') {
+                  viewModel.root.parent_id = 'root';
+                }
                 $('div#not-found').show();
             }
         });

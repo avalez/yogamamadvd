@@ -34,7 +34,7 @@ ddoc.views = {
   },
   children : {
     map : function(doc) {
-        emit(doc.parent_id)
+        emit(doc.parent_id, doc._rev)
     }
   }
 };
