@@ -486,7 +486,7 @@ viewModel.children.subscribe(indexMaintainance, viewModel);
 function observableArray(data) {
   var array = [];
   $(data.rows).each(function(i, row) {
-      row.value.index = ko.observable(i);
+      row.doc.index = ko.observable(i);
       array.push(observable(row.doc))      
   })  
   return array;
