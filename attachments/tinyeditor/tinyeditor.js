@@ -39,23 +39,21 @@ TINY.editor=function(){
 	c['delete']=[28,'Delete','d','delete'];
 	function edit(n,obj){
 		this.n=n; window[n]=this; this.t=obj.el; this.obj=obj; this.xhtml=obj.xhtml;
-		var p=this.t.parentNode/*document.createElement('div')*/, w=document.createElement('div'), h=document.createElement('div'),
-		l=obj.controls.length, i=0;
-		//this.t.parentNode.insertBefore(p, this.t);
+		var p=document.createElement('div'), w=document.createElement('div'), h=document.createElement('div'),
+		l=obj.controls.length, i=0; 
+		this.t.parentNode.insertBefore(p, this.t);
 		//this.i=document.createElement('iframe'); this.i.frameBorder=0;
 		//this.i.width=obj.width||'500'; this.i.height=obj.height||'250';
 		h.width=this.t.width||'500'; h.height=this.t.height||'250';
 		this.ie=T$$$();
-		h.className=obj.rowclass||'teheader'; p.className=obj.cssclass||'te'; p.style.width=this.t.width+'px';
-		//p.appendChild(h);
-		p.insertBefore(h, this.t);
+		h.className=obj.rowclass||'teheader'; p.className=obj.cssclass||'te'; /*p.style.width=this.t.width+'px';*/p.appendChild(h);
+		//p.insertBefore(h, this.t);
 		this.obj.h = [h];
 		for(i;i<l;i++){
 			var id=obj.controls[i];
 			if(id=='n'){
-				h=document.createElement('div'); h.className=obj.rowclass||'teheader';
-				//p.appendChild(h)
-				p.insertBefore(h, this.t);
+				h=document.createElement('div'); h.className=obj.rowclass||'teheader';p.appendChild(h)
+				//p.insertBefore(h, this.t);
     		this.obj.h.push(h);
 			}else if(id=='|'){
 				var d=document.createElement('div'); d.className=obj.dividerclass||'tedivider'; h.appendChild(d)
@@ -235,6 +233,10 @@ TINY.editor=function(){
     for (i in this.obj.h) {
       this.t.parentNode.removeChild(this.obj.h[i]);
     }
+	}
+	edit.prototype.enable=function(element) {
+		if (element) this.t = element;
+		else this.t = null;
 	}
 	return{edit:edit}
 }();

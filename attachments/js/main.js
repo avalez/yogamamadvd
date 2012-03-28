@@ -197,28 +197,7 @@ ko.bindingHandlers.htmlValue = {
           console.log('edit: ' + element.innerHTML);
           element.contentEditable = 'true';
           element.focus();
-          editor = new TINY.editor.edit('editor',{
-              el:element,
-              id:'input', // (required) ID of the textarea
-              width:584, // (optional) width of the editor
-              height:175, // (optional) heightof the editor
-              cssclass:'te', // (optional) CSS class of the editor
-              controlclass:'tecontrol', // (optional) CSS class of the buttons
-              //rowclass:'teheader', // (optional) CSS class of the button rows
-              dividerclass:'tedivider', // (optional) CSS class of the button diviers
-              controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'source', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
-              footer:false, // (optional) show the footer
-              fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
-              xhtml:true, // (optional) generate XHTML vs HTML
-              cssfile:'style.css', // (optional) attach an external CSS file to the editor
-              content:'starting content', // (optional) set the starting content else it will default to the textarea content
-              css:'body{background-color:#ccc}', // (optional) attach CSS to the editor
-              bodyid:'editor', // (optional) attach an ID to the editor body
-              footerclass:'tefooter', // (optional) CSS class of the footer
-              toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
-              resize:{cssclass:'resize'}, // (optional) display options for the editor resize
-              done: function() {element.blur()}
-          });
+          editor.enable(element);
         }
       });
       ko.utils.registerEventHandler(element, "blur", function() {
@@ -234,7 +213,7 @@ ko.bindingHandlers.htmlValue = {
               var allBindings = allBindingsAccessor();
               if (allBindings['_ko_property_writers'] && allBindings['_ko_property_writers'].htmlValue) allBindings['_ko_property_writers'].htmlValue(elementValue);
           }
-          if (editor) editor.destroy();
+          editor.enable(false);
         }
       });
       $(element).keypress(function(event) {
@@ -243,6 +222,7 @@ ko.bindingHandlers.htmlValue = {
           element.innerHTML = value();
           element.blur();
           console.log('cancel: ' + element.innerHTML);
+          event.preventDefault();
         }
       });
     },
@@ -284,7 +264,7 @@ var viewModel = {
 }
 
 viewModel.parent.name.subscribe(function(newValue) {
-  document.title = newValue;
+  document.title = stripHtml(newValue);
 });
 
 viewModel.newItem.subscribe(function(newValue) {
@@ -605,8 +585,38 @@ function handleChanges() {
   });
 }
 
+// http://stackoverflow.com/questions/822452/strip-html-from-text-javascript
+function stripHtml(html)
+{
+   var tmp = document.createElement("DIV");
+   tmp.innerHTML = html;
+   return tmp.textContent||tmp.innerText;
+}
+
 var run = function() {
     ko.applyBindings(viewModel);
+    editor = new TINY.editor.edit('editor',{
+      el:$('#lock')[0],
+      id:'input', // (required) ID of the textarea
+      width:584, // (optional) width of the editor
+      height:175, // (optional) heightof the editor
+      cssclass:'te', // (optional) CSS class of the editor
+      controlclass:'tecontrol', // (optional) CSS class of the buttons
+      //rowclass:'teheader', // (optional) CSS class of the button rows
+      dividerclass:'tedivider', // (optional) CSS class of the button diviers
+      controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'source', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
+      footer:false, // (optional) show the footer
+      fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
+      xhtml:true, // (optional) generate XHTML vs HTML
+      cssfile:'style.css', // (optional) attach an external CSS file to the editor
+      content:'starting content', // (optional) set the starting content else it will default to the textarea content
+      css:'body{background-color:#ccc}', // (optional) attach CSS to the editor
+      bodyid:'editor', // (optional) attach an ID to the editor body
+      footerclass:'tefooter', // (optional) CSS class of the footer
+      toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
+      resize:{cssclass:'resize'}, // (optional) display options for the editor resize
+      done: function() {element.blur()}
+    });
     $('footer').show();
     handleChanges();
     $(window).hashchange(load);
