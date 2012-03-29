@@ -255,17 +255,11 @@ ko.observableArray.fn.pushAll = function(array) {
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 var viewModel = {
-    parent: observable({name: '', completed: false}),
-    root: observable({name: '', completed: false}),
+    root: observable({name: ''}),
     newItem: ko.observable(''),
-    editingNewItem: ko.observable(false),
     notes: ko.observableArray(),
     children: ko.observableArray()
 }
-
-viewModel.parent.name.subscribe(function(newValue) {
-  document.title = stripHtml(newValue);
-});
 
 viewModel.newItem.subscribe(function(newValue) {
     if ($.trim(newValue) == '') {
@@ -278,24 +272,13 @@ viewModel.newItem.subscribe(function(newValue) {
     })
 });
 
-viewModel.children.subscribe(function(newValue) {
-  if (!viewModel.parent.syncing) {
-    viewModel.complete();
-  }
-})
-
 viewModel.reset = function() {
-  delete viewModel.parent['_id'];
-  viewModel.parent.syncing = true;
-  viewModel.parent.name('');
-  delete viewModel.parent['syncing'];
   viewModel.children.splice(0, viewModel.children().length);
   viewModel.notes.splice(0, viewModel.notes().length);
 }
 
 viewModel.create = function(doc, callback) {
   var doc_to_save = ko.toJS(doc);
-  delete doc_to_save['editing'];
   delete doc_to_save['index'];
   app.create(doc_to_save, function(error, doc) {
     if (!error) {
@@ -319,7 +302,6 @@ viewModel.read = function(doc_id, callback) {
 
 viewModel.save = function (doc, callback) {
     var doc_to_save = ko.toJS(doc);
-    delete doc_to_save['editing'];
     delete doc_to_save['index'];
     app.update(doc_to_save, function(error, data) {
       if (!error) {
@@ -331,6 +313,7 @@ viewModel.save = function (doc, callback) {
         myChanges[data.id] = changes;
         */
       } else if (data.error == 'conflict') {
+        // TODO: alert
         doc.load();
       }
       callback(error, data);
@@ -354,27 +337,6 @@ viewModel.remove = function(doc_id, doc_rev) {
     })
 }
 
-viewModel.complete = function(doc, newValue) {
-    if (newValue) { // complete children
-        app.view('children', {key: doc._id}, function(error, data) {
-            $(data.rows).each(function(i, row) {
-                if (!row.value.completed) {
-                    row.value.completed = true;
-                    viewModel.save(row.value, nil);
-                }
-            })
-        })
-    }
-    if (viewModel.parent._id) {
-      var completed = true;
-      var children = viewModel.children();
-      for (var i = 0, length = children.length; i < length && completed; i++) {
-        completed = children[i].completed();
-      }
-      viewModel.parent.completed(completed);
-    }
-}
-
 // rather belong to doc, but to both new and existing, so bind it to viewModel
 viewModel.add = function($data) {
   viewModel.children.splice($data.index() + 1, 0,
@@ -389,22 +351,15 @@ function observable(doc) {
     }
     doc.name = ko.observable(doc.name);
     doc.name.subscribe($save);
-    doc.completed = ko.observable(doc.completed);
-    doc.completed.subscribe($save);
-    doc.completed.subscribe(function(newValue) {
-      if (!doc.syncing) {
-        viewModel.complete(doc, newValue)
-      }
-    });
-    doc.editing = ko.observable(false);
     doc.remove = function() {
       viewModel.remove(doc._id, doc._rev);
       if (doc._id == viewModel.children()[0]._id) {
         if (window.location.hash == '#/' || !window.location.hash) {
-          delete viewModel.parent['_id']; // force reload
+          delete viewModel.children()[0]['_id']; // force reload
           load();
         } else {
-          window.location.hash = '#/';
+          var id = (doc.parent_id == 'root' ? '' : doc.parent_id);
+          window.location.hash = '#/' + id;
         }
       } else {
         viewModel.children.remove(doc);
@@ -419,11 +374,7 @@ function observable(doc) {
       doc.parent_id = data.parent_id;
       doc.type = data.type;
       doc.order = data.order;
-      doc.syncing = true;
-      if (typeof this.completed != 'function') {
-        0 == 0;
-      }
-      doc.completed(data.completed);
+      doc.syncing = true; // prevent save
       doc.name(data.name);
       delete doc['syncing'];      
     }
@@ -466,9 +417,8 @@ function observableNewItem(options) {
   return doc;
 }
 
-//attach index to items whenever array changes
-//http://stackoverflow.com/questions/6047713/bind-template-item-to-the-index-of-the-array-in-knockoutjs
-// TODO: check if it works with new observableArray too
+// attach index to items whenever array changes
+// http://stackoverflow.com/questions/6047713/bind-template-item-to-the-index-of-the-array-in-knockoutjs
 var indexMaintainance = function() {
     var children = this.children();
     for (var i = 0, j = children.length; i < j; i++) {
@@ -557,25 +507,21 @@ function handleChanges() {
         } else {
             if (index != -1)  {
               row.load();
-            } else if (change.id == viewModel.parent._id) {
-              viewModel.parent.load();
+            } else if (change.id == viewModel.children()[0]._id) {
+              viewModel.children()[0].load();
             } else {
               app.read(change.id, function(error, doc) {
-                if (doc.parent_id == viewModel.parent._id) {
-                  viewModel.parent.syncing = true;
+                if (doc.parent_id == viewModel.children()[0]._id) {
+                  // TODO: section/note/update/push
                   viewModel.children.push(observable(doc));
-                  delete viewModel.parent['syncing'];
                 }
               })
             }
         }
-      
       } else {
         myChanges.splice(changeIndex, 1);
         
       }
-      
-
     });
 
     if (doRefresh) {
@@ -623,18 +569,23 @@ var run = function() {
     load()
 }
 
+function setTitle(doc) {
+  document.title = stripHtml(doc.name());
+  doc.name.subscribe(function(newValue) {
+    document.title = stripHtml(newValue);
+  });
+}
+
 var load = function() {
     var parent_id = window.location.hash.substring(2) || 'root'; // strip '#/'
-    if (typeof viewModel.parent == 'undefined' || viewModel.parent._id != parent_id) {
+    if (viewModel.children().length == 0 || viewModel.children()[0]._id != parent_id) {
         viewModel.reset();
         app.view('note', {startkey: [parent_id], endkey: [parent_id, 9007199254740992], include_docs: true}, function(error, data) {
             if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
-                viewModel.parent.set(data.rows[0].doc);
-                viewModel.parent.syncing = true;
                 // TODO: assert first item is note
                 viewModel.children.pushAll(observableArray(data, observable));
-                delete viewModel.parent['syncing'];
+                setTitle(viewModel.children()[0]);
             } else {
                 viewModel.root.set({_id: parent_id, name: 'Untitled', type: 'note', order: 0});
                 if (parent_id != 'root') {

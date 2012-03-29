@@ -11,7 +11,7 @@
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="js/jquery-1.6.min.js"></script>
     <script type="text/javascript" src="js/jquery.ba-hashchange.min.js"></script>
-    <script type="text/javascript" src="js/knockout-2.0.0.debug.js"></script>
+    <script type="text/javascript" src="js/knockout-2.0.0.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="tinyeditor/tinyeditor.js"></script>
     <link href="tinyeditor/style.css" rel="stylesheet" type="text/css"/>
@@ -28,14 +28,10 @@
 </header>
 
 <div id="page" style="display:block">
-    <div id="title" data-bind="html: parent.name, editing: parent.editing"></div>
-
     <div id="list" data-bind='template: {name: "todo-template", foreach: children}'></div>
     <div id="new-wrapper">
-        <input id="new" type="text" maxlength="256" data-bind="value: newItem, editing: editingNewItem"/>
-        <ul class="tokens"></ul>
+        <input id="new" type="text" maxlength="256" data-bind="value: newItem"/>
     </div>
-    <!--ul id="notes" data-bind='template: {name: "child-notes-template", foreach: notes}'/-->
     <ul class="notes" data-bind='foreach: notes'>
       <li><a data-bind="text: name, attr: {href: '#/' + _id}"></a></li>
     </ul>
@@ -89,7 +85,6 @@
 <script type="text/html" id="todo-template">
     <div>
         <div class="editable" data-bind="htmlValue: name"/>
-        <ul class="tokens"></ul>
         <div class="actions">
             <a data-action="edit" data-bind="click: edit">&#x270E;</a>
             <!-- ko if: remove -->
