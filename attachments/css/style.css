@@ -1,27 +1,32 @@
 body {
     background-color: #FAFAFA;
-    font-family: 'Arial',sans-serif;
-    margin: 0 auto;
-    padding: 60px 30px;
-    width: 800px;
+    font-family: 'Lucida Grande',Arial,sans-serif;
+    margin: 0;
+    padding-top: 65px;
 }
-body > header {
+header {
     color: #DDDDDD;
     display: block;
     font-size: 16px;
-    margin: 0;
     position: fixed;
-    top: 0px;
-    width: 800px;
+    left: 0;
+    top: 0;
     z-index: 10000;
     background-color: #FAFAFA;
+    width: 100%;
+}
+header > div {
+    margin: auto;
+    position: relative;
+    width: 80%;
 }
 body > footer {
     color: #EAEAEA;
     font-size: 14px;
-    margin: 30px 0;
+    margin: 20px auto;
     text-align: right;
     display: none;
+    width: 80%;
 }
 body > footer p {
     margin: 10px 0;
@@ -50,9 +55,18 @@ h1 {
     color: #3D4A5C;
     font-size: 42px;
 }
-ul.notes, li.note {
+ul.notes {
+    border-top: 1px solid #DDDDDD;
     list-style-type: none;
-    padding: 0;
+    padding: 10px;
+    margin: auto;
+    width: 80%;
+}
+li.notes {
+    display: inline-block;
+    border-right: 1px solid #DDDDDD;
+    margin: 5px 5px 0 0;
+    padding: 0 10px 0 0;
 }
 a {
     color: #CCCCCC;
@@ -66,7 +80,7 @@ input[type="checkbox"] {
     font-size: 22px;
 }
 #page {
-    width: 800px;
+    width: 100%;
 }
 #page label, #page label a, #page label a:visited {
     color: #3D4A5C;
@@ -82,9 +96,9 @@ input[type="checkbox"] {
     visibility: hidden;
 }
 #page #list {
-    margin: 30px 0;
+    margin: auto;
     padding: 0;
-    width: 800px;
+    width: 80%;
 }
 #page #list > div {
     background-color: #FAFAFA;
@@ -104,92 +118,21 @@ input[type="checkbox"] {
     text-decoration: underline;
 }
 #page #list > div {
-    background-color: #FEFEF1;
+    position: relative;
+    min-height: 40px;
 }
 #page #list > div .editable {
-    width: 680px;
+    width: 700px;
     float: left;
-}
-#page #list > div:hover label:after {
-    background-color: #FEFEF1;
-    box-shadow: -15px 0 30px #FEFEF1;
-}
-#page #list > div.editing {
-    background-color: white;
-    border: 1px dashed #DDDDDD !important;
-    margin-top: -1px;
-}
-#page #list > li.editing .tags {
-    display: none;
-}
-#page #list > div.editing [data-action="edit"] {
-    color: #EE8167;
-}
-#page #list > div.editing:last-child {
-    margin-bottom: -1px;
-}
-#page #list > li input[type="text"] {
-    background-color: transparent;
-    border: 0 none;
-    font-family: Georgia,'Times New Roman',serif;
-    font-size: 22px;
-    height: 48px;
-    margin-left: -1px;
-    width: 650px;
-}
-#page #list > li input[type="checkbox"] {
-    display: inline;
-    height: 48px;
-    line-height: 48px;
-    margin-right: 25px;
-    vertical-align: middle;
-}
-#page #list > li:hover .tags li a {
-    background-color: #FAFAFA;
-    color: #BCBC9A;
-}
-#page #list > div .tags {
-    display: inline;
-    float: right;
-    height: 48px;
-    line-height: 48px;
-    margin: 0 15px;
-}
-#page #list > div .tags li {
-    display: inline-block;
-    margin-left: 5px;
-}
-#page #list > div .tags li a {
-    background-color: #FEFEF1;
-    border-color: #F4F4D7;
-    border-radius: 2px 2px 2px 2px;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: 0 1px 2px #EEEEEE;
-    color: #C6C6A9;
-    display: inline-block;
-    line-height: 1em;
-    margin: auto 0;
-    padding: 4px 8px;
-}
-#page #list > div .tags li a:hover {
-    border-color: #EDEDC0;
-    color: #B1B18B;
-    text-decoration: none;
-}
-#page #list > div .tags li.active a {
-    border-color: #EDEDC0;
-    color: #B1B18B;
-}
-#page #list > div .tags li:first-child {
-    margin-left: 0;
 }
 #page #list > div .actions {
     float: right;
     font-size: 14px;
-    height: 48px;
-    line-height: 48px;
     visibility: hidden;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-bottom: 8px;
 }
 #page #list > div .actions a {
     border: 0 none !important;
@@ -202,9 +145,6 @@ input[type="checkbox"] {
     border: 0 none !important;
     visibility: visible;
 }
-#page #list > div .actions a:last-child {
-    margin-right: 10px;
-}
 #page #list > div .actions a:hover {
     color: #EE8167;
 }
@@ -212,35 +152,30 @@ input[type="checkbox"] {
     border-bottom: 0 none;
 }
 input#new, input[type="password"], input.token-input {
-    border: 1px solid #DDDDDD;
-    font-size: 24px;
-    padding: 8px;
+    border: 0;
+    padding: 0;
+    margin: 3px;
 }
 input#new.disabled, input.disabled[type="password"], input.token-input.disabled {
     background-color: #F0F0F0;
     color: #CCCCCC;
 }
-input#new, span.string-input, input.token {
-    font-family: 'Lucida Grande',Arial,sans-serif;
-}
 #new-wrapper {
-    background-color: white;
+    display: inline-block;
     border: 1px solid #DDDDDD;
+    padding: 0;
+    width: 250px;
+    background-color: white;
     box-shadow: 0 1px 2px #DDDDDD;
-    cursor: text;
-    font-size: 24px;
-    padding: 8px;
-    width: 782px;
 }
 #new-wrapper.focused {
     box-shadow: 0 2px 8px #DDDDDD;
 }
 #new-wrapper input#new {
-    border: 0 none !important;
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    width: 766px;
+    cursor: text;
+    width: 243px;
+    font-size: 16px;
+    font-family: 'Lucida Grande',Arial,sans-serif;
 }
 #new-wrapper .token {
     background-color: #FEFEF1;
@@ -301,8 +236,8 @@ div.password .close:hover {
     color: #EE8167;
 }
 #lock {
-    float: right;
     text-align: right;
+    float: right;
 }
 #lock div {
     background: url("../images/lock-24.png") no-repeat scroll 0 0 transparent;

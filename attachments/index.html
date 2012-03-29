@@ -19,21 +19,24 @@
 
 <body>
 <header>
+  <div>
     <a id="lock" href="#">
         <span class="locked-hint">unlock this room</span>
         <span class="unlocked-hint">lock this room</span>
 
         <div></div>
     </a>
+  </div>
 </header>
 
 <div id="page" style="display:block">
     <div id="list" data-bind='template: {name: "todo-template", foreach: children}'></div>
-    <div id="new-wrapper">
-        <input id="new" type="text" maxlength="256" data-bind="value: newItem"/>
-    </div>
-    <ul class="notes" data-bind='foreach: notes'>
-      <li><a data-bind="text: name, attr: {href: '#/' + _id}"></a></li>
+    <ul class="notes">
+      <!-- ko template: {name: "notes-template", foreach: notes} -->
+      <!-- /ko -->
+      <li id="new-wrapper">
+          <input id="new" type="text" maxlength="256" data-bind="value: newItem"/>
+      </li>
     </ul>
 </div>
 
@@ -92,8 +95,10 @@
             <!-- /ko -->
             <a data-action="add" data-bind="click: $parent.add">&#x271A;</a>
         </div>
-        <ul class="tags"></ul>
     </div>
+</script>
+<script type="text/html" id="notes-template">
+    <li class="notes"><a data-bind="text: name, attr: {href: '#/' + _id}"></a></li>
 </script>
 </body>
 </html>
