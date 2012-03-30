@@ -194,7 +194,6 @@ ko.bindingHandlers.htmlValue = {
       ko.utils.registerEventHandler(element, "click", function(event) {
         var t = document.elementFromPoint(event.clientX, event.clientY);
         if (!t || (t.nodeName != 'A' && element.contentEditable != 'true')) {
-          console.log('edit: ' + element.innerHTML);
           element.contentEditable = 'true';
           element.focus();
           editor.enable(element);
@@ -205,7 +204,6 @@ ko.bindingHandlers.htmlValue = {
           element.contentEditable = 'false';
           var htmlValue = valueAccessor();
           var elementValue = element.innerHTML;
-          console.log('done: ' + elementValue);
           if (ko.isWriteableObservable(htmlValue)) {
               htmlValue(elementValue);
           }
@@ -221,7 +219,6 @@ ko.bindingHandlers.htmlValue = {
           var value = valueAccessor();
           element.innerHTML = value();
           element.blur();
-          console.log('cancel: ' + element.innerHTML);
           event.preventDefault();
         }
       });
@@ -229,14 +226,11 @@ ko.bindingHandlers.htmlValue = {
     update: function(element, valueAccessor) {
         var value = ko.utils.unwrapObservable(valueAccessor()) || "";
         element.innerHTML = value;
-        console.log('update: ' + element.innerHTML);
     }
 };
 
 edit = function(object, event) {
   $('.editable', event.target.parentNode.parentNode).click();
-  console.log(object);
-  
 }
 
 

@@ -88,17 +88,17 @@
 <script type="text/html" id="todo-template">
     <div>
         <div class="editable" data-bind="htmlValue: name"/>
-        <div class="actions">
-            <a data-action="edit" data-bind="click: edit">&#x270E;</a>
-            <!-- ko if: remove -->
-            <a data-action="remove" data-bind="click: remove">&#x2717;</a>
-            <!-- /ko -->
-            <a data-action="add" data-bind="click: $parent.add">&#x271A;</a>
+        <div class="actions actions1">
+            <a data-bind="click: edit">&#x270E;</a>
+            <a data-bind="click: remove">&#x2717;</a>
+        </div>
+        <div class="actions actions2">
+            <a data-bind="click: $parent.add">&#x271A;</a>
         </div>
     </div>
 </script>
 <script type="text/html" id="notes-template">
-    <li class="notes"><a data-bind="text: name, attr: {href: '#/' + _id}"></a></li>
+    <li class="notes"><a data-bind="html: name, attr: {href: '#/' + _id}"></a></li>
 </script>
 </body>
 </html>
