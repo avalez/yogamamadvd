@@ -254,6 +254,14 @@ div.password .close {
 div.password .close:hover {
     color: #EE8167;
 }
+header > div > a {
+    float: right;
+    padding: 2px;
+    font-size: 18px;
+}
+header > div > a:hover {
+    color: #EE8167;
+}
 #lock {
     text-align: right;
     float: right;

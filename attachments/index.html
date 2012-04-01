@@ -20,12 +20,12 @@
 <body>
 <header>
   <div>
-    <a id="lock" href="#">
-        <span class="locked-hint">unlock this room</span>
-        <span class="unlocked-hint">lock this room</span>
-
-        <div></div>
-    </a>
+    <!-- ko if: (typeof children()[0] != 'undefined' && children()[0]._id != 'root' && children()[0].parent_id != 'root') -->
+    <a data-bind="attr: {href: '#/' + children()[0].parent_id}" title="Up">&uArr;</a>
+    <!-- /ko -->
+    <!-- ko if: (typeof children()[0] != 'undefined' && children()[0]._id != 'root') -->
+    <a data-bind="attr: {href: '#/'}" title="Home">&#x2302;</a>
+    <!-- /ko -->
   </div>
 </header>
 

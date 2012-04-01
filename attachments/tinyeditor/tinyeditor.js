@@ -41,7 +41,7 @@ TINY.editor=function(){
     this.n=n; window[n]=this; this.t=obj.el; this.obj=obj; this.xhtml=obj.xhtml;
     var p=document.createElement('div'), w=document.createElement('div'), h=document.createElement('div'),
     l=obj.controls.length, i=0; 
-    this.t.parentNode.insertBefore(p, this.t);
+    this.t.insertBefore(p, this.t.firstChild);
     //this.i=document.createElement('iframe'); this.i.frameBorder=0;
     //this.i.width=obj.width||'500'; this.i.height=obj.height||'250';
     h.width=this.t.width||'500'; h.height=this.t.height||'250';

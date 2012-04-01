@@ -536,7 +536,7 @@ function stripHtml(html)
 var run = function() {
     ko.applyBindings(viewModel);
     editor = new TINY.editor.edit('editor',{
-      el:$('#lock')[0],
+      el:$('header > div')[0],
       id:'input', // (required) ID of the textarea
       width:584, // (optional) width of the editor
       height:175, // (optional) heightof the editor
