@@ -97,6 +97,11 @@ input[type="checkbox"] {
   border: 1px solid #FFEE88;
   overflow: auto;  
 }
+#page code {
+  color: #884411;
+  font-size: 1.2em;
+  line-height: 1.4em;
+}
 #page li.flashing label:after {
     visibility: hidden;
 }
