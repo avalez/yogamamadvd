@@ -148,9 +148,9 @@ app.changes = function(since, options) {
       if (active) {
         since = resp.last_seq;
         setTimeout(function() {
-          triggerListeners(resp);
           getChangesSince();
         }, timeout);
+        triggerListeners(resp);
       };
     };
   };
@@ -473,6 +473,14 @@ function inChanges(change) {
 	return false;
 }
 
+function findById(docs, id) {
+  for (var i = 0, length = docs.length; i < length; i++) {
+    if (docs[i]._id == id) {
+      return {index: i, value: docs[i]};
+    }
+  }
+  return {index: -1};
+}
 /*
  * Handles any incoming real time changes from CouchDB, this will either
  * trigger a full page load if the design doc has changed, or update
@@ -493,34 +501,40 @@ function handleChanges() {
       // Otherwise check for changes that we didnt cause
       var changeIndex = $.inArray(change.id, myChanges);
       if (changeIndex == -1) {
-        var index = -1, row;
-        for (var i = 0, length = viewModel.children().length; i < length && index == -1; i++) {
-          row = viewModel.children()[i];
-          if (row._id == change.id) {
-            index = i;
-          }
-        }
+        var section = findById(viewModel.children(), change.id), childNote = findById(viewModel.notes(), change.id);
         if (change.deleted) {
-          if (index == 0) { // note deleted
+          if (section.index == 0) { // note deleted, go one level up
             goup(viewModel.children()[0]);
-          } else {
-            viewModel.children.splice(index, 1); // safe if index == -1
+          } else if (section.index != -1) { // section deleted
+            viewModel.children.splice(section.index, 1);
+          } else if (childNote.index != -1) { // child note deleted
+            viewModel.notes.splice(childNote.index, 1);
           }
-        } else {
-            if (index != -1)  {
-              row.load();
-            } else { // new child?
-              app.read(change.id, function(error, doc) {
-                if (doc.parent_id == viewModel.children()[0]._id) {
-                  $.each(viewModel.children(), function(index, item) {
-                    if (item.order > doc.order) {
-                      viewModel.children.splice(item.index, 0, observable(doc));
-                      return false; // break
+        } else { // updated/added
+          if (section.index != -1)  {
+            section.value.load();
+          } else if (childNote.index != -1) {
+            // ignore child note update
+          } else { // new item?
+            app.read(change.id, function(error, doc) {
+              if (doc.parent_id == viewModel.children()[0]._id) { // new item!
+                if (doc.type == 'section') { // insert at certain position
+                  var added = false;
+                  for (var i = 0, length = viewModel.children().length; i < length && !added; i++) {
+                    if (viewModel.children()[i].order > doc.order) {
+                      viewModel.children.splice(i, 0, observable(doc)); // insert
+                      added = true;
                     }
-                  });
+                  }
+                  if (!added) { // append
+                    viewModel.children.push(observable(doc));
+                  }
+                } else { // child note added
+                  viewModel.notes.push(doc); // add
                 }
-              })
-            }
+              }
+            })
+          }
         }
       } else {
         myChanges.splice(changeIndex, 1);
