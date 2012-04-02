@@ -347,14 +347,9 @@ function observable(doc) {
     doc.name.subscribe($save);
     doc.remove = function() {
       viewModel.remove(doc._id, doc._rev);
+      
       if (doc._id == viewModel.children()[0]._id) {
-        if (window.location.hash == '#/' || !window.location.hash) {
-          delete viewModel.children()[0]['_id']; // force reload
-          load();
-        } else {
-          var id = (doc.parent_id == 'root' ? '' : doc.parent_id);
-          window.location.hash = '#/' + id;
-        }
+        goup(doc);
       } else {
         viewModel.children.remove(doc);
       }
@@ -374,6 +369,16 @@ function observable(doc) {
     }
     
     return doc;
+}
+
+function goup(doc) {
+  if (window.location.hash == '#/' || !window.location.hash) {
+    delete viewModel.children()[0]['_id']; // force reload
+    load();
+  } else {
+    var id = (doc.parent_id == 'root' ? '' : doc.parent_id);
+    window.location.hash = '#/' + id;
+  }
 }
 
 function getOrder(array, index) {
@@ -496,18 +501,23 @@ function handleChanges() {
           }
         }
         if (change.deleted) {
-          viewModel.children.splice(index, 1); // safe if index == -1
-          // TODO: if change.id == viewModel.parent._id
+          if (index == 0) { // note deleted
+            goup(viewModel.children()[0]);
+          } else {
+            viewModel.children.splice(index, 1); // safe if index == -1
+          }
         } else {
             if (index != -1)  {
               row.load();
-            } else if (change.id == viewModel.children()[0]._id) {
-              viewModel.children()[0].load();
-            } else {
+            } else { // new child?
               app.read(change.id, function(error, doc) {
                 if (doc.parent_id == viewModel.children()[0]._id) {
-                  // TODO: section/note/update/push
-                  viewModel.children.push(observable(doc));
+                  $.each(viewModel.children(), function(index, item) {
+                    if (item.order > doc.order) {
+                      viewModel.children.splice(item.index, 0, observable(doc));
+                      return false; // break
+                    }
+                  });
                 }
               })
             }
@@ -544,7 +554,7 @@ var run = function() {
       controlclass:'tecontrol', // (optional) CSS class of the buttons
       //rowclass:'teheader', // (optional) CSS class of the button rows
       dividerclass:'tedivider', // (optional) CSS class of the button diviers
-      controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', 'print', '|', 'source', 'done', 'delete'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
+      controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', '|', 'source', 'done'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
       footer:false, // (optional) show the footer
       fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
       xhtml:true, // (optional) generate XHTML vs HTML
@@ -555,7 +565,9 @@ var run = function() {
       footerclass:'tefooter', // (optional) CSS class of the footer
       toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
       resize:{cssclass:'resize'}, // (optional) display options for the editor resize
-      done: function() {element.blur()}
+      done: function(el) {
+        el.blur()
+        }
     });
     $('footer').show();
     handleChanges();

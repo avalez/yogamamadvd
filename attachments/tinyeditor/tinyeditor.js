@@ -230,7 +230,7 @@ TINY.editor=function(){
     if(this.d){this.toggle(1)}
   };
   edit.prototype.direct=function(cmd){
-    if (typeof this.obj[cmd] == 'function') this.obj[cmd]();
+    if (typeof this.obj[cmd] == 'function') this.obj[cmd](this.t);
   };
   edit.prototype.destroy=function(){
     this.t.parentNode.className='';
