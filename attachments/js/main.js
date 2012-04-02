@@ -314,9 +314,12 @@ viewModel.save = function (doc, callback) {
     })
 }
 
-viewModel.remove = function(doc_id, doc_rev) {
+viewModel.remove = function(doc_id, doc_rev, callback) {
     app.remove(doc_id, doc_rev, function(error, data) {
       myChanges.push(data.id);
+      if (typeof callback == 'function') {
+      	callback();
+      }
       /*
         changes = myChanges[data.id] || [];
         changes.push(data.rev);
@@ -346,13 +349,13 @@ function observable(doc) {
     doc.name = ko.observable(doc.name);
     doc.name.subscribe($save);
     doc.remove = function() {
-      viewModel.remove(doc._id, doc._rev);
-      
-      if (doc._id == viewModel.children()[0]._id) {
-        goup(doc);
-      } else {
-        viewModel.children.remove(doc);
-      }
+      viewModel.remove(doc._id, doc._rev, function() {
+        if (doc._id == viewModel.children()[0]._id) {
+          goup(doc);
+        } else {
+          viewModel.children.remove(doc);
+        }
+      });
     }
     doc.load = function() { 
       viewModel.read(this._id, doc.set);
@@ -517,7 +520,8 @@ function handleChanges() {
             // ignore child note update
           } else { // new item?
             app.read(change.id, function(error, doc) {
-              if (doc.parent_id == viewModel.children()[0]._id) { // new item!
+              if (typeof viewModel.children()[0] != 'undefined' 
+                  && doc.parent_id == viewModel.children()[0]._id) { // new item!
                 if (doc.type == 'section') { // insert at certain position
                   var added = false;
                   for (var i = 0, length = viewModel.children().length; i < length && !added; i++) {
