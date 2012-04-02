@@ -35,7 +35,7 @@
       <!-- ko template: {name: "notes-template", foreach: notes} -->
       <!-- /ko -->
       <li id="new-wrapper">
-          <input id="new" type="text" maxlength="256" data-bind="value: newItem"/>
+          <input id="new" type="text" maxlength="256" data-bind="value: newItem, css: {loading: newItemLoading}"/>
       </li>
     </ul>
 </div>
@@ -93,6 +93,7 @@
             <a data-bind="click: remove">&#x2717;</a>
         </div>
         <div class="actions actions2">
+            <a data-bind="css: {loading: loading}" style="visibility: visible">&nbsp;&nbsp;&nbsp;</a>
             <a data-bind="click: $parent.add">&#x271A;</a>
         </div>
     </div>

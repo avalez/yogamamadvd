@@ -252,7 +252,8 @@ var viewModel = {
     root: observable({name: ''}),
     newItem: ko.observable(''),
     notes: ko.observableArray(),
-    children: ko.observableArray()
+    children: ko.observableArray(),
+    newItemLoading: ko.observable(false)
 }
 
 viewModel.newItem.subscribe(function(newValue) {
@@ -260,7 +261,9 @@ viewModel.newItem.subscribe(function(newValue) {
         return;
     }
     var parent_id = viewModel.children()[0] ? viewModel.children()[0]._id : 'root';
+    viewModel.newItemLoading(true);
     viewModel.create({parent_id: parent_id, name: newValue, type: 'note', order: 0}, function(error, doc) {
+        viewModel.newItemLoading(false);
         viewModel.notes.push(doc);
         viewModel.newItem(''); // clear
     })
@@ -274,6 +277,7 @@ viewModel.reset = function() {
 viewModel.create = function(doc, callback) {
   var doc_to_save = ko.toJS(doc);
   delete doc_to_save['index'];
+  delete doc_to_save['loading'];
   app.create(doc_to_save, function(error, doc) {
     if (!error) {
       myChanges.push(doc._id);
@@ -297,6 +301,7 @@ viewModel.read = function(doc_id, callback) {
 viewModel.save = function (doc, callback) {
     var doc_to_save = ko.toJS(doc);
     delete doc_to_save['index'];
+    delete doc_to_save['loading'];
     app.update(doc_to_save, function(error, data) {
       if (!error) {
         doc._rev = data.rev;
@@ -343,13 +348,19 @@ viewModel.add = function($data) {
 function observable(doc) {
     var $save = function() {
       if (!doc.syncing) {
-        viewModel.save(doc, nil);
+        doc.loading(true);
+        viewModel.save(doc, function() {
+          doc.loading(false);
+        });
       }
     }
     doc.name = ko.observable(doc.name);
     doc.name.subscribe($save);
+    doc.loading = ko.observable(false);
     doc.remove = function() {
+      doc.loading(true);
       viewModel.remove(doc._id, doc._rev, function() {
+        doc.loading(false);
         if (doc._id == viewModel.children()[0]._id) {
           goup(doc);
         } else {
@@ -358,9 +369,11 @@ function observable(doc) {
       });
     }
     doc.load = function() { 
+      doc.loading(true);
       viewModel.read(this._id, doc.set);
     }
     doc.set = function(data) {
+      doc.loading(false);
       doc._id = data._id;
       doc._rev = data._rev;
       doc.parent_id = data.parent_id;
@@ -402,6 +415,7 @@ function observableNewItem(options) {
   var doc = {parent_id: options.parent_id, order: options.order};
   doc.name = ko.observable('');
   doc.type = 'section';
+  doc.loading = ko.observable(false);
   doc.remove = function() {
     // just remove it
     viewModel.children.splice(this.index(), 1);
@@ -411,7 +425,9 @@ function observableNewItem(options) {
         return;
     }
 
+    doc.loading(true);
     viewModel.create(doc, function(error, new_doc) {
+      doc.loading(false);
       // convert to existing observable inplace
       viewModel.children.splice(doc.index(), 1, observable(new_doc));
     });

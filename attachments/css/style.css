@@ -357,3 +357,7 @@ header > div > a:hover {
     border-bottom: 1px solid #F9EEEC;
     color: #CC7766;
 }
+.loading {
+    background: url('../images/loading.gif') right center no-repeat;
+    //background: url('../images/ui-anim_basic_16x16.gif') right center no-repeat;
+}
