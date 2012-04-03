@@ -77,15 +77,12 @@ app.create = function(doc, callback) {
   }
 }
 
-app.doCreate = function(doc, callback) {
-  
-}
-
 app.read = function(doc_id, callback) {
   request({type: 'GET', url: app.baseURL + '../../' + doc_id}, callback);
 }
 
 app.update = function(doc, callback) {
+  app.myChanges.push(doc._id);
   request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
     doc._rev = data.rev;
     callback(error, {});
@@ -93,7 +90,47 @@ app.update = function(doc, callback) {
 }
 
 app.remove = function(doc_id, doc_rev, callback) {
+  app.myChanges.push(doc_id);
   request({type: 'DELETE', url: app.baseURL + '../../' + doc_id + '?rev=' + doc_rev}, callback);
+}
+
+app.myChanges = [];
+
+// check if change has any modification from outside,
+// return false if not our change, true otherwize
+app.myChange = function(change) {
+  var changeIndex = $.inArray(change.id, app.myChanges);
+  if (changeIndex != -1) {
+    app.myChanges.splice(changeIndex, 1);
+  	return true;
+  } else {
+  	return false;
+  }
+  // not used code for myChanges map
+  var myChange = myChanges[change.id];
+  if (myChange) {
+  	for (var i = 0, length = change.changes.length; i < length; i++ ) {
+  	  var index = myChange.indexOf(change.changes[i].rev);
+  	  console.log('index:', index);
+  	  if (index == -1) {
+  	    // clean up
+  		  delete myChanges[change.id];
+  		  // not our chnage
+  			return false;
+  	  } else {
+  	    // clean up
+  	    myChange.splice(index, 1);
+  	  }
+	}
+	// all change.revisions are ours
+	if (myChange.length = 0) { // clean up
+	  delete myChanges[change.id];
+	}
+	return true;
+  }
+  // not our change
+  delete myChanges[change.id];
+  return false;
 }
 
 /**
@@ -114,29 +151,39 @@ app.changes = function(since, options) {
   var timeout = 100, active = true,
     listeners = [],
     promise = /** @lends $.couch.db.changes */ {
-      /**
-       * Add a listener callback
-       * @see <a href="http://techzone.couchbase.com/sites/default/
-       * files/uploads/all/documentation/couchbase-api-db.html#couch
-       * base-api-db_db-changes_get">docs for /db/_changes</a>
-       * @param {Function} fun Callback function to run when
-       * notified of changes.
-       */
+    /**
+     * Add a listener callback
+     * @see <a href="http://techzone.couchbase.com/sites/default/
+     * files/uploads/all/documentation/couchbase-api-db.html#couch
+     * base-api-db_db-changes_get">docs for /db/_changes</a>
+     * @param {Function} fun Callback function to run when
+     * notified of changes.
+     */
     onChange : function(fun) {
       listeners.push(fun);
     },
-      /**
-       * Stop subscribing to the changes feed
-       */
+    /**
+     * Stop subscribing to the changes feed
+     */
     stop : function() {
       active = false;
     }
   };
-  // call each listener when there is a change
+  // call each listener for each change
   function triggerListeners(resp) {
-    $.each(listeners, function() {
-      this(resp);
-    });
+    $.each(resp.results, function(_, change) {
+      // Full refresh if design doc changes
+      if (/^_design/.test(change.id)) {
+        document.location.reload();
+        return false; // break
+      }
+      if (!app.myChange(change)) {
+        // call each listener for the change
+        $.each(listeners, function() {
+          this(change);
+        });
+      }
+    })
   };
   // when there is a change, call any listeners, then check for
   // another change
@@ -150,7 +197,9 @@ app.changes = function(since, options) {
         setTimeout(function() {
           getChangesSince();
         }, timeout);
-        triggerListeners(resp);
+        if (app.myChange(resp)) {
+          triggerListeners(resp);
+        } 
       };
     };
   };
@@ -233,10 +282,7 @@ edit = function(object, event) {
   $('.editable', event.target.parentNode.parentNode).click();
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
-
-var myChanges = [];
 
 // append array
 ko.observableArray.fn.pushAll = function(array) {
@@ -279,16 +325,7 @@ viewModel.create = function(doc, callback) {
   delete doc_to_save['index'];
   delete doc_to_save['loading'];
   app.create(doc_to_save, function(error, doc) {
-    if (!error) {
-      myChanges.push(doc._id);
-      /*
-      changes = myChanges[data.id] || [];
-      changes.push(data.rev);
-      myChanges[data.id] = changes;
-      */
-    
-      callback(error, doc);
-    }
+    callback(error, doc);
   });
 }
 
@@ -305,12 +342,6 @@ viewModel.save = function (doc, callback) {
     app.update(doc_to_save, function(error, data) {
       if (!error) {
         doc._rev = data.rev;
-        myChanges.push(data.id);
-        /*
-        changes = myChanges[data.id] || [];
-        changes.push(data.rev);
-        myChanges[data.id] = changes;
-        */
       } else if (data.error == 'conflict') {
         // TODO: alert
         doc.load();
@@ -321,15 +352,9 @@ viewModel.save = function (doc, callback) {
 
 viewModel.remove = function(doc_id, doc_rev, callback) {
     app.remove(doc_id, doc_rev, function(error, data) {
-      myChanges.push(data.id);
       if (typeof callback == 'function') {
       	callback();
       }
-      /*
-        changes = myChanges[data.id] || [];
-        changes.push(data.rev);
-        myChanges[data.id] = changes;
-      */
     })
     // cascade
     app.view('children', {key: doc_id}, function(error, data) {
@@ -368,7 +393,7 @@ function observable(doc) {
         }
       });
     }
-    doc.load = function() { 
+    doc.load = function() {
       doc.loading(true);
       viewModel.read(this._id, doc.set);
     }
@@ -463,35 +488,6 @@ function observableArray(data) {
   return array;
 }
 
-// check if change has any modification from outside,
-// return false if not our change, true otherwize
-function inChanges(change) {
-  var myChange = myChanges[change.id];
-  if (myChange) {
-  	for (var i = 0, length = change.changes.length; i < length; i++ ) {
-  	  var index = myChange.indexOf(change.changes[i].rev);
-  	  console.log('index:', index);
-  	  if (index == -1) {
-  	    // clean up
-  		  delete myChanges[change.id];
-  		  // not our chnage
-  			return false;
-  	  } else {
-  	    // clean up
-  	    myChange.splice(index, 1);
-  		}
-		}
-		// all change.revisions are ours
-		if (myChange.length = 0) { // clean up
-		  delete myChanges[change.id];
-		}
-		return true;
-	}
-  // not our change
-  delete myChanges[change.id];
-	return false;
-}
-
 function findById(docs, id) {
   for (var i = 0, length = docs.length; i < length; i++) {
     if (docs[i]._id == id) {
@@ -508,18 +504,8 @@ function findById(docs, id) {
 function handleChanges() {
 
   $changes = app.changes();
-  $changes.onChange(function(changes) {
+  $changes.onChange(function(change) {
 
-    var doRefresh = false;
-
-    $.each(changes.results, function(_, change) {
-
-      // Full refresh if design doc changes
-      doRefresh = doRefresh || /^_design/.test(change.id);
-
-      // Otherwise check for changes that we didnt cause
-      var changeIndex = $.inArray(change.id, myChanges);
-      if (changeIndex == -1) {
         var section = findById(viewModel.children(), change.id), childNote = findById(viewModel.notes(), change.id);
         if (change.deleted) {
           if (section.index == 0) { // note deleted, go one level up
@@ -556,17 +542,8 @@ function handleChanges() {
             })
           }
         }
-      } else {
-        myChanges.splice(changeIndex, 1);
-        
-      }
     });
 
-    if (doRefresh) {
-      document.location.reload();
-    }
-
-  });
 }
 
 // http://stackoverflow.com/questions/822452/strip-html-from-text-javascript
