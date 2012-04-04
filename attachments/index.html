@@ -32,7 +32,8 @@
 <div id="page" style="display:block">
     <div id="list" data-bind='template: {name: "todo-template", foreach: children}'></div>
     <ul class="notes">
-      <!-- ko template: {name: "notes-template", foreach: notes} -->
+      <!-- ko foreach: notes -->
+      <li class="notes"><a data-bind="html: name, attr: {href: '#/' + _id}"></a></li>
       <!-- /ko -->
       <li id="new-wrapper">
           <input id="new" type="text" maxlength="256" data-bind="value: newItem, css: {loading: newItemLoading}"/>
@@ -97,9 +98,6 @@
             <a data-bind="click: $parent.add">&#x271A;</a>
         </div>
     </div>
-</script>
-<script type="text/html" id="notes-template">
-    <li class="notes"><a data-bind="html: name, attr: {href: '#/' + _id}"></a></li>
 </script>
 </body>
 </html>

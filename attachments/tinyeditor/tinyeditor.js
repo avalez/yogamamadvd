@@ -42,8 +42,8 @@ TINY.editor=function(){
     var p=document.createElement('div'), w=document.createElement('div'), h=document.createElement('div'),
     l=obj.controls.length, i=0; 
     this.t.insertBefore(p, this.t.firstChild);
-    //this.i=document.createElement('iframe'); this.i.frameBorder=0;
-    //this.i.width=obj.width||'500'; this.i.height=obj.height||'250';
+    this.i=document.createElement('textarea'); this.i.frameBorder=0;
+    this.i.width=obj.width||'500'; this.i.height=obj.height||'250';
     h.width=this.t.width||'500'; h.height=this.t.height||'250';
     this.ie=T$$$();
     h.className=obj.rowclass||'teheader'; p.className=obj.cssclass||'te'; /*p.style.width=this.t.width+'px';*/p.appendChild(h);
@@ -90,7 +90,7 @@ TINY.editor=function(){
         div.style.backgroundPosition='0px '+pos+'px';
         div.title=x[1];
         ex=func=='a'?'.action("'+x[3]+'",0,'+(x[4]||0)+')':func=='i'?'.insert("'+x[4]+'","'+x[5]+'","'+x[3]+'")':'.direct("'+x[3]+'")';
-        div.onclick=new Function(this.n+(id=='print'?'.print()':ex));
+        div.onclick=new Function(this.n+(id=='print'?'.print()':(id=='source'?'.toggle(0,this)':ex)));
         div.onmouseover=new Function(this.n+'.hover(this,'+pos+',1)');
         div.onmouseout=new Function(this.n+'.hover(this,'+pos+',0)');
         this.unselectable(div);
@@ -125,11 +125,13 @@ TINY.editor=function(){
     //m+='</body></html>';
     //this.e.write(m);
     //this.e.close();
-    //this.e.designMode='on'; this.d=1;
+    //this.e.designMode='on';
+    this.d=1;
     if(this.xhtml){
       try{this.e.execCommand("styleWithCSS",0,0)}
       catch(e){try{this.e.execCommand("useCSS",0,1)}catch(e){}}
     }
+    this.obj['source'] = this.toggle;
   };
   edit.prototype.print=function(){
     this.i.contentWindow.print()
@@ -190,16 +192,19 @@ TINY.editor=function(){
   },
   edit.prototype.toggle=function(post,div){
     if(!this.d){
-      var v=this.t.value;
-      if(div){div.innerHTML=this.obj.toggletext||'source'}
+      var v=this.i.value;
+      if(div){div.title=this.obj.toggletext||'source'}
       if(this.xhtml&&!this.ie){
         v=v.replace(/<strong>(.*)<\/strong>/gi,'<span style="font-weight: bold;">$1</span>');
         v=v.replace(/<em>(.*)<\/em>/gi,'<span style="font-weight: italic;">$1</span>')
       }
-      this.e.body.innerHTML=v;
-      this.t.style.display='none'; this.i.style.display='block'; this.d=1
+      this.t.innerHTML=v;
+      this.i.style.display='none'; this.t.style.display='block'; this.d=1;
+      this.t.parentNode.removeChild(this.i);
+      // or http://stackoverflow.com/questions/2490825/how-to-trigger-event-in-javascript
+      $(this.t).trigger('blur');
     }else{
-      var v=this.e.body.innerHTML;
+      var v=this.t.innerHTML;
       if(this.xhtml){
         v=v.replace(/<span class="apple-style-span">(.*)<\/span>/gi,'$1');
         v=v.replace(/ class="apple-style-span"/gi,'');
@@ -218,11 +223,12 @@ TINY.editor=function(){
         v=v.replace(/<span style="font-style: italic;?">(.*)<\/span>/gi,'<em>$1</em>');
         v=v.replace(/<span style="font-weight: bold;?">(.*)<\/span>|<b\b[^>]*>(.*?)<\/b[^>]*>/gi,'<strong>$1</strong>')
       }
-      if(div){div.innerHTML=this.obj.toggletext||'wysiwyg'}
-      this.t.value=v;
+      if(div){div.title=this.obj.toggletext||'wysiwyg'}
+      this.i.value=v;
       if(!post){
-        this.t.style.height=this.i.height+'px';
-        this.i.style.display='none'; this.t.style.display='block'; this.d=0
+        this.i.style.height=this.t.height+'px';
+        this.t.style.display='none'; this.i.style.display='block'; this.d=0;
+        this.t.parentNode.insertBefore(this.i,this.t);
       }
     }
   },
@@ -241,7 +247,7 @@ TINY.editor=function(){
   };
   edit.prototype.enable=function(element) {
     if (element) this.t = element;
-    else this.t = null;
+    else if (this.d) this.t = null;
   };
   edit.prototype.unselectable=function(el) {
     // contenteditable and non button elements

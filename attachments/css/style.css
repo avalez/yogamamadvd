@@ -133,6 +133,7 @@ input[type="checkbox"] {
 }
 #page #list > div .editable {
     width: 100%;
+    min-height: 20px;
 }
 #page #list > div .actions {
     font-size: 14px;

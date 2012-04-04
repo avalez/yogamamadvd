@@ -197,9 +197,7 @@ app.changes = function(since, options) {
         setTimeout(function() {
           getChangesSince();
         }, timeout);
-        if (app.myChange(resp)) {
-          triggerListeners(resp);
-        } 
+        triggerListeners(resp);
       };
     };
   };
