@@ -86,7 +86,7 @@ TINY.editor=function(){
         h.appendChild(sel)
       }else if(c[id]){
         var div=document.createElement('div'), x=c[id], func=x[2], ex, pos=x[0]*offset;
-        div.className=obj.controlclass;
+        div.className=obj.controlclass||'tecontrol';
         div.style.backgroundPosition='0px '+pos+'px';
         div.title=x[1];
         ex=func=='a'?'.action("'+x[3]+'",0,'+(x[4]||0)+')':func=='i'?'.insert("'+x[4]+'","'+x[5]+'","'+x[3]+'")':'.direct("'+x[3]+'")';
@@ -202,8 +202,7 @@ TINY.editor=function(){
       this.t.innerHTML=v;
       this.i.style.display='none'; this.t.style.display='block'; this.d=1;
       this.t.parentNode.removeChild(this.i);
-      // or http://stackoverflow.com/questions/2490825/how-to-trigger-event-in-javascript
-      $(this.t).click();
+      this.t.focus();
     }else{
       var v=this.t.innerHTML;
       if(this.xhtml){
@@ -248,8 +247,8 @@ TINY.editor=function(){
     }
   };
   edit.prototype.enable=function(element) {
-    if (element) this.t = element;
-    else if (this.d) this.t = null;
+    if(element){this.t=element;this.t.contentEditable='true';this.t.focus()}
+    else{this.t.contentEditable='false';this.t.blur();this.t=null}
   };
   edit.prototype.unselectable=function(el) {
     // contenteditable and non button elements

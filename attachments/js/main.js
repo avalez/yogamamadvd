@@ -216,14 +216,11 @@ ko.bindingHandlers.htmlValue = {
       ko.utils.registerEventHandler(element, "click", function(event) {
         var t = document.elementFromPoint(event.clientX, event.clientY);
         if (!t || (t.nodeName != 'A' && element.contentEditable != 'true')) {
-          element.contentEditable = 'true';
-          element.focus();
           editor.enable(element);
         }
       });
       ko.utils.registerEventHandler(element, "blur", function() {
-        if (!element.preventblur) {
-          element.contentEditable = 'false';
+        if (!element.preventblur && editor.d) { // tinyeditor: if not tool button clicked and if wysiwyg
           var htmlValue = valueAccessor();
           var elementValue = element.innerHTML;
           if (ko.isWriteableObservable(htmlValue)) {
@@ -540,27 +537,10 @@ var run = function() {
     ko.applyBindings(viewModel);
     editor = new TINY.editor.edit('editor',{
       el:$('header > div')[0],
-      id:'input', // (required) ID of the textarea
-      width:584, // (optional) width of the editor
-      height:175, // (optional) heightof the editor
-      cssclass:'te', // (optional) CSS class of the editor
-      controlclass:'tecontrol', // (optional) CSS class of the buttons
-      //rowclass:'teheader', // (optional) CSS class of the button rows
-      dividerclass:'tedivider', // (optional) CSS class of the button diviers
-      controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', '|', 'source', 'done'], // (required) options you want available, a '|' represents a divider and an 'n' represents a new row
-      footer:false, // (optional) show the footer
-      fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // (optional) array of fonts to display
-      xhtml:true, // (optional) generate XHTML vs HTML
-      cssfile:'style.css', // (optional) attach an external CSS file to the editor
-      content:'starting content', // (optional) set the starting content else it will default to the textarea content
-      css:'body{background-color:#ccc}', // (optional) attach CSS to the editor
-      bodyid:'editor', // (optional) attach an ID to the editor body
-      footerclass:'tefooter', // (optional) CSS class of the footer
-      toggle:{text:'source',activetext:'wysiwyg',cssclass:'toggle'}, // (optional) toggle to markup view options
-      resize:{cssclass:'resize'}, // (optional) display options for the editor resize
-      done: function(el) {
-        el.blur()
-        }
+      controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', '|', 'source', 'done'], // available options, a '|' represents a divider and an 'n' represents a new row
+      fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // array of fonts to display
+      xhtml:true, // generate XHTML vs HTML
+      done: function(el) {el.blur()} // extension point, for stop
     });
     $('footer').show();
     handleChanges();
@@ -582,9 +562,8 @@ var load = function() {
         viewModel.reset();
         var $def1 = app.view('note', {startkey: [parent_id], endkey: [parent_id, 9007199254740992], include_docs: true},
          function(error, data) {
-            if (!error && data.rows.length > 0) {
+            if (!error && data.rows.length > 0 && data.rows[0].doc.type == 'note') {
                 $('div#not-found').hide();
-                // TODO: assert first item is note
                 viewModel.children.pushAll(observableArray(data, observable));
                 setTitle(viewModel.children()[0]);
             } else {
