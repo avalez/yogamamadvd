@@ -20,6 +20,19 @@ header > div {
     position: relative;
     width: 80%;
 }
+header #status {
+    color: #707D8F;
+    padding: 20px;
+    float: left;
+}
+header > div > a {
+    float: right;
+    padding: 2px;
+    font-size: 18px;
+}
+header > div > a:hover {
+    color: #EE8167;
+}
 body > footer {
     color: #EAEAEA;
     font-size: 14px;
@@ -253,14 +266,6 @@ div.password .close {
     text-shadow: 0 0 10px white;
 }
 div.password .close:hover {
-    color: #EE8167;
-}
-header > div > a {
-    float: right;
-    padding: 2px;
-    font-size: 18px;
-}
-header > div > a:hover {
     color: #EE8167;
 }
 #lock {

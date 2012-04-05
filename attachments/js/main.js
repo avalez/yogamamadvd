@@ -12,7 +12,7 @@ var request = function (options, callback) {
     if (!options.dataType) options.processData = false;
     if (!options.dataType) options.contentType = 'application/json';
     if (!options.dataType) options.dataType = 'json';
-    $.ajax(options)
+    return $.ajax(options)
 }
 
 var param = function(a) {
@@ -59,39 +59,39 @@ app.uuid = function (callback) {
 }
 
 app.view = function (view_id, params, callback) {
-  request({url: '_view/' + view_id + '?' + param(params)}, callback);
+  return request({url: '_view/' + view_id + '?' + param(params)}, callback);
 }
 
 app.create = function(doc, callback) {
   if (typeof doc._id == 'undefined') {
     app.uuid(function(uuid) {
       doc._id = uuid;
-      app.update(doc, function(error, data) {
+      return app.update(doc, function(error, data) {
         callback(error, doc)
       })
     })
   } else {
-    app.update(doc, function(error, data) {
+    return app.update(doc, function(error, data) {
       callback(error, doc)
     })
   }
 }
 
 app.read = function(doc_id, callback) {
-  request({type: 'GET', url: app.baseURL + '../../' + doc_id}, callback);
+  return request({type: 'GET', url: app.baseURL + '../../' + doc_id}, callback);
 }
 
 app.update = function(doc, callback) {
   app.myChanges.push(doc._id);
-  request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
+  return request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
     doc._rev = data.rev;
-    callback(error, {});
+    callback(error, data);
   })
 }
 
 app.remove = function(doc_id, doc_rev, callback) {
   app.myChanges.push(doc_id);
-  request({type: 'DELETE', url: app.baseURL + '../../' + doc_id + '?rev=' + doc_rev}, callback);
+  return request({type: 'DELETE', url: app.baseURL + '../../' + doc_id + '?rev=' + doc_rev}, callback);
 }
 
 app.myChanges = [];
@@ -297,7 +297,8 @@ var viewModel = {
     newItem: ko.observable(''),
     notes: ko.observableArray(),
     children: ko.observableArray(),
-    newItemLoading: ko.observable(false)
+    newItemLoading: ko.observable(false),
+    statusMessage: ko.observable('')
 }
 
 viewModel.newItem.subscribe(function(newValue) {
@@ -340,9 +341,11 @@ viewModel.save = function (doc, callback) {
     app.update(doc_to_save, function(error, data) {
       if (!error) {
         doc._rev = data.rev;
-      } else if (data.error == 'conflict') {
-        // TODO: alert
-        doc.load();
+      } else { // TODO if (data.error == 'conflict') {
+        viewModel.statusMessage('Error: ' + data.error);
+        setTimeout(function() {
+          viewModel.statusMessage('');
+        }, 5000); // 5 sec        
       }
       callback(error, data);
     })
@@ -592,10 +595,12 @@ function setTitle(doc) {
 }
 
 var load = function() {
+    viewModel.statusMessage('Loading...');
     var parent_id = window.location.hash.substring(2) || 'root'; // strip '#/'
     if (viewModel.children().length == 0 || viewModel.children()[0]._id != parent_id) {
         viewModel.reset();
-        app.view('note', {startkey: [parent_id], endkey: [parent_id, 9007199254740992], include_docs: true}, function(error, data) {
+        var $def1 = app.view('note', {startkey: [parent_id], endkey: [parent_id, 9007199254740992], include_docs: true},
+         function(error, data) {
             if (!error && data.rows.length > 0) {
                 $('div#not-found').hide();
                 // TODO: assert first item is note
@@ -609,7 +614,7 @@ var load = function() {
                 $('div#not-found').show();
             }
         });
-        app.view('childnotes', {key: parent_id}, function(error, data) {
+        var $def2 = app.view('childnotes', {key: parent_id}, function(error, data) {
             if (!error && data.rows.length > 0) {
                 var array = [];
                 $(data.rows).each(function(i, row) {
@@ -617,6 +622,9 @@ var load = function() {
                 })  
                 viewModel.notes.pushAll(array);
             }
+        });
+        $.when($def1, $def2).then(function() {
+          viewModel.statusMessage('');
         })
     }
 }

@@ -20,6 +20,7 @@
 <body>
 <header>
   <div>
+    <div id="status" data-bind="html: statusMessage"></div>
     <!-- ko if: (typeof children()[0] != 'undefined' && children()[0]._id != 'root' && children()[0].parent_id != 'root') -->
     <a data-bind="attr: {href: '#/' + children()[0].parent_id}" title="Up">&uArr;</a>
     <!-- /ko -->
@@ -36,7 +37,7 @@
       <li class="notes"><a data-bind="html: name, attr: {href: '#/' + _id}"></a></li>
       <!-- /ko -->
       <li id="new-wrapper">
-          <input id="new" type="text" maxlength="256" data-bind="value: newItem, css: {loading: newItemLoading}"/>
+          <input id="new" type="text" maxlength="256" data-bind="value: newItem, css: {loading: newItemLoading}, attr: {readonly: newItemLoading}"/>
       </li>
     </ul>
 </div>
