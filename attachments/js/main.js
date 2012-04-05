@@ -106,31 +106,6 @@ app.myChange = function(change) {
   } else {
   	return false;
   }
-  // not used code for myChanges map
-  var myChange = myChanges[change.id];
-  if (myChange) {
-  	for (var i = 0, length = change.changes.length; i < length; i++ ) {
-  	  var index = myChange.indexOf(change.changes[i].rev);
-  	  console.log('index:', index);
-  	  if (index == -1) {
-  	    // clean up
-  		  delete myChanges[change.id];
-  		  // not our chnage
-  			return false;
-  	  } else {
-  	    // clean up
-  	    myChange.splice(index, 1);
-  	  }
-	}
-	// all change.revisions are ours
-	if (myChange.length = 0) { // clean up
-	  delete myChanges[change.id];
-	}
-	return true;
-  }
-  // not our change
-  delete myChanges[change.id];
-  return false;
 }
 
 /**
@@ -309,7 +284,10 @@ viewModel.newItem.subscribe(function(newValue) {
     viewModel.newItemLoading(true);
     viewModel.create({parent_id: parent_id, name: newValue, type: 'note', order: 0}, function(error, doc) {
         viewModel.newItemLoading(false);
-        viewModel.notes.push(doc);
+        // unless opened other note
+        if (typeof viewModel.children()[0] != 'undefined' && viewModel.children()[0]._id == doc.parent_id) {
+          viewModel.notes.push(doc);
+        }
         viewModel.newItem(''); // clear
     })
 });
@@ -454,8 +432,11 @@ function observableNewItem(options) {
     doc.loading(true);
     viewModel.create(doc, function(error, new_doc) {
       doc.loading(false);
-      // convert to existing observable inplace
-      viewModel.children.splice(doc.index(), 1, observable(new_doc));
+      // unless opened other note
+      if (typeof viewModel.children()[0] != 'undefined' && viewModel.children()[0]._id == doc.parent_id) {
+        // convert to existing observable inplace
+        viewModel.children.splice(doc.index(), 1, observable(new_doc));
+      }
     });
   }, doc);
   return doc;

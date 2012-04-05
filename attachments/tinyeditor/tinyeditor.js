@@ -90,7 +90,7 @@ TINY.editor=function(){
         div.style.backgroundPosition='0px '+pos+'px';
         div.title=x[1];
         ex=func=='a'?'.action("'+x[3]+'",0,'+(x[4]||0)+')':func=='i'?'.insert("'+x[4]+'","'+x[5]+'","'+x[3]+'")':'.direct("'+x[3]+'")';
-        div.onclick=new Function(this.n+(id=='print'?'.print()':(id=='source'?'.toggle(0,this)':ex)));
+        div.onclick=new Function('if(!'+this.n +'.t)return;'+this.n+(id=='print'?'.print()':(id=='source'?'.toggle(0,this)':ex)));
         div.onmouseover=new Function(this.n+'.hover(this,'+pos+',1)');
         div.onmouseout=new Function(this.n+'.hover(this,'+pos+',0)');
         this.unselectable(div);
@@ -131,7 +131,8 @@ TINY.editor=function(){
       try{this.e.execCommand("styleWithCSS",0,0)}
       catch(e){try{this.e.execCommand("useCSS",0,1)}catch(e){}}
     }
-    this.obj['source'] = this.toggle;
+    this.obj['source']=this.toggle;
+    this.t=null;
   };
   edit.prototype.print=function(){
     this.i.contentWindow.print()
@@ -202,7 +203,7 @@ TINY.editor=function(){
       this.i.style.display='none'; this.t.style.display='block'; this.d=1;
       this.t.parentNode.removeChild(this.i);
       // or http://stackoverflow.com/questions/2490825/how-to-trigger-event-in-javascript
-      $(this.t).trigger('blur');
+      $(this.t).click();
     }else{
       var v=this.t.innerHTML;
       if(this.xhtml){
@@ -226,7 +227,8 @@ TINY.editor=function(){
       if(div){div.title=this.obj.toggletext||'wysiwyg'}
       this.i.value=v;
       if(!post){
-        this.i.style.height=this.t.height+'px';
+        this.i.style.height=this.t.offsetHeight+'px';
+        this.i.style.width=(this.t.offsetWidth - 40)+'px';
         this.t.style.display='none'; this.i.style.display='block'; this.d=0;
         this.t.parentNode.insertBefore(this.i,this.t);
       }
