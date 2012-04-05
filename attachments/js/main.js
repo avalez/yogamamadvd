@@ -47,14 +47,16 @@ var app = {baseURL: baseUrl};
 
 var cache = [];
 
-app.uuid = function (callback) {
-    if (cache.length > 0) {
-        callback(cache.pop());
+app.uuid = function(uuid) {
+    if (typeof uuid != 'undefined') {
+        return uuid
+    } else if (cache.length > 0) {
+        return cache.pop()
     } else {
-        return request({url: app.baseURL + '../../../_uuids?count=2'}, function(error, data) {
+        return request({url: app.baseURL + '../../../_uuids?count=2'}, nil).pipe(function(data) {
             Array.prototype.push.apply(cache, data.uuids);
-            callback(cache.pop());
-        });
+            return cache.pop()
+        })
     }
 }
 
@@ -63,18 +65,12 @@ app.view = function (view_id, params, callback) {
 }
 
 app.create = function(doc, callback) {
-  if (typeof doc._id == 'undefined') {
-    app.uuid(function(uuid) {
-      doc._id = uuid;
-      return app.update(doc, function(error, data) {
-        callback(error, doc)
-      })
-    })
-  } else {
+  return $.when(app.uuid(doc._id)).pipe(function(uuid) {
+    doc._id = uuid; // new or existing
     return app.update(doc, function(error, data) {
       callback(error, doc)
     })
-  }
+  })
 }
 
 app.read = function(doc_id, callback) {
@@ -327,17 +323,16 @@ viewModel.save = function (doc, callback) {
 }
 
 viewModel.remove = function(doc_id, doc_rev, callback) {
-    app.remove(doc_id, doc_rev, function(error, data) {
-      if (typeof callback == 'function') {
-      	callback();
-      }
-    })
-    // cascade
+    var deferred = app.remove(doc_id, doc_rev, nil);
+    // cascade, and callback on first level
     app.view('children', {key: doc_id}, function(error, data) {
+        var deferreds = [];
         $(data.rows).each(function(i, row) {
-            viewModel.remove(row.id, row.value); // recurse
-        })
-    })
+            deferreds.push(viewModel.remove(row.id, row.value)); // recurse
+        });
+        $.when(deferreds).done(callback);
+    });
+    return deferred;
 }
 
 // rather belong to doc, but to both new and existing, so bind it to viewModel

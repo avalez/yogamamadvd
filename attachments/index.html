@@ -36,9 +36,11 @@
       <!-- ko foreach: notes -->
       <li class="notes"><a data-bind="html: name, attr: {href: '#/' + _id}"></a></li>
       <!-- /ko -->
+      <!-- ko if: typeof children()[0] != 'undefined' -->
       <li id="new-wrapper">
           <input id="new" type="text" maxlength="256" data-bind="value: newItem, css: {loading: newItemLoading}, attr: {readonly: newItemLoading}"/>
       </li>
+     <!-- /ko -->
     </ul>
 </div>
 
