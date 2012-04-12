@@ -39,22 +39,32 @@ $(function () {
         // TODO: app.getLocation() ?
         var route = this.params.route || 'common/home';
         var url = 'index.php?route=' + route + '&partial=true';
-        context.load(url).then(function(content) {
-          // strip inner div#content, and eval scripts and styles in order of appearance
-          var $el = $('#content');
-          $el.html(''); // clean
-          $(content).each(function(i, piece) {
-            if (piece.nodeName == 'DIV' && piece.id == 'content') {
-              $el.append(piece.innerHTML); // div#content
-            } else if (piece.nodeName == 'TITLE') {
-              context.title(piece.innerHTML);
-            } else {
-              // TODO: browser not supports inline scripts
-              $el.append(piece); // scripts/styles/links
-            }
+        delete this.params['route'];
+        for (param in this.params) {
+          if (typeof this.params[param] != 'function') {
+            url += '&' + param + '=' + escape(this.params[param]);
+          }
+        }
+        if (route == 'account/download/download') {
+          window.location = url;
+        } else {
+          context.load(url).then(function(content) {
+            // strip inner div#content, and eval scripts and styles in order of appearance
+            var $el = $('#content');
+            $el.html(''); // clean
+            $(content).each(function(i, piece) {
+              if (piece.nodeName == 'DIV' && piece.id == 'content') {
+                $el.append(piece.innerHTML); // div#content
+              } else if (piece.nodeName == 'TITLE') {
+                context.title(piece.innerHTML);
+              } else {
+                // TODO: browser not supports inline scripts
+                $el.append(piece); // scripts/styles/links
+              }
+            })
           })
+        }
 
-        })
       }
     });
     

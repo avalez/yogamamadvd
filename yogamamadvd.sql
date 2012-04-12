@@ -12,6 +12,9 @@ INSERT INTO `setting` VALUES (24377,'0', 'free', 'free_total', 0, 0);
 INSERT INTO `setting` VALUES (24378,'0', 'free', 'free_geo_zone_id', 0, 0);
 INSERT INTO `setting` VALUES (24379,'0', 'free', 'free_status', 1, 0);
 INSERT INTO `setting` VALUES (24380,'0', 'free', 'free_sort_order', 1, 0);
+INSERT INTO `setting` VALUES (24381,'0', 'config', 'awsBucket', 'yogamamadvd', 0);
+INSERT INTO `setting` VALUES (24382,'0', 'config', 'awsAccessKey', 'awsAccessKey', 0);
+INSERT INTO `setting` VALUES (24383,'0', 'config', 'awsSecretKey', 'awsSecretKey', 0);
 UPDATE `setting` SET `value` = 'data/favicon.png' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_icon';
 -- UPDATE `setting` SET `value` = 'data/logo.png' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_log';
 UPDATE `setting` SET `value` = 'RUR' WHERE `store_id` = 0 AND `group` = 'config' AND `key` = 'config_currency';
@@ -59,6 +62,15 @@ UPDATE `language` SET `sort_order` = 2 WHERE `language_id` = 1;
 /*!40000 ALTER TABLE `language` ENABLE KEYS */;
 UNLOCK TABLES;
 
+LOCK TABLES `order_status` WRITE;
+/*!40000 ALTER TABLE `order_status` DISABLE KEYS */;
+INSERT INTO `order_status` VALUES (2,2,'Processing'),(3,2,'Shipped'),(7,2,'Canceled'),(5,2,'Complete'),(8,2,'Denied'),
+(9,2,'Canceled Reversal'),(10,2,'Failed'),(11,2,'Refunded'),(12,2,'Reversed'),(13,2,'Chargeback'),(1,2,'Pending'),(16,2,'Voided'),
+(15,2,'Processed'),(14,2,'Expired');
+/*!40000 ALTER TABLE `order_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 LOCK TABLES `banner` WRITE;
 /*!40000 ALTER TABLE `banner` DISABLE KEYS */;
 INSERT INTO `banner` VALUES (9,'commingsoon',1);
@@ -85,6 +97,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `category_description` WRITE;
 /*!40000 ALTER TABLE `category_description` DISABLE KEYS */;
+INSERT INTO `category_description` VALUES (59,1,'Yoga','','','');
 INSERT INTO `category_description` VALUES (59,2,'Yoga','','','');
 /*!40000 ALTER TABLE `category_description` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -148,7 +161,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `download_description` WRITE;
 /*!40000 ALTER TABLE `download_description` DISABLE KEYS */;
--- INSERT INTO `download_description` VALUES (1,1,'DVD1.AVI');
+INSERT INTO `download_description` VALUES (1,1,'DVD1.AVI');
+INSERT INTO `download_description` VALUES (1,2,'DVD1.AVI');
 INSERT INTO `download_description` VALUES (2,1,'DVD2.AVI');
 INSERT INTO `download_description` VALUES (2,2,'DVD2.AVI');
 INSERT INTO `download_description` VALUES (3,1,'DVD3.AVI');

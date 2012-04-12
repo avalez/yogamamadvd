@@ -58,8 +58,9 @@ class ControllerAccountDownload extends Controller {
 			$results = $this->model_account_download->getDownloads(($page - 1) * $this->config->get('config_catalog_limit'), $this->config->get('config_catalog_limit'));
 			
 			foreach ($results as $result) {
-				if (file_exists(DIR_DOWNLOAD . $result['filename'])) {
-					$size = filesize(DIR_DOWNLOAD . $result['filename']);
+			  // FIXME: file_exists and filesize
+				if (true || file_exists(DIR_DOWNLOAD . $result['filename'])) {
+					$size = 4*1024*1024*1024; //filesize(DIR_DOWNLOAD . $result['filename']);
 
 					$i = 0;
 
@@ -89,7 +90,7 @@ class ControllerAccountDownload extends Controller {
 						'href'       => $this->url->link('account/download/download', 'order_download_id=' . $result['order_download_id'], 'SSL')
 					);
 				}
-			}
+			}			
 		
 			$pagination = new Pagination();
 			$pagination->total = $download_total;
@@ -166,7 +167,11 @@ class ControllerAccountDownload extends Controller {
 		if ($download_info) {
 		  
       $location = 'download/' . $download_info['filename'];
-      //$location =  S3::getAuthenticatedURL("yogamamadvd", $download_info['mask'], 1000);
+      $awsBucket = $this->config->get('awsBucket');
+      $awsAccessKey = $this->config->get('awsAccessKey');
+      $awsSecretKey = $this->config->get('awsSecretKey');
+      S3::setAuth($awsAccessKey, $awsSecretKey);
+      $location =  S3::getAuthenticatedURL($awsBucket, $download_info['name'], 1000);
 			if (!headers_sent()) {
 				header('Location: ' . $location);
 			} else {
