@@ -75,7 +75,7 @@ urlencode(self::__getHash("GET\n\n\n{$expires}\n/{$bucket}/{$uri}")));
 }
 }
 
-/* EXAMPLE:
-S3::setAuth("awsAccessKey", "awsSecretKey");
-echo S3::getAuthenticatedURL("yogamamadvd", "DVD1.AVI", 24*60*60 /* 1d */); 
+// EXAMPLE:
+//S3::setAuth("awsAccessKey", "awsSecretKey");
+//echo S3::getAuthenticatedURL("yogamamadvd", "DVD1.AVI", 24*60*60 /* 1d */); 
 ?>

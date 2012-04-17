@@ -58,9 +58,8 @@ class ControllerAccountDownload extends Controller {
 			$results = $this->model_account_download->getDownloads(($page - 1) * $this->config->get('config_catalog_limit'), $this->config->get('config_catalog_limit'));
 			
 			foreach ($results as $result) {
-			  // FIXME: file_exists and filesize
-				if (true || file_exists(DIR_DOWNLOAD . $result['filename'])) {
-					$size = 4*1024*1024*1024; //filesize(DIR_DOWNLOAD . $result['filename']);
+				if (file_exists(DIR_DOWNLOAD . $result['filename'])) {
+					$size = filesize(DIR_DOWNLOAD . $result['filename']);
 
 					$i = 0;
 
@@ -90,7 +89,7 @@ class ControllerAccountDownload extends Controller {
 						'href'       => $this->url->link('account/download/download', 'order_download_id=' . $result['order_download_id'], 'SSL')
 					);
 				}
-			}			
+			}
 		
 			$pagination = new Pagination();
 			$pagination->total = $download_total;
@@ -165,15 +164,27 @@ class ControllerAccountDownload extends Controller {
 		$download_info = $this->model_account_download->getDownload($order_download_id);
 		
 		if ($download_info) {
-		  
-      $location = 'download/' . $download_info['filename'];
-      $awsBucket = $this->config->get('awsBucket');
-      $awsAccessKey = $this->config->get('awsAccessKey');
-      $awsSecretKey = $this->config->get('awsSecretKey');
-      S3::setAuth($awsAccessKey, $awsSecretKey);
-      $location =  S3::getAuthenticatedURL($awsBucket, $download_info['name'], 1000);
+			$file = DIR_DOWNLOAD . $download_info['filename'];
+			$mask = basename($download_info['mask']);
+			$mime = 'application/octet-stream';
+			$encoding = 'binary';
+
 			if (!headers_sent()) {
-				header('Location: ' . $location);
+				if (file_exists($file)) {
+					header('Pragma: public');
+					header('Expires: 0');
+					header('Content-Description: File Transfer');
+					header('Content-Type: ' . $mime);
+					header('Content-Transfer-Encoding: ' . $encoding);
+					header('Content-Disposition: attachment; filename=' . ($mask ? $mask : basename($file)));
+					header('Content-Length: ' . filesize($file));
+				
+					$file = readfile($file, 'rb');
+				
+					print($file);
+				} else {
+					exit('Error: Could not find file ' . $file . '!');
+				}
 			} else {
 				exit('Error: Headers already sent out!');
 			}
