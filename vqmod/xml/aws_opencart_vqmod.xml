@@ -7,7 +7,7 @@
 
 	<file name="admin/controller/setting/setting.php">
 		<operation>
-			<search position="after" index="1"><![CDATA[
+			<search position="after"><![CDATA[
 			$this->data['tab_server'] = $this->language->get('tab_server');
 			]]></search>
 			<add><![CDATA[
@@ -18,7 +18,7 @@
 			]]></add>
 		</operation>
 		<operation>
-			<search position="before" index="1"><![CDATA[
+			<search position="before"><![CDATA[
 			$this->template = 'setting/setting.tpl';
 			]]></search>
 			<add><![CDATA[
@@ -49,7 +49,7 @@
 			<add><![CDATA[$1<a href="#tab-aws"><?php echo $tab_aws; ?></a>]]></add>
 		</operation>
 		<operation error="skip">
-			<search position="after" index="1"><![CDATA[
+			<search position="after"><![CDATA[
               <td><textarea name="config_google_analytics" cols="40" rows="5"><?php echo $config_google_analytics; ?></textarea></td>
 			]]></search>
 			<add><![CDATA[
@@ -76,7 +76,7 @@
 
   <file name="admin/language/english/setting/setting.php">
       <operation>
-    			<search position="after" regex="true"><![CDATA[~entry_google_analytics~]]></search>
+    			<search position="after"><![CDATA[entry_google_analytics]]></search>
           <add><![CDATA[
       $_['entry_aws_bucket']         = 'AWS Bucket:<br /><span class="help">Amazon Web Services S3 Bucket.</span>';
       $_['entry_aws_accessKey']      = 'AWS Access Key:<br /><span class="help">Amazon Web Services S3 Access Key.</span>';
@@ -87,7 +87,7 @@
 
   <file name="admin/language/english/english.php">
       <operation>
-    			<search position="after" regex="true"><![CDATA[~tab_server~]]></search>
+    			<search position="after"><![CDATA[tab_server]]></search>
           <add><![CDATA[
             $_['tab_aws']                 = 'AWS';
           ]]></add>
@@ -110,11 +110,11 @@
         	</add>
       </operation>
       <operation>
-    			<search position="replace" regex="true"><![CDATA[~file_exists\(DIR_DOWNLOAD~]]></search>
+    			<search position="replace"><![CDATA[file_exists(DIR_DOWNLOAD]]></search>
           <add><![CDATA[true || file_exists(DIR_DOWNLOAD]]></add>
       </operation>
       <operation>
-    			<search position="replace" regex="true"><![CDATA[~filesize\(DIR_DOWNLOAD~]]></search>
+    			<search position="replace"><![CDATA[filesize(DIR_DOWNLOAD]]></search>
           <add><![CDATA[0;// filesize(DIR_DOWNLOAD]]></add>
       </operation>
       <operation>
