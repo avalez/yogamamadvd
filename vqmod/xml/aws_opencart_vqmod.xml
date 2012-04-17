@@ -125,7 +125,7 @@
       </operation>
   </file>
 
-	<file name="catalog/view/theme/yogamamadvd/template/account/download.tpl">
+	<file name="catalog/view/theme/*/template/account/download.tpl">
 		<operation>
 			<search position="replace"><![CDATA[
       	<div class="download-status"><b><?php echo $text_size; ?></b> <?php echo $download['size']; ?></div>
