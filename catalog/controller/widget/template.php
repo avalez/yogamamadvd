@@ -25,7 +25,7 @@ class ControllerWidgetTemplate extends Resource
 
   		ob_end_clean();
   		
-  		$this->renderJson($output);
+  		$this->response($output);
   		
     }
 }

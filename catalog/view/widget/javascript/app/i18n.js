@@ -58,7 +58,8 @@
           } // END: skip comments
         }
       },
-      complete: callback
+      complete: callback,
+      dataType: 'text'
     })
   }
 

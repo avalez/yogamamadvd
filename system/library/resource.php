@@ -52,10 +52,18 @@ abstract class Resource extends Controller
         //$this->response->output();
     }
 
+    protected function response($data) {
+      if (isset($_GET['callback'])) {
+        $this->renderJson($data);
+      } else {
+        $this->response->setOutput($data);
+      }
+    }
+
     protected function renderJson($object) {
         $json = json_encode($object);
         if (isset($_GET['callback'])) {
-          $json = 'callback(' . $json . ');';
+          $json = $_GET['callback'] . '(' . $json . ');';
         }
         $this->response->setOutput($json);
     }

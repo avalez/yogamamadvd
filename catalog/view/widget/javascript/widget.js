@@ -23,8 +23,8 @@
         && arguments[0].dataType !== 'jsonp') {
       // handle jsonp
       var success = arguments[0]['success'];
-      arguments[0]['success'] = function(jsonp) {
-        success(jsonp.output);
+      arguments[0]['success'] = function(data) {
+        success(data);
       }
       arguments[0].dataType = 'jsonp';
       console.log(arguments[0]['url']);
