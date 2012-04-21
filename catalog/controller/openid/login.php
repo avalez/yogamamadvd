@@ -15,7 +15,9 @@ class ControllerOpenidLogin extends Controller
   }
 
   function index() {
-      session_start();
+      if(!isset($_SESSION)) {
+        session_start();
+      }
       
       $openid = $this->getOpenIDURL();
       $consumer = getConsumer();    
@@ -29,9 +31,9 @@ class ControllerOpenidLogin extends Controller
 
       $sreg_request = Auth_OpenID_SRegRequest::build(
                                        // Required
-                                       array('nickname'),
+                                       array('email', 'fullname'),
                                        // Optional
-                                       array('fullname', 'email'));
+                                       array('nickname'));
 
       if ($sreg_request) {
           $auth_request->addExtension($sreg_request);
@@ -124,19 +126,47 @@ class ControllerOpenidLogin extends Controller
 
           $sreg = $sreg_resp->contents();
 
-          if (@$sreg['email']) {
+          if (isset($sreg['email'])) {
               $success .= "  You also returned '" . $this->escape($sreg['email']).
                   "' as your email.";
           }
 
-          if (@$sreg['nickname']) {
+          if (isset($sreg['nickname'])) {
               $success .= "  Your nickname is '" . $this->escape($sreg['nickname']).
                   "'.";
           }
 
-          if (@$sreg['fullname']) {
+          if (isset($sreg['fullname'])) {
               $success .= "  Your fullname is '" . $this->escape($sreg['fullname']).
                   "'.";
+          }
+
+          if (isset($sreg['firstname'])) {
+              $success .= "  Your firstname is '" . $this->escape($sreg['firstname']).
+                  "'.";
+          }
+
+          if (isset($sreg['lastname'])) {
+              $success .= "  Your lastname is '" . $this->escape($sreg['lastname']).
+                  "'.";
+          }
+
+          // force login or register
+          unset($this->session->data['guest']);
+          $email = $this->escape($sreg['email']);
+          $password = $openid;
+          if (!$this->customer->login($email, $password)) {
+              $customer['firstname'] = '';
+              $customer['lastname'] = '';
+              $customer['email'] = $email;
+              $customer['telephone'] = '';
+              $customer['fax'] = '';
+              $customer['password'] = $password;
+
+          		$this->load->model('account/customer');
+              $this->model_account_customer->addCustomer($customer);
+
+              $this->customer->login($customer['email'], $customer['password']);
           }
 
   	$pape_resp = Auth_OpenID_PAPE_Response::fromSuccessResponse($response);
@@ -176,7 +206,7 @@ class ControllerOpenidLogin extends Controller
       
       if (isset($msg)) { $this->response->setOutput("<div class=\"alert\">$msg</div>"); }
       if (isset($error)) { $this->response->setOutput("<div class=\"error\">$error</div>"); }
-      if (isset($success)) { $this->response->setOutput("<div class=\"error\">$success</div>"); }
+      if (isset($success)) { $this->response->setOutput("<div>$success</div>"); }
   }
 
 }
