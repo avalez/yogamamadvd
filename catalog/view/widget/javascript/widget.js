@@ -11,6 +11,19 @@
     return baseUrl + 'index.php?route=widget/messages&name=' + name;
   }
 
+  function addStyleSheet(styleSheet) {
+    if (document.createStyleSheet){
+      document.createStyleSheet(styleSheet);
+    }
+    else {
+      $("head").append($("<link rel='stylesheet' href='" + styleSheet + "' type='text/css' media='screen' />"));
+    }
+  }
+
+require(['jquery',
+  'javascript/sammy/sammy.js',
+  'javascript/app/main.js'
+  ], function($) {
   // Override .ajax() method for jsonp
   var originalAjaxMethod = jQuery['ajax'];
   jQuery['ajax'] = function() {
@@ -32,15 +45,6 @@
     originalAjaxMethod.apply( this, arguments );
   }
 
-  addStyleSheet = function(styleSheet) {
-    if (document.createStyleSheet){
-      document.createStyleSheet(styleSheet);
-    }
-    else {
-      $("head").append($("<link rel='stylesheet' href='" + styleSheet + "' type='text/css' media='screen' />"));
-    }
-  }
-
   // override for context.partial('main', 'child1', 'childN', data)  
   var originalPartialMethod = Sammy.EventContext.prototype.partial;
   Sammy.EventContext.prototype.partial = function() {
@@ -57,4 +61,4 @@
     var args = new Array(arguments[0], data, partials);
     return originalPartialMethod.apply(this, args);
   }
-//});
+});
