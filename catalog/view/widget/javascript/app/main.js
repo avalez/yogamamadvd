@@ -1,11 +1,11 @@
 require(['jquery',
-  'javascript/sammy/sammy.js',
-  'javascript/sammy/plugins/sammy.tmpl.js',
-  'javascript/sammy/plugins/sammy.storage.js',
+  'sammy/sammy',
+  'sammy/plugins/sammy.tmpl',
+  'sammy/plugins/sammy.storage',
   'http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js',
 //  'http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js',
-  'javascript/app/i18n.js',
-  'javascript/app/account.js',
+  'app/i18n',
+  'app/account',
   ], function($) {
   // initialize
   app = Sammy('#content', function() {
