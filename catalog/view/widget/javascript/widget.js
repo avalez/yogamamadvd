@@ -18,10 +18,19 @@
       document.createStyleSheet(styleSheet);
     }
     else {
-      $("head").append($("<link rel='stylesheet' href='" + styleSheet + "' type='text/css' media='screen' />"));
+      jQuery("head").append(jQuery("<link rel='stylesheet' href='" + styleSheet + "' type='text/css' media='screen' />"));
     }
   }
 
+  function product(product_id) {
+    var context = new Sammy.EventContext(app, 'get', 'product', {});
+    addStyleSheet(baseUrl + 'catalog/view/theme/default/stylesheet/slideshow.css');
+    $.getScript(baseUrl + 'catalog/view/javascript/jquery/nivo-slider/jquery.nivo.slider.pack.js');
+    context.partial('main', 'account/account').then(function() {
+        $('#slideshow0').nivoSlider();
+    });
+  }
+    
   var scriptHook = document.getElementsByTagName('script')[0];
   function loadScript(name) {
     var script = document.createElement('script');
@@ -41,48 +50,59 @@
       //"jquery": "../../javascript/jquery/jquery-1.6.1.min"
       'jquery-ui': '../../javascript/jquery/ui/jquery-ui-1.8.16.custom.min',
     },
-    deps: ['sammy/sammy', 'app/main'],
     callback: function() {
-      // Override .ajax() method for jsonp
-      var originalAjaxMethod = jQuery['ajax'];
-      jQuery['ajax'] = function() {
-        if ( typeof arguments[0] === 'string' ) {
-          arguments[0] = jQuery.extend({url: arguments[0]}, arguments[1]);
-        }
-        var source = window.location.protocol + '//' + window.location.hostname + window.location.port;
-        if (arguments[0] && /^https?:/.test(arguments[0]['url'])
-            && arguments[0]['url'].indexOf(source) == -1
-            && arguments[0].dataType !== 'jsonp') {
-          // handle jsonp
-          var success = arguments[0]['success'];
-          arguments[0]['success'] = function(data) {
-            success(data);
-          }
-          arguments[0].dataType = 'jsonp';
-          console.log(arguments[0]['url']);
-        }
-        originalAjaxMethod.apply( this, arguments );
-      };
-
-      // override for context.partial('main', 'child1', 'childN', data)  
-      var originalPartialMethod = Sammy.EventContext.prototype.partial;
-      Sammy.EventContext.prototype.partial = function() {
-        var partials = {};
-        var data;
-        for (i in arguments) {
-          var partial = arguments[i];
-          if (typeof partial == 'string') {
-            partials[partial] = templateUrl(partial);
-          } else {
-            data = partial;
-          }
-        }
-        var args = new Array(arguments[0], data, partials);
-        return originalPartialMethod.apply(this, args);
+      // do not load jquery if it's available
+      if (typeof jQuery != 'undefined') {
+        define( "jquery", [], function () { return jQuery; } ); // FIXME: do not redefine      
       }
+      require(['sammy/sammy', 'app/main'], function() {
+        // Override .ajax() method for jsonp
+        var originalAjaxMethod = jQuery['ajax'];
+        jQuery['ajax'] = function() {
+          if ( typeof arguments[0] === 'string' ) {
+            arguments[0] = jQuery.extend({url: arguments[0]}, arguments[1]);
+          }
+          var source = window.location.protocol + '//' + window.location.hostname + window.location.port;
+          if (arguments[0] && /^https?:/.test(arguments[0]['url'])
+              && arguments[0]['url'].indexOf(source) == -1
+              && arguments[0].dataType !== 'jsonp') {
+            // handle jsonp
+            var success = arguments[0]['success'];
+            arguments[0]['success'] = function(data) {
+              success(data);
+            }
+            arguments[0].dataType = 'jsonp';
+            console.log(arguments[0]['url']);
+          }
+          originalAjaxMethod.apply( this, arguments );
+        };
+
+        // override for context.partial('main', 'child1', 'childN', data)  
+        var originalPartialMethod = Sammy.EventContext.prototype.partial;
+        Sammy.EventContext.prototype.partial = function() {
+          var partials = {};
+          var data;
+          for (i in arguments) {
+            var partial = arguments[i];
+            if (typeof partial == 'string') {
+              partials[partial] = templateUrl(partial);
+            } else {
+              data = partial;
+            }
+          }
+          var args = new Array(arguments[0], data, partials);
+          return originalPartialMethod.apply(this, args);
+        }
+      });
+      
     }
     //waitSeconds: 15,
     //locale: "fr-fr"
+  };
+
+  if (typeof jQuery == 'undefined') {
+    loadScript('require-jquery.js')
+  } else {
+    loadScript('require.js')
   }
-  loadScript('require-jquery.js');
 //});

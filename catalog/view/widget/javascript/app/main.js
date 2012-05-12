@@ -40,7 +40,7 @@ require(['jquery',
         }
     })
 
-    this.get('#?/(index.php)?$', function(context) {
+    this.get('#?//(index.php)?$', function(context) {
       //context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
 
       if ($('#content').data('already-loaded')) {
