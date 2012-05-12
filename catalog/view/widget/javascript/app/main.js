@@ -1,5 +1,6 @@
 require(['jquery',
   'sammy/sammy',
+  'sammy/plugins/sammy.title',
   'sammy/plugins/sammy.tmpl',
   'sammy/plugins/sammy.storage',
   'http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js',
@@ -10,7 +11,7 @@ require(['jquery',
   // initialize
   app = Sammy('#content', function() {
     this.use('Tmpl', 'html');
-    //this.use('Title');
+    this.use('Title');
     this.use('AppAccount');
     //this.use('AppCheckout');
     
@@ -40,14 +41,14 @@ require(['jquery',
         }
     })
 
-    this.get('#?//(index.php)?$', function(context) {
+    this.get('#/index.php', function(context) {
       //context.partial('catalog/view/theme/yogamamadvd/templates/main.html');
 
       if ($('#content').data('already-loaded')) {
 
         // TODO: app.getLocation() ?
         var route = this.params.route || 'common/home';
-        var url = 'index.php?route=' + route + '&partial=true';
+        var url = baseUrl + 'index.php?route=' + route + '&partial=true';
         context.load(url).then(function(content) {
           // strip inner div#content, and eval scripts and styles in order of appearance
           var $el = $('#content');
@@ -67,7 +68,7 @@ require(['jquery',
       }
     });
 
-    this.get('#?$', function(context) {
+    this.get('#/', function(context) {
       addStyleSheet(baseUrl + 'catalog/view/theme/default/stylesheet/slideshow.css');
       $.getScript(baseUrl + 'catalog/view/javascript/jquery/nivo-slider/jquery.nivo.slider.pack.js');
       context.partial('main', 'account/account').then(function() {
@@ -90,7 +91,8 @@ require(['jquery',
 
   // run app, when i18n loaded
   i18nLoad(function() {
-      app.run();
+      var hash = location.hash || '#/';
+      app.run(hash);
   })
 
 });

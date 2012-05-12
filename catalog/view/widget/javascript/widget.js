@@ -63,14 +63,38 @@
             arguments[0] = jQuery.extend({url: arguments[0]}, arguments[1]);
           }
           var source = window.location.protocol + '//' + window.location.hostname + window.location.port;
+          var s_this = this;
+          var s_arguments = arguments;
           if (arguments[0] && /^https?:/.test(arguments[0]['url'])
               && arguments[0]['url'].indexOf(source) == -1
               && arguments[0].dataType !== 'jsonp') {
             // handle jsonp
             var success = arguments[0]['success'];
             arguments[0]['success'] = function(data) {
-              success(data);
-            }
+              if (data.redirect) {
+                console.log('redirect');
+                s_arguments[0]['url'] = data.redirect;
+                originalAjaxMethod.apply(s_this, s_arguments );
+              } else {
+                data = data.output || data;
+                success(data);
+              }
+            };
+            var complete = arguments[0]['complete'];
+            arguments[0]['complete'] = function(jqXHR) {
+                var redirect = jqXHR.getResponseHeader('Location');
+                if (redirect) {
+                  console.log('redirect');
+                  s_arguments[0]['url'] = redirect;
+                  originalAjaxMethod.apply(s_this, s_arguments );
+                } else if (jqXHR.status == 500){
+                  $('body').html(jqXHR.responseText)
+                } else {
+                  if (typeof complete == 'function') {
+                    complete(jqXHR);
+                  }
+                }
+            };
             arguments[0].dataType = 'jsonp';
             console.log(arguments[0]['url']);
           }
