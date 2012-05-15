@@ -66,7 +66,7 @@
       $.get('index.php?route=account/logoutx', function(user) {
           app.log('logged out');
       });
-      app.store.set('user', null);
+      app.store.clear('user');
       var url = context.params._url || '';
       if (url.match(/account/)) {
         url = '';
