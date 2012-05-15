@@ -49,7 +49,7 @@ require(['jquery',
         // TODO: app.getLocation() ?
         var route = this.params.route || 'common/home';
         var url = baseUrl + 'index.php?route=' + route + '&partial=true';
-        context.load(url).then(function(content) {
+        context.load(url, {cache: false}).then(function(content) {
           // strip inner div#content, and eval scripts and styles in order of appearance
           var $el = $('#content');
           $el.html(''); // clean
