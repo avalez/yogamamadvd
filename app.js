@@ -17,7 +17,7 @@ ddoc =
 
 ddoc.views = {
   note : {
-    map : function(doc){
+    map : function(doc) {
       if (doc.type == 'note') {
         emit([doc._id, 0])
       } else /* section */ {
@@ -34,8 +34,38 @@ ddoc.views = {
   },
   children : {
     map : function(doc) {
-        emit(doc.parent_id, doc._rev)
+        emit(doc.parent_id, {rev: doc._rev, type: doc.type})
     }
+  },
+  search : {
+    map : function(doc) {
+      // http://sitr.us/2009/06/30/database-queries-the-couchdb-way.html
+      Array.prototype.reduce = function(val, func) {
+          var i;
+          for (i = 0; i < this.length; i += 1) {
+              val = func(val, this[i]);
+          }
+          return val;
+      };
+      // count unique words per doc (relevance)
+      var tokens = doc.name.split(/[^A-Z0-9\-_]+/i).reduce({}, function(val, el) {
+        var count = val[el] || 0;
+        count++
+        val[el] = count;
+        return val;
+      });
+      for (var i in tokens) {
+        var id;
+        if (doc.type == 'section') {
+          // emit note
+          emit([i, doc.parent_id, 0, 0], {_id: doc.parent_id})
+          id = doc.parent_id;
+        } else {
+          id = doc._id;
+        }
+        emit([i, id, doc.order, tokens[i]], {_id: doc._id})
+      }
+    },
   }
 };
 
@@ -48,3 +78,4 @@ ddoc.validate_doc_update = function (newDoc, oldDoc, userCtx) {
 couchapp.loadAttachments(ddoc, path.join(__dirname, 'attachments'));
 
 module.exports = ddoc;
+

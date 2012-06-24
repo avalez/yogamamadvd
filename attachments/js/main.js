@@ -41,9 +41,7 @@ var param = function(a) {
 
 function nil() {}
 
-var m = document.location.pathname.match(/.+\//);
-var baseUrl = m ? '' : 'api/dummy/dummy/';
-var app = {baseURL: baseUrl};
+var app = {};
 
 var cache = [];
 
@@ -53,7 +51,7 @@ app.uuid = function(uuid) {
     } else if (cache.length > 0) {
         return cache.pop()
     } else {
-        return request({url: app.baseURL + '../../../_uuids?count=2'}, nil).pipe(function(data) {
+        return request({url: '/_uuids?count=2'}, nil).pipe(function(data) {
             Array.prototype.push.apply(cache, data.uuids);
             return cache.pop()
         })
@@ -74,12 +72,12 @@ app.create = function(doc, callback) {
 }
 
 app.read = function(doc_id, callback) {
-  return request({type: 'GET', url: app.baseURL + '../../' + doc_id}, callback);
+  return request({type: 'GET', url: 'api/' + doc_id}, callback);
 }
 
 app.update = function(doc, callback) {
   app.myChanges.push(doc._id);
-  return request({type: 'PUT', url: app.baseURL + '../../' + doc._id, data: doc}, function(error, data) {
+  return request({type: 'PUT', url: 'api/' + doc._id, data: doc}, function(error, data) {
     doc._rev = data.rev;
     callback(error, data);
   })
@@ -87,9 +85,13 @@ app.update = function(doc, callback) {
 
 app.remove = function(doc_id, doc_rev, callback) {
   app.myChanges.push(doc_id);
-  return request({type: 'DELETE', url: app.baseURL + '../../' + doc_id + '?rev=' + doc_rev}, callback);
+  return request({type: 'DELETE', url: 'api/' + doc_id + '?rev=' + doc_rev}, callback);
 }
 
+app.removeAttachment = function(doc_id, doc_rev, attachment, callback) {
+  app.myChanges.push(doc_id);
+  return request({type: 'DELETE', url: 'api/' + doc_id + '/' + attachment + '?rev=' + doc_rev}, callback);
+}
 app.myChanges = [];
 
 // check if change has any modification from outside,
@@ -186,7 +188,7 @@ app.changes = function(since, options) {
       since : since
     }
     request(
-      {url: app.baseURL + "../../_changes?" + param(opts)},
+      {url: "api/_changes?" + param(opts)},
       options.success
     );
   }
@@ -194,7 +196,7 @@ app.changes = function(since, options) {
   if (since) {
     getChangesSince();
   } else {
-    request({url: app.baseURL + '../../'}, function(error, info) {
+    request({url: 'api'}, function(error, info) {
       since = info.update_seq;
       getChangesSince();
     });
@@ -211,7 +213,8 @@ ko.bindingHandlers.htmlValue = {
   init: function(element, valueAccessor, allBindingsAccessor) {
       ko.utils.registerEventHandler(element, "click", function(event) {
         var t = document.elementFromPoint(event.clientX, event.clientY);
-        if (!t || (t.nodeName != 'A' && element.contentEditable != 'true')) {
+        if ((!t || (t.nodeName != 'A' && element.contentEditable != 'true'))
+            && editor.d ) { // tinyedtor: if wysiwyg
           editor.enable(element);
         }
       });
@@ -265,8 +268,12 @@ var viewModel = {
     newItem: ko.observable(''),
     notes: ko.observableArray(),
     children: ko.observableArray(),
+    attachments: ko.observableArray(),
     newItemLoading: ko.observable(false),
-    statusMessage: ko.observable('')
+    statusMessage: ko.observable(''),
+    search: ko.observable(''),
+    searching: ko.observable(false),
+    searchItems: ko.observableArray()
 }
 
 viewModel.newItem.subscribe(function(newValue) {
@@ -285,9 +292,34 @@ viewModel.newItem.subscribe(function(newValue) {
     })
 });
 
+viewModel.search.subscribe(function(term) {
+    viewModel.searchItems.splice(0, viewModel.searchItems().length);
+    if ($.trim(term) == '') {
+        return;
+    }
+    var $def = app.view('search', {startkey: [term], endkey: [term, 'ZZZ'], include_docs: true},
+      function(error, data) {
+        if (!error && data.rows.length > 0) {
+          var notes = [], note = {};
+          for (var i = 0; i < data.rows.length; i++) {
+            var key = data.rows[i].key;
+            if (note._id !== key[1]) { // note goes first
+              note = {_id: key[1], children: [data.rows[i].doc]};
+              notes.push(note)
+            } else if (data.rows[i].doc._id != note._id) { // skip repeating notes
+              note.children.push(data.rows[i].doc)
+            }
+          }
+          viewModel.searchItems.pushAll(notes);
+        } else {
+        }
+    });
+});
+
 viewModel.reset = function() {
   viewModel.children.splice(0, viewModel.children().length);
   viewModel.notes.splice(0, viewModel.notes().length);
+  viewModel.attachments.splice(0, viewModel.attachments().length);
 }
 
 viewModel.create = function(doc, callback) {
@@ -313,25 +345,34 @@ viewModel.save = function (doc, callback) {
       if (!error) {
         doc._rev = data.rev;
       } else { // TODO if (data.error == 'conflict') {
-        viewModel.statusMessage('Error: ' + data.error);
-        setTimeout(function() {
-          viewModel.statusMessage('');
-        }, 5000); // 5 sec        
+        viewModel.setStatusMessage('Error: ' + data.error)
       }
       callback(error, data);
     })
 }
 
 viewModel.remove = function(doc_id, doc_rev, callback) {
-    var deferred = app.remove(doc_id, doc_rev, nil);
-    // cascade, and callback on first level
-    app.view('children', {key: doc_id}, function(error, data) {
+    var deferred = app.remove(doc_id, doc_rev, function(jqXHR) {
+      if (jqXHR) { // jqXHR object
+        var error = eval('(' + jqXHR.responseText + ')'); 
+        viewModel.setStatusMessage('Error: ' + error.reason)
+        // callback now with error, as we won't call later in case of error
+        if (callback) callback(true); 
+      }
+    });
+    if (typeof callback == 'function'
+     || (typeof callback == 'string' /* doc_type */ && callback == 'note')) {
+      // cascade, and callback on first level
+      app.view('children', {key: doc_id}, function(error, data) {
         var deferreds = [];
         $(data.rows).each(function(i, row) {
-            deferreds.push(viewModel.remove(row.id, row.value)); // recurse
+            deferreds.push(viewModel.remove(row.id, row.value.rev, row.value.type)); // recurse wo callback
         });
-        $.when(deferreds).done(callback);
-    });
+        if (typeof callback == 'function') {
+          $.when(deferred, deferreds).done(/* do not pass arguments */ function() {callback()});
+        }
+      });
+    }
     return deferred;
 }
 
@@ -339,6 +380,13 @@ viewModel.remove = function(doc_id, doc_rev, callback) {
 viewModel.add = function($data) {
   viewModel.children.splice($data.index() + 1, 0,
     observableNewItem(getOrder(viewModel.children, $data.index())));
+}
+
+viewModel.setStatusMessage = function($message) {
+  viewModel.statusMessage($message);
+  setTimeout(function() {
+    viewModel.statusMessage('');
+  }, 5000); // 5 sec          
 }
 
 function observable(doc) {
@@ -355,12 +403,14 @@ function observable(doc) {
     doc.loading = ko.observable(false);
     doc.remove = function() {
       doc.loading(true);
-      viewModel.remove(doc._id, doc._rev, function() {
+      viewModel.remove(doc._id, doc._rev, function(error) {
         doc.loading(false);
-        if (doc._id == viewModel.children()[0]._id) {
-          goup(doc);
-        } else {
-          viewModel.children.remove(doc);
+        if (!error) {
+          if (doc._id == viewModel.children()[0]._id) {
+            goup(doc);
+          } else {
+            viewModel.children.remove(doc);
+          }
         }
       });
     }
@@ -462,6 +512,25 @@ function observableArray(data) {
   return array;
 }
 
+function observableAttachment(name) {
+  var attachment = {name: name};
+  attachment.remove = function() {
+    app.removeAttachment(viewModel.children()[0]._id, viewModel.children()[0]._rev, name, function(error, data) {
+      viewModel.children()[0]._rev = data.rev;
+      viewModel.attachments.remove(attachment);
+    })
+  };
+  return attachment;
+}
+
+function observableAttachments(doc) {
+  var array = [];
+  for (var name in doc._attachments) {
+    array.push(observableAttachment(name));
+  }
+  return array;
+}
+
 function findById(docs, id) {
   for (var i = 0, length = docs.length; i < length; i++) {
     if (docs[i]._id == id) {
@@ -520,6 +589,59 @@ function handleChanges() {
 
 }
 
+//http://www.html5rocks.com/en/tutorials/file/dndfiles/
+var uploadFile = function (file, index, callback) {
+  var xhr = new XMLHttpRequest(),
+    upload = xhr.upload,
+    start_time = new Date().getTime(),
+    url = 'api/' +  viewModel.children()[0]._id + '/' + file.name + '?rev=' + viewModel.children()[0]._rev;
+
+  upload.index = index;
+  upload.file = file;
+  upload.downloadStartTime = start_time;
+  upload.currentStart = start_time;
+  upload.currentProgress = 0;
+  upload.startData = 0;
+  upload.addEventListener("progress", callback, false);
+
+  xhr.open("PUT", url, true);
+  xhr.setRequestHeader('content-length', file.size || 0);
+  xhr.setRequestHeader('content-type', file.type || 'octet/stream');
+
+  var reader = new FileReader();
+
+  // Closure to capture the file information.
+  reader.onload = function(e) {
+    // If we use onloadend, we need to check the readyState.
+    //if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+      xhr.sendAsBinary(e.target.result);
+    //}
+  };
+
+  // Read in the image file as a data URL.
+  reader.readAsBinaryString(file);
+
+  return xhr;
+}
+
+function handleFileSelect(ko, evt) {
+  if (viewModel.children().length == 0) return;
+
+  var files = evt.target.files; // FileList object
+
+  // files is a FileList of File objects. List some properties.
+  var output = [];
+  for (var i = 0, f; f = files[i]; i++) {
+    if (f.size <= 1024*1024) {
+      uploadFile(f, i, nil);
+      viewModel.attachments.push(observableAttachment(f.name));
+    } else {
+      viewModel.setStatusMessage('Error: ' + f.name + ' has size bigger than 1 MB: ' + f.size)
+    }
+  }
+  evt.target.value = '';
+}
+
 // http://stackoverflow.com/questions/822452/strip-html-from-text-javascript
 function stripHtml(html)
 {
@@ -531,7 +653,7 @@ function stripHtml(html)
 var run = function() {
     ko.applyBindings(viewModel);
     editor = new TINY.editor.edit('editor',{
-      el:$('header > div')[0],
+      el:$('#header')[0],
       controls:['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|', 'orderedlist', 'unorderedlist', '|' ,'outdent' ,'indent', '|', 'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n', 'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink', '|', 'cut', 'copy', 'paste', '|', 'source', 'done'], // available options, a '|' represents a divider and an 'n' represents a new row
       fonts:['Verdana','Arial','Georgia','Trebuchet MS'],  // array of fonts to display
       xhtml:true, // generate XHTML vs HTML
@@ -551,16 +673,17 @@ function setTitle(doc) {
 }
 
 var load = function() {
-    viewModel.statusMessage('Loading...');
     var parent_id = window.location.hash.substring(2) || 'root'; // strip '#/'
     if (viewModel.children().length == 0 || viewModel.children()[0]._id != parent_id) {
+        viewModel.statusMessage('Loading...');
         viewModel.reset();
         var $def1 = app.view('note', {startkey: [parent_id], endkey: [parent_id, 9007199254740992], include_docs: true},
-         function(error, data) {
+        function(error, data) {
             if (!error && data.rows.length > 0 && data.rows[0].doc.type == 'note') {
                 $('div#not-found').hide();
                 viewModel.children.pushAll(observableArray(data, observable));
                 setTitle(viewModel.children()[0]);
+                viewModel.attachments.pushAll(observableAttachments(data.rows[0].doc));
             } else {
                 viewModel.root.set({_id: parent_id, name: 'Untitled', type: 'note', order: 0});
                 if (parent_id != 'root') {
