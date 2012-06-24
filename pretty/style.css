@@ -132,7 +132,7 @@ ol li {
 ------------------------------------------------------------ */
 
 body {
-	background-color: #d2eeea;
+	background-color: #b3eefd;
 }
 
 
@@ -141,7 +141,7 @@ body {
 
 a,
 a:visited {
-	color: #6db9ae;
+	color: #18B0E2;
 	text-decoration: none;
 }
 
@@ -852,7 +852,7 @@ h1,
 h2,
 h2 a,
 h2 a:visited {
-	color: #6db9ae;
+	color: #18B0E2;
 	font-size: 24px;
 	line-height: 30px;
 }
@@ -1287,8 +1287,8 @@ div.gform_footer input.button,
 .reply a:visited,
 .searchsubmit,
 #submit {
-	background-color: #79cdc1;
-	border: 1px solid #79cdc1;
+	background-color: #18B0E2;
+	border: 1px solid #18B0E2;
 	color: #fff;
 	cursor: pointer;
 	font-size: 12px;
@@ -1303,8 +1303,8 @@ div.gform_footer input.button:hover,
 .reply a:hover,
 .searchsubmit:hover,
 #submit:hover {
-	border: 1px solid #6db9ae;
-	background-color: #6db9ae;
+	border: 1px solid #fdd0ac;
+	background-color: #fdd0ac;
 	color: #fff;
 	text-decoration: none;
 }
