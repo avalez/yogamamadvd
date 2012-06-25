@@ -89,7 +89,7 @@ p,
 select,
 textarea {
 	color: #666;
-	font-family: "Century Gothic", AppleGothic, Arial, sans-serif;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif !important;
 	font-size: 14px;
 	font-weight: normal;
 	line-height: 22px;
@@ -100,7 +100,7 @@ textarea {
 
 input {
 	color: #666;
-	font-family: "Century Gothic", AppleGothic, Arial, sans-serif;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif !important;
 }
 
 blockquote,
@@ -401,7 +401,7 @@ li.sfHover {
 #nav {
 	clear: both;
 	color: #6db9ae;
-	margin: 0 0 10px;
+	margin: 0;
 	overflow: hidden;
 	text-transform: uppercase;
 	width: 960px;
@@ -420,6 +420,11 @@ li.sfHover {
 #nav li {
 	float: left;
 	list-style-type: none;
+	border-right: thin dotted #ccc;
+}
+
+#nav li:last-child {
+	border-right: none;
 }
 
 #nav li a {
@@ -1559,7 +1564,7 @@ div.gform_wrapper input,
 div.gform_wrapper select,
 div.gform_wrapper textarea {
 	color: #666;
-	font-family: "Century Gothic", AppleGothic, Arial, sans-serif !important;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif !important;
 	font-size: 12px;
 	padding: 4px 5px !important;
 }
