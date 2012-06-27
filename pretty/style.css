@@ -862,10 +862,13 @@ h2 a:visited {
 	line-height: 30px;
 }
 
-h1,
-h2 {
+h1 {
 	background: url(images/headline.png) no-repeat top left;
 	padding: 0 0 0 50px;
+}
+
+h2 {
+
 }
 
 .page h1 {

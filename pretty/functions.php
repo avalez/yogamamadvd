@@ -13,7 +13,7 @@ $content_width = apply_filters( 'content_width', 640, 470, 920 );
 add_custom_background();
 
 /** Add new image sizes */
-add_image_size('grid-thumbnail', 100, 100, TRUE);
+add_image_size('grid-thumbnail', 300, 300, TRUE);
 
 /** Add support for custom header */
 add_theme_support( 'genesis-custom-header', array( 'width' => 960, 'height' => 240 ) );
