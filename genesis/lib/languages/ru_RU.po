@@ -1078,11 +1078,11 @@ msgstr ""
 
 #: lib/shortcodes/footer.php:182
 msgid "Log in"
-msgstr ""
+msgstr "Войти"
 
 #: lib/shortcodes/footer.php:184
 msgid "Log out"
-msgstr ""
+msgstr "Выйти"
 
 #: lib/shortcodes/post.php:34
 msgid "ago"
@@ -1128,11 +1128,11 @@ msgstr ""
 #: lib/structure/comments.php:169
 #, php-format
 msgid "<cite class=\"fn\">%s</cite> <span class=\"says\">%s:</span>"
-msgstr ""
+msgstr "<cite class=\"fn\">%s</cite> <span class=\"написал\">%s:</span>"
 
 #: lib/structure/comments.php:169
 msgid "says"
-msgstr ""
+msgstr "написал"
 
 #: lib/structure/comments.php:173
 #, php-format
@@ -1141,7 +1141,7 @@ msgstr ""
 
 #: lib/structure/comments.php:174
 msgid "Edit"
-msgstr ""
+msgstr "Изменить"
 
 #: lib/structure/comments.php:179
 msgid "Your comment is awaiting moderation."
@@ -1162,7 +1162,7 @@ msgstr ""
 
 #: lib/structure/comments.php:239
 msgid "Speak Your Mind"
-msgstr ""
+msgstr "Оставьте комментарий"
 
 #: lib/structure/footer.php:89
 #: lib/structure/footer.php:94
@@ -1241,11 +1241,11 @@ msgstr ""
 #: lib/structure/search.php:17
 #, php-format
 msgid "Search this website %s"
-msgstr ""
+msgstr "Искать по сайту %s"
 
 #: lib/structure/search.php:19
 msgid "Search"
-msgstr ""
+msgstr "Поиск"
 
 #: lib/structure/sidebar.php:18
 msgid "Primary Sidebar Widget Area"
@@ -1342,7 +1342,7 @@ msgstr ""
 #: lib/widgets/featured-post-widget.php:55
 #: lib/widgets/featured-post-widget.php:185
 msgid "[Read More...]"
-msgstr ""
+msgstr "Продолжить чтение"
 
 #: lib/widgets/featured-page-widget.php:137
 msgid "Page"
