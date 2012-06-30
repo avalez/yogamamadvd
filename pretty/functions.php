@@ -82,3 +82,9 @@ genesis_register_sidebar( array(
 	'name'			=> __( 'Footer #3', 'pretty' ),
 	'description'	=> __( 'This is the third column of the footer section.', 'pretty' ),
 ) );
+
+/** Copyright */
+add_filter( 'genesis_footer_creds_text', 'child_footer_creds_text', 10, 1);
+function child_footer_creds_text( $creds_text ){
+    return sprintf( '%1$s ' . g_ent( '&copy;' ) . ' ' . date( 'Y' ) . ' %2$s <a href="http://www.honeymood.ru">www.honeymood.ru</a> %2$s [footer_loginout]', __( 'Copyright', 'genesis' ), g_ent( '&middot;' ) );
+}
