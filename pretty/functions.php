@@ -32,7 +32,7 @@ function pretty_post_info_filter( $post_info ) {
 }
 
 /** Add after post ad widget area on single post */
-add_action( 'genesis_after_post_content', 'pretty_after_post_ad' );
+#add_action( 'genesis_after_post_content', 'pretty_after_post_ad' );
 function pretty_after_post_ad() {
 	if ( is_single() ) {
 		echo '<div class="after-post-ad">';
@@ -56,7 +56,7 @@ add_action( 'genesis_after_footer', 'pretty_footer_top' );
 function pretty_footer_top() {
 	?>
 	<div class="footer-top">
-		<p><a href="#wrap"><?php _e( 'To the Top', CHILD_THEME_DOMAIN ); ?></a></p>
+		<p><a href="#wrap"><?php _e( 'Return to top of page', 'genesis' ); ?></a></p>
 	</div>
 	<?php
 }

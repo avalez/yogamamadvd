@@ -1251,7 +1251,7 @@ class VK_api {
 			echo '
 			<button style="display: none" class="vkapi_vk_widget" vkapi_url="'.$vkapi_url.'"></button>
 			<div id="vkapi_status"></div>
-			<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)"><a>ВойтиВКонтакте</a></div>
+			<div id="login_button" onclick="VK.Auth.getLoginStatus(onSignon)"><a><img src="http://vk.com/favicon.ico" style="vertical-align: bottom"/>&nbsp;Войти ВКонтакте</a></div>
 			<script language="text/javascript">
 				VK.UI.button("login_button");
 			</script>
