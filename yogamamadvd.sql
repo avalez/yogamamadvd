@@ -55,18 +55,18 @@ INSERT INTO `currency` VALUES (4,'Русский рубль','RUR','','руб.',
 /*!40000 ALTER TABLE `currency` ENABLE KEYS */;
 UNLOCK TABLES;
 
-/*LOCK TABLES `language` WRITE;*/
+LOCK TABLES `language` WRITE;
 /*!40000 ALTER TABLE `language` DISABLE KEYS */;
-INSERT INTO `language` VALUES (2,'Russian','ru','ru_RU.UTF-8','ru.png','russian','russian',1,1);
+/*INSERT INTO `language` VALUES (2,'Russian','ru','ru_RU.UTF-8','ru.png','russian','russian',1,1);*/
 /*UPDATE `language` SET `sort_order` = 2 WHERE `language_id` = 1;*/
 /*!40000 ALTER TABLE `language` ENABLE KEYS */;
-/*UNLOCK TABLES;*/
+UNLOCK TABLES;
 
 LOCK TABLES `order_status` WRITE;
 /*!40000 ALTER TABLE `order_status` DISABLE KEYS */;
-INSERT INTO `order_status` VALUES (2,2,'Processing'),(3,2,'Shipped'),(7,2,'Canceled'),(5,2,'Complete'),(8,2,'Denied'),
+/*INSERT INTO `order_status` VALUES (2,2,'Processing'),(3,2,'Shipped'),(7,2,'Canceled'),(5,2,'Complete'),(8,2,'Denied'),
 (9,2,'Canceled Reversal'),(10,2,'Failed'),(11,2,'Refunded'),(12,2,'Reversed'),(13,2,'Chargeback'),(1,2,'Pending'),(16,2,'Voided'),
-(15,2,'Processed'),(14,2,'Expired');
+(15,2,'Processed'),(14,2,'Expired');*/
 /*!40000 ALTER TABLE `order_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
