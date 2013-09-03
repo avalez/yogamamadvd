@@ -1429,7 +1429,11 @@ div.video_wrap {
     margin-bottom: 20px;
 }
 .freshbutton-big, .freshbutton-blue {
-    background: -moz-linear-gradient(center top , #33A0E8, #2180CE) repeat scroll 0 0 transparent;
+    background: #33A0E8; /* fallback for any browser that doesn't do gradients */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #33A0E8), color-stop(1, #2180CE))  no-repeat scroll 0 0 #6EAC2C; /* Saf4+, Chrome */
+    background: -webkit-linear-gradient(center, #33A0E8 5%, #2180CE 100%) no-repeat scroll 0 0 #2180CE; /* Chrome 10+, Saf5.1+ */
+    background: -moz-linear-gradient(center top , #33A0E8 5%, #2180CE 100%) repeat scroll 0 0 #2180CE; /* FF3.6+ */
+    background: -ms-linear-gradient(center, #33A0E8 5%, #2180CE 100%)  no-repeat scroll 0 0 #2180CE; /* IE10 */
     border-color: #2270AB #18639A #0F568B;
     border-style: solid;
     border-width: 1px;
