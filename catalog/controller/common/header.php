@@ -49,7 +49,9 @@ class ControllerCommonHeader extends Controller {
 		$this->data['account'] = $this->url->link('account/account', '', 'SSL');
 		$this->data['shopping_cart'] = $this->url->link('checkout/cart');
 		$this->data['checkout'] = $this->url->link('checkout/checkout', '', 'SSL');
-		
+		$this->data['text_order'] = $this->language->get('text_order');
+		$this->data['text_contact'] = $this->language->get('text_contact');
+		$this->data['text_faq'] = $this->language->get('text_faq');		
 		// Daniel's robot detector
 		$status = true;
 		
@@ -133,6 +135,9 @@ class ControllerCommonHeader extends Controller {
 			'module/cart'
 		);
 				
+        $this->data['logged'] = $this->customer->isLogged();
+        $this->data['user'] = json_encode(Resource::customerToUser($this->customer));
+
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/header.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/common/header.tpl';
 		} else {
