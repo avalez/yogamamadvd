@@ -58,7 +58,6 @@
   <img class="image" src="image/data/movie_2.png">
   <img class="image" src="image/data/movie_3.png">
 </div>
-</div>
 
 <div class="freshbutton-blue">
   <div class="slide-to-message">
@@ -214,5 +213,5 @@
 </div>
 <img id="showBottomPanel" src="catalog/view/theme/yogamamadvd/image/bottom-panel-show.png" />
 
-<?php echo $content_bottom; ?>
+<?php echo $content_bottom; ?></div>
 <?php echo $footer; ?>
