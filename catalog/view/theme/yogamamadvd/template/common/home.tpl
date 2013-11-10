@@ -7,7 +7,6 @@
  js.src = "//connect.facebook.net/ru_RU/all.js#xfbml=1";
  fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-<script type="text/javascript" src="http://cdn.sublimevideo.net/js/3zkej3us.js"></script>
 <div id="content"><?php echo $content_top; ?>
 <h1 style="display: none;"><?php echo $heading_title; ?></h1>
 <div class="content">

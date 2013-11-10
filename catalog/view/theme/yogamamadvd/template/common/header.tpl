@@ -22,7 +22,7 @@
 <?php foreach ($styles as $style) { ?>
 <link rel="<?php echo $style['rel']; ?>" type="text/css" href="<?php echo $style['href']; ?>" media="<?php echo $style['media']; ?>" />
 <?php } ?>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js" charset="utf-8"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/start/jquery-ui.css" />
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery.cookie.min.js"></script>
@@ -41,10 +41,10 @@
 <script type="text/javascript" src="<?php echo $script; ?>"></script>
 <?php } ?>
 
-<script type="text/javascript" src="catalog/view/javascript/sammy.min/sammy.js" charset="utf-8"></script>
-<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.title.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.tmpl.js"></script>
-<script type="text/javascript" src="catalog/view/javascript/sammy.min/plugins/sammy.storage.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy/sammy.js" charset="utf-8"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy/plugins/sammy.title.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy/plugins/sammy.tmpl.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/sammy/plugins/sammy.storage.js"></script>
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
 <script type="text/javascript" src="catalog/view/javascript/app/i18n.js"></script>
@@ -59,6 +59,7 @@
 
 <script type="text/javascript" src="catalog/view/javascript/jquery/jquery.json-2.3.min.js"></script>
 <script type="text/javascript" src="catalog/view/javascript/MM.js"></script>
+<script type="text/javascript" src="http://cdn.sublimevideo.net/js/3zkej3us.js"></script>
 <script type="text/javascript">
 $(function() {
   <?php if ($logged) { ?>
