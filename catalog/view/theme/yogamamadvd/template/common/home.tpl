@@ -192,7 +192,8 @@
     {
         setTimeout(showBottomPanel, 1500);
     }
-    if (typeof FB != 'undefined') FB.XFBML.parse(); 
+    if (typeof FB != 'undefined') FB.XFBML.parse();
+    sublime.prepare('myVideo');
   });
   
 </script>
